@@ -76,56 +76,15 @@ For more information on testing your hook go to : https://sailsjs.com/documentat
 
 ## Development in redbox-portal
 
-There are several ways to code against the redbox-portal. One of it is to link the code via `npm link`
+A docker-compose.yml file is present in support/development and is setup to run the full ReDBox stack and install the hook. To run the stack there is a ReDBox Sails Hook Run Utility in the root of the project
 
-*npm link this hook*
-
-```bash
-cd /into/where/hook/is/
-npm link
+Usage
+```
+ReDBox Sails Hook Run Utility
+Usage: ./runForDev.sh [-a|--(no-)angular] [-h|--help]
+	-a,--angular,--no-angular: Angular mode. Will ensure permissions are set correctly on the Sails working directory so that changes can be applied (off by default)
+	-h,--help: Prints help
 ```
 
-npm link into redbox-portal
-
-```bash
-cd /into/redbox-portal/
-npm link sails-hook-redbox-gitlab
-```
-
-## Vagrant/Docker
-
-Using docker while running redbox-portal is a posibility
-
-In the `docker-compose.yml` file in redbox-portal verify that the service has the volume. 
-
-```yml
-       - "/opt/hooks:/opt/hooks"
-```
-
-For Vagrant to place the code inside of the same machine/docker. You can share it via the VagrantFile using sync_folder
-
-```yml
-  config.vm.synced_folder "/Users/moises/source/qcif/sails-hook-redbox-template", "/opt/hooks/sails-hook-redbox-template", id: "template"
-```
-
-Now inside the docker instance of redbox-portal link the hook and your redbox-portal
-
-```bash
-docker exec -it redbox-portal_redboxportal_1 /bin/bash
-```
-
-run npm link in the hook folder
-
-```bash
-cd /opt/hooks/sails-hook-redbox-template
-npm link
-
-```
-
-now link this alias in your redbox-portal
-
-```bash
-cd /opt/redbox-portal
-npm link sails-hook-redbox-template
-```
+Note: The first time the stack runs it may take some time as yarn initialises the hook within ReDBox Portal. All subsequent runs should be faster
 
