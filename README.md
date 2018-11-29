@@ -76,56 +76,11 @@ For more information on testing your hook go to : https://sailsjs.com/documentat
 
 ## Development in redbox-portal
 
-There are several ways to code against the redbox-portal. One of it is to link the code via `npm link`
-
-*npm link this hook*
-
-```bash
-cd /into/where/hook/is/
-npm link
-```
-
-npm link into redbox-portal
-
-```bash
-cd /into/redbox-portal/
-npm link sails-hook-redbox-gitlab
-```
-
-## Vagrant/Docker
-
-Using docker while running redbox-portal is a posibility
-
-In the `docker-compose.yml` file in redbox-portal verify that the service has the volume. 
-
-```yml
-       - "/opt/hooks:/opt/hooks"
-```
-
-For Vagrant to place the code inside of the same machine/docker. You can share it via the VagrantFile using sync_folder
-
-```yml
-  config.vm.synced_folder "/Users/moises/source/qcif/sails-hook-redbox-template", "/opt/hooks/sails-hook-redbox-template", id: "template"
-```
-
-Now inside the docker instance of redbox-portal link the hook and your redbox-portal
-
-```bash
-docker exec -it redbox-portal_redboxportal_1 /bin/bash
-```
-
-run npm link in the hook folder
-
-```bash
-cd /opt/hooks/sails-hook-redbox-template
-npm link
+A docker-compose.yml file is present in support/development and is setup to run the full ReDBox stack and install the hook. To run the stack
 
 ```
-
-now link this alias in your redbox-portal
-
-```bash
-cd /opt/redbox-portal
-npm link sails-hook-redbox-template
+docker-compose -f support/development/docker-compose.yml up
 ```
+
+Note: The first time the stack runs it may take some time as yarn initialises the hook within ReDBox Portal. All subsequent runs should be faster
 
