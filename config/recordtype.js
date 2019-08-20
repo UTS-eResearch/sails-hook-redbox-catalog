@@ -1,5 +1,5 @@
 module.exports.recordtype = {
-  "template": {
+  "catalog": {
     "packageType": "workspace",
     searchFilters: [
       {

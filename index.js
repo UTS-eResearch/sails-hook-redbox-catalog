@@ -1,7 +1,7 @@
 const _ = require('lodash');
 
-const TemplateController = require('./api/controllers/TemplateController');
-const TemplateService = require('./api/services/TemplateService');
+const CatalogController = require('./api/controllers/CatalogController');
+const CatalogService = require('./api/services/CatalogService');
 const recordTypeConfig = require('./config/recordtype.js');
 const workflowConfig = require('./config/workflow.js');
 const recordFormConfig = require('./form-config/template-1.0-draft.js');
@@ -17,15 +17,15 @@ module.exports = function (sails) {
     routes: {
       before: {},
       after: {
-        'get /:branding/:portal/ws/template/hello': TemplateController.helloWorld
+        'get /:branding/:portal/ws/catalog/': CatalogController.helloWorld
       }
     },
     configure: function () {
       //TODO: Temporarily commenting this out as it's not initialising correctly
-      // sails.services['TemplateService'] = TemplateService;
+      // sails.services['CatalogService'] = CatalogService;
       // sails.config = _.merge(sails.config, recordTypeConfig);
       // sails.config = _.merge(sails.config, workflowConfig);
-      // sails.config['form']['forms'] = _.merge(sails.config['form']['forms'], {'template-1.0-draft': recordFormConfig});
+      // sails.config['form']['forms'] = _.merge(sails.config['form']['forms'], {'catalog-1.0-draft': recordFormConfig});
     }
   }
 };
