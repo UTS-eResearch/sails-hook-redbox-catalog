@@ -232,8 +232,7 @@ export class CatalogDisplayField extends FieldBase<any> {
           </div>
           <div class="row">
               <p>
-                  If your service is not listed; please click here to generate a
-                  <a (click)="field.createRequest('general')" class="card-link">general request</a>
+                  If your service is not listed; please email eresearch-it@uts.edu.au
               </p>
           </div>
           <div class="row">
