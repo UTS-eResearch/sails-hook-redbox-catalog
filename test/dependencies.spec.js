@@ -18,7 +18,7 @@ describe('Basic tests ::', function () {
     Sails().lift({
       hooks: {
         // Load the hook
-        "sails-hook-redbox-template": require('../'),
+        "sails-hook-redbox-catalog": require('../'),
         // Skip grunt (unless your hook uses it)
         "grunt": false
       },
@@ -37,14 +37,14 @@ describe('Basic tests ::', function () {
   });
 
   it('should have a form', function (done) {
-    const type = sails.config['form']['forms']['template-1.0-draft']['type'];
+    const type = sails.config['form']['forms']['catalog-1.0-draft']['type'];
     assert.equal(type, 'template');
     done();
   });
 
   it('should have a route', function (done) {
     supertest(sails.hooks.http.app)
-      .get('/:branding/:portal/ws/template/hello')
+      .get('/:branding/:portal/ws/catalog/hello')
       .expect(200)
       .end(function (err, res) {
         assert.equal(res.text, 'Hello World');

@@ -1,4 +1,4 @@
-## A Sails Hook Redbox Template
+## A Sails Hook Redbox Catalog
 
 In this example template you will find the barebones requirements for a Hook
 
@@ -18,7 +18,7 @@ If you require to have a form in your portal
 
 - `config/recordtype`
 - `config/workflow`
-- `form-config/template-1.0-draft`
+- `form-config/catalog-1.0-draft`
 
 ## index
 

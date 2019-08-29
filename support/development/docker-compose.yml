@@ -7,7 +7,7 @@ services:
     ports:
        - "1500:1500"
     volumes:
-       - "../../:/opt/sailshook"
+       - "../../:/opt/hooks/sails-hook-redbox-catalog"
        - "../../sailsWorkingDir/tmp:/opt/redbox-portal/.tmp"
     expose:
        - "1500"
@@ -20,7 +20,7 @@ services:
      main:
        aliases:
          - rbportal
-    entrypoint: /bin/bash -c "source /opt/sailshook/support/development/linkHook.sh"
+    entrypoint: /bin/bash -c "source /opt/hooks/sails-hook-redbox-catalog/support/development/linkHook.sh"
   mongodb:
     image: mvertes/alpine-mongo:latest
     networks:
