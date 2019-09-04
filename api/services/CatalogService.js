@@ -38,7 +38,7 @@ var Services;
             const post = requestPromise({
                 uri: this.config.domain + `/api/now/table/${this.config.requestTable}`,
                 method: 'POST',
-                body: { request: body },
+                body: body,
                 json: true,
                 headers: this.config.servicenowHeaders
             });
