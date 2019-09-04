@@ -3,25 +3,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 class Config {
     constructor(workspaces) {
         const workspaceConfig = workspaces;
-        const StorageConfig = workspaceConfig.catalog;
-        this.recordType = StorageConfig.recordType;
-        this.workflowStage = StorageConfig.workflowStage;
-        this.formName = StorageConfig.formName;
-        this.appName = StorageConfig.appName;
-        this.domain = StorageConfig.domain;
+        const config = workspaceConfig.catalog;
+        this.recordType = config.recordType;
+        this.workflowStage = config.workflowStage;
+        this.formName = config.formName;
+        this.appName = config.appName;
+        this.domain = config.domain;
+        this.requestTable = config.requestTable;
+        this.user = config.user;
+        this.password = config.password;
         this.parentRecord = workspaceConfig.parentRecord;
         this.provisionerUser = workspaceConfig.provisionerUser;
-        this.serverId = StorageConfig.serverId;
-        this.appId = StorageConfig.appId;
+        this.serverId = config.serverId;
+        this.appId = config.appId;
         this.brandingAndPortalUrl = '';
         this.redboxHeaders = {
             'Cache-Control': 'no-cache',
             'Content-Type': 'application/json',
             'Authorization': workspaceConfig.portal.authorization,
         };
-        this.defaultGroupId = StorageConfig.defaultGroupId;
-        this.types = StorageConfig.types;
-        this.workspaceFileName = StorageConfig.workspaceFileName;
+        this.defaultGroupId = config.defaultGroupId;
+        this.types = config.types;
+        this.workspaceFileName = config.workspaceFileName;
     }
 }
 exports.Config = Config;

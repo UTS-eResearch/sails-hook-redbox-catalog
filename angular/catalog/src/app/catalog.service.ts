@@ -48,7 +48,7 @@ export class CatalogService extends BaseService {
   }
 
   public async createRequest(request: any, rdmpId: string) {
-    const wsUrl = this.brandingAndPortalUrl + '/ws/catalog/create';
+    const wsUrl = this.brandingAndPortalUrl + '/ws/catalog/request';
     try {
       const result = await this.http.post(
         wsUrl,

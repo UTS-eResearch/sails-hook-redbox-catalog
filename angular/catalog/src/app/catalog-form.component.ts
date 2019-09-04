@@ -156,8 +156,8 @@ export class CatalogFormComponent extends LoadableComponent {
           this.fieldMap['BackToPlan'].field.value = this.fieldMap['BackToPlan'].field.value + this.rdmp + focusTab;
         }
       });
-    }).catch((err:any) => {
-      console.log("Error loading form...");
+    }).catch((err: any) => {
+      console.log('Error loading form...');
       console.log(err);
       if (err.status == false) {
         this.criticalError = err.message;

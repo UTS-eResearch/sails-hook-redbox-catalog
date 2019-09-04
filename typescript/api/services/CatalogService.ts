@@ -1,4 +1,5 @@
 import {Sails, Model} from 'sails';
+import * as requestPromise from "request-promise";
 
 import {Config} from '../Config';
 
@@ -14,7 +15,7 @@ export module Services {
 
     protected _exportedMethods: any = [
       'rdmpInfo',
-      'createRequest',
+      'createServiceRecord',
       'sendEmail'
     ];
 
@@ -31,6 +32,18 @@ export module Services {
       }
     }
 
+    async createServiceRecord(body: any) {
+      try {
+        const post = requestPromise({
+          uri: this.config.domain + `/api/now/table/${this.config.requestTable}`,
+          method: 'POST',
+          body: body,
+          json: true
+        });
+      } catch (e) {
+        return Promise.reject(new Error(e));
+      }
+    }
 
   }
 }

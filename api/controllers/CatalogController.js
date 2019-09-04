@@ -10,7 +10,8 @@ var Controllers;
             super();
             this._exportedMethods = [
                 'info',
-                'rdmpInfo'
+                'rdmpInfo',
+                'request'
             ];
             this.config = new Config_1.Config(sails.config.workspaces);
         }
@@ -31,6 +32,28 @@ var Controllers;
                 this.ajaxOk(req, res, null, { status: true, recordMetadata: recordMetadata });
             }, error => {
                 sails.log.error('recordMetadata: error');
+                sails.log.error(error);
+                this.ajaxFail(req, res, error.message, { status: false, message: error.message });
+            });
+        }
+        request(req, res) {
+            sails.log.debug('request');
+            const userId = req.user.id;
+            const rdmp = req.param('rdmp');
+            let createTicket = null;
+            const info = {
+                "description": "Creating",
+                "short_description": "service",
+                "assigned_to": "",
+                "opened_by": ""
+            };
+            return CatalogService.createServiceRecord(info)
+                .subscribe(response => {
+                sails.log.debug('createTicket');
+                createTicket = response;
+                this.ajaxOk(req, res, null, { status: true, createTicket: createTicket });
+            }, error => {
+                sails.log.error('createTicket: error');
                 sails.log.error(error);
                 this.ajaxFail(req, res, error.message, { status: false, message: error.message });
             });

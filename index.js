@@ -19,14 +19,6 @@ module.exports = function (sails) {
       let angularOrigin = './node_modules/@uts-eresearch/sails-hook-redbox-catalog/angular/catalog/dist';
       let angularTmpDest = '.tmp/public/angular/catalog';
       ncp.limit = 16;
-
-      if (sails.config.environment === 'docker') {
-        angularOrigin = './node_modules/@uts-eresearch/sails-hook-redbox-catalog/angular/catalog/dist';
-        angularTmpDest = '.tmp/public/angular/catalog';
-      } else {
-        angularOrigin = './node_modules/@uts-eresearch/sails-hook-redbox-catalog/angular/catalog/dist';
-        angularDest = './assets/angular/catalog';
-      }
       if (!fs.existsSync(angularTmpDest)) { //Using this so sails bootstrap does not break
         console.log(`===========================`);
         console.log(`Angular dist dir (${angularOrigin}) not found`);
@@ -66,7 +58,8 @@ module.exports = function (sails) {
     routes: {
       before: {},
       after: {
-        'post /:branding/:portal/ws/catalog/rdmp': CatalogController.rdmpInfo
+        'post /:branding/:portal/ws/catalog/rdmp': CatalogController.rdmpInfo,
+        'post /:branding/:portal/ws/catalog/request': CatalogController.request
       }
     },
     configure: function () {

@@ -1,5 +1,5 @@
 {
-  "name": "@uts-eresearch/sails-hook-redbox-catalog",
+  "name": "sails-hook-redbox-catalog",
   "version": "1.0.0",
   "description": "A Sails Hook Template",
   "main": "index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@code.research.uts.edu.au:eresearch/sails-hook-redbox-template.git"
+    "url": "git@code.research.uts.edu.au:eresearch/sails-hook-redbox-catalog.git"
   },
   "keywords": [
     "sails",
@@ -36,8 +36,8 @@
   },
   "dependencies": {
     "fs-extra": "^8.1.0",
-    "lodash": "^4.17.10",
-    "lodash-es": "^4.17.11",
+    "lodash": "4.17.10",
+    "lodash-es": "4.17.10",
     "ncp": "^2.0.0",
     "path": "^0.12.7",
     "path-exists": "^3.0.0",

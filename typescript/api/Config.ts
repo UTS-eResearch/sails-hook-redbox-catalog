@@ -10,6 +10,9 @@ export class Config {
   brandingAndPortalUrl: string;
   redboxHeaders: any;
   domain: string;
+  requestTable: string;
+  user: string;
+  password: string;
   defaultGroupId: number;
   types: any;
   workspaceFileName: string;
@@ -23,6 +26,9 @@ export class Config {
     this.formName = config.formName;
     this.appName = config.appName;
     this.domain = config.domain;
+    this.requestTable = config.requestTable;
+    this.user = config.user;
+    this.password = config.password;
     this.parentRecord = workspaceConfig.parentRecord;
     this.provisionerUser = workspaceConfig.provisionerUser;
     this.serverId = config.serverId;

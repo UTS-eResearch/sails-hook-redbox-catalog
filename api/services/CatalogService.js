@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const requestPromise = require("request-promise");
 const Config_1 = require("../Config");
 const services = require("../core/CoreService");
 var Services;
@@ -17,7 +18,7 @@ var Services;
             super();
             this._exportedMethods = [
                 'rdmpInfo',
-                'createRequest',
+                'createServiceRecord',
                 'sendEmail'
             ];
             this.config = new Config_1.Config(sails.config.workspaces);
@@ -26,6 +27,21 @@ var Services;
             return __awaiter(this, void 0, void 0, function* () {
                 try {
                     return yield WorkspaceService.getRecordMeta(this.config, rdmp);
+                }
+                catch (e) {
+                    return Promise.reject(new Error(e));
+                }
+            });
+        }
+        createServiceRecord(body) {
+            return __awaiter(this, void 0, void 0, function* () {
+                try {
+                    const post = requestPromise({
+                        uri: this.config.domain + `/api/now/table/${this.config.requestTable}`,
+                        method: 'POST',
+                        body: body,
+                        json: true
+                    });
                 }
                 catch (e) {
                     return Promise.reject(new Error(e));

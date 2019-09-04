@@ -9239,7 +9239,7 @@ var CatalogFormComponent = /** @class */ (function (_super) {
                 }
             });
         }).catch(function (err) {
-            console.log("Error loading form...");
+            console.log('Error loading form...');
             console.log(err);
             if (err.status == false) {
                 _this.criticalError = err.message;
@@ -9497,7 +9497,7 @@ var CatalogService = /** @class */ (function (_super) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        wsUrl = this.brandingAndPortalUrl + '/ws/catalog/create';
+                        wsUrl = this.brandingAndPortalUrl + '/ws/catalog/request';
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);

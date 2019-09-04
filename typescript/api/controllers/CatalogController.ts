@@ -5,7 +5,7 @@ declare var _;
 import {Observable} from 'rxjs';
 import 'rxjs/add/operator/map';
 
-declare var BrandingService, WorkspaceService, LabarchivesService;
+declare var BrandingService, WorkspaceService, CatalogService;
 /**
  * Package that contains all Controllers.
  */
@@ -22,7 +22,8 @@ export module Controllers {
 
     protected _exportedMethods: any = [
       'info',
-      'rdmpInfo'
+      'rdmpInfo',
+      'request'
     ];
 
     protected config: Config;
@@ -50,6 +51,29 @@ export module Controllers {
           this.ajaxOk(req, res, null, {status: true, recordMetadata: recordMetadata});
         }, error => {
           sails.log.error('recordMetadata: error');
+          sails.log.error(error);
+          this.ajaxFail(req, res, error.message, {status: false, message: error.message});
+        });
+    }
+
+    request(req, res) {
+      sails.log.debug('request');
+      const userId = req.user.id;
+      const rdmp = req.param('rdmp');
+      let createTicket = null;
+      const info = {
+        "description": "Creating",
+        "short_description": "service",
+        "assigned_to": "",
+        "opened_by": ""
+      };
+      return CatalogService.createServiceRecord(info)
+        .subscribe(response => {
+          sails.log.debug('createTicket');
+          createTicket = response;
+          this.ajaxOk(req, res, null, {status: true, createTicket: createTicket});
+        }, error => {
+          sails.log.error('createTicket: error');
           sails.log.error(error);
           this.ajaxFail(req, res, error.message, {status: false, message: error.message});
         });
