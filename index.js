@@ -16,18 +16,18 @@ module.exports = function (sails) {
       // This can be for example: copy files or images to the redbox-portal front end
       // The Hook is environment specific, that is, the environments are also available whenever the sails app is hooked
       let angularDest = './assets/angular/catalog';
-      let angularOrigin = './node_modules/@uts-eresearch/sails-hook-redbox-catalog/angular/catalog/dist';
+      let angularOrigin = './node_modules/sails-hook-redbox-catalog/angular/catalog/dist';
       let angularTmpDest = '.tmp/public/angular/catalog';
       ncp.limit = 16;
-      if (!fs.existsSync(angularTmpDest)) { //Using this so sails bootstrap does not break
+      if (!fs.existsSync(angularOrigin)) { //Using this so sails bootstrap does not break
         console.log(`===========================`);
         console.log(`Angular dist dir (${angularOrigin}) not found`);
         console.log(`===========================`);
         return cb();
       }
-      if (!fs.existsSync(angularTmpDest)) { //Using this so sails bootstrap does not break
+      if (!fs.existsSync(angularOrigin)) { //Using this so sails bootstrap does not break
         console.log(`===========================`);
-        console.log(`Angular dist dir (${angularTmpDest}) not found`);
+        console.log(`Angular dist dir (${angularOrigin}) not found`);
         console.log(`===========================`);
         return cb();
       }

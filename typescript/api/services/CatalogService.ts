@@ -1,4 +1,6 @@
 import {Sails, Model} from 'sails';
+import {Observable, from, of, throwError} from 'rxjs';
+
 import * as requestPromise from "request-promise";
 
 import {Config} from '../Config';
@@ -26,23 +28,21 @@ export module Services {
 
     async rdmpInfo(rdmp: any) {
       try {
-          return await WorkspaceService.getRecordMeta(this.config, rdmp);
+        return await WorkspaceService.getRecordMeta(this.config, rdmp);
       } catch (e) {
         return Promise.reject(new Error(e));
       }
     }
 
-    async createServiceRecord(body: any) {
-      try {
-        const post = requestPromise({
-          uri: this.config.domain + `/api/now/table/${this.config.requestTable}`,
-          method: 'POST',
-          body: body,
-          json: true
-        });
-      } catch (e) {
-        return Promise.reject(new Error(e));
-      }
+    createServiceRecord(body: any) {
+      const post = requestPromise({
+        uri: this.config.domain + `/api/now/table/${this.config.requestTable}`,
+        method: 'POST',
+        body: {request: body},
+        json: true,
+        headers: this.config.servicenowHeaders
+      });
+      return from(post);
     }
 
   }

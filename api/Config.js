@@ -22,6 +22,13 @@ class Config {
             'Content-Type': 'application/json',
             'Authorization': workspaceConfig.portal.authorization,
         };
+        this.servicenowHeaders = {
+            'Cache-Control': 'no-cache',
+            'Content-Type': 'application/json',
+            'Authorization': 'Basic ' + Buffer.from(this.user + ':' + this.password).toString('base64')
+        };
+        this.requesteeId = config.requesteeId;
+        this.testRequestorId = config.testRequestorId;
         this.defaultGroupId = config.defaultGroupId;
         this.types = config.types;
         this.workspaceFileName = config.workspaceFileName;

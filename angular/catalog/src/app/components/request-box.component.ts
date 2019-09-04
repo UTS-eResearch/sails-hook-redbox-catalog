@@ -101,7 +101,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.projectEndLabel = options['projectEndLabel'] || 'End of Project';
     this.requestError = options['requestError'] || 'Request Error';
     this.requestSuccess = options['requestSuccess'] || 'Request Success';
-    this.requestNextAction = options['requestNextAction'] || 'Request Next Action';
+    this.requestNextAction = options['requestNextAction'] || 'Request Next Action : approve by ServiceConnect';
     this.valid = options['valid'] || {};
     this.storageType = options['types'] || [];
   }
@@ -156,6 +156,17 @@ export class RequestBoxField extends FieldBase<any> {
   }
 
   async requestForm(request) {
+
+    // TODO: make this dynamic
+    request.owner = this.owner;
+    request.type = this.requestType['name'] || 'Request';
+    request.ownerEmail = this.dm.email;
+    request.supervisor = this.ci.email;
+    request.owner = this.owner;
+    request.retention = this.projectInfo.retention;
+    request.projectStart = this.projectInfo.projectStart;
+    request.projectEnd = this.projectInfo.projectEnd;
+
     this.formError = false;
     // validate!
     const createRequest = await this.catalogService.createRequest(request, this.rdmp);
@@ -216,18 +227,16 @@ export class RequestBoxField extends FieldBase<any> {
               <div class="col-md-7 col-md-offset-2">
                   <div class="row">
                       <h4>{{ field.boxTitleLabel }}</h4>
-                      <form *ngIf="!field.requestSent" #form="ngForm" novalidate autocomplete="off"
-                            (ngSubmit)="field.validate(form.value)">
+                      <form *ngIf="!field.requestSent" #form="ngForm" novalidate autocomplete="off">
                           <div class="form-group">
                               <label>{{ field.nameLabel }}</label>
-                              <input type="text" class="form-control" name="name"
-                                     placeholder="{{ field.requestNamePlaceholder }}"
-                                     ngModel required
+                              <input type="text" class="form-control"
+                                     name="name" ngModel required placeholder="{{ field.requestNamePlaceholder }}"
                                      attr.aria-label="{{ field.nameLabel }}">
                           </div>
                           <div class="form-group">
                               <label>{{ field.typeLabel }}</label>
-                              <input disabled type="text" class="form-control" name="requestType" ngModel required
+                              <input disabled type="text" class="form-control" name="requestType" required
                                      [(ngModel)]="field.requestType['name']"
                                      attr.aria-label="{{ field.requestType['name'] }}">
                           </div>
@@ -235,26 +244,22 @@ export class RequestBoxField extends FieldBase<any> {
                               <div class="form-group">
                                   <label>{{ field.ownerLabel }}</label>
                                   <input type="text" class="form-control" [(ngModel)]="field.owner"
-                                         name="owner" ngModel
-                                         required
-                                         disabled
+                                         name="owner" ngModel="owner"  required disabled
                                          attr.aria-label="{{ field.ownerLabel }}">
                               </div>
                           </div>
                           <div class="form-group">
                               <label>{{ field.dmEmailLabel }}</label>
                               <input type="text" class="form-control" [(ngModel)]="field.dm.email"
-                                     name="ownerEmail" ngModel
-                                     required disabled
+                                     name="ownerEmail" ngModel="ownerEmail" required disabled
                                      attr.aria-label="{{ field.ownerLabel }}">
                           </div>
                           <div class="form-group">
                               <div class="form-inline">
                                   <div class="form-group">
                                       <label>{{ field.ciEmailLabel }}</label>
-                                      <input type="text" class="form-control" name="supervisor"
-                                             ngModel required disabled
-                                             [(ngModel)]="field.ci.email"
+                                      <input type="text" class="form-control" [(ngModel)]="field.ci.email"
+                                             name="supervisor" ngModel required disabled
                                              size="35" attr.aria-label="{{ field.ciEmailLabel }}">
                                   </div>
                               </div>
@@ -263,9 +268,8 @@ export class RequestBoxField extends FieldBase<any> {
                               <div class="form-inline">
                                   <div class="form-group">
                                       <label>{{ field.retentionLabel }}</label>
-                                      <input type="text" class="form-control" name="retention"
-                                             ngModel required disabled
-                                             [(ngModel)]="field.projectInfo.retention"
+                                      <input type="text" class="form-control" [(ngModel)]="field.projectInfo.retention"
+                                             name="retention" ngModel required disabled
                                              size="35" attr.aria-label="{{ field.retentionLabel }}">
                                   </div>
                               </div>
@@ -274,9 +278,9 @@ export class RequestBoxField extends FieldBase<any> {
                               <div class="form-inline">
                                   <div class="form-group">
                                       <label>{{ field.projectStartLabel }}</label>
-                                      <input type="text" class="form-control" name="projectStart"
-                                             ngModel required disabled
+                                      <input type="text" class="form-control"
                                              [(ngModel)]="field.projectInfo.projectStart"
+                                             name="projectStart" ngModel required disabled
                                              size="35" attr.aria-label="{{ field.projectStartLabel }}">
                                   </div>
                               </div>
@@ -285,9 +289,8 @@ export class RequestBoxField extends FieldBase<any> {
                               <div class="form-inline">
                                   <div class="form-group">
                                       <label>{{ field.projectEndLabel }}</label>
-                                      <input type="text" class="form-control" name="projectEnd"
-                                             ngModel required disabled
-                                             [(ngModel)]="field.projectInfo.projectEnd"
+                                      <input type="text" class="form-control" [(ngModel)]="field.projectInfo.projectEnd"
+                                             name="projectEnd" ngModel required disabled
                                              size="35" attr.aria-label="{{ field.projectEndLabel }}">
                                   </div>
                               </div>
@@ -309,7 +312,7 @@ export class RequestBoxField extends FieldBase<any> {
                               <button type="button" class="close" data-dismiss="alert">&times;</button>
                           </div>
                           <button class="btn btn-primary"
-                                  type="submit">{{ field.requestLabel }}
+                                  type="submit" (click)="field.validate(form.value)">{{ field.requestLabel }}
                           </button>
                           <div class="row"><br/></div>
                       </form>
@@ -318,7 +321,7 @@ export class RequestBoxField extends FieldBase<any> {
                       <div *ngIf="field.requestSent">
                           <p>{{ field.requestSuccess }}</p>
                           <p>Owner: <strong>{{ field.owner }}</strong></p>
-                          <p>Supervisor: <strong>{{ field.supervisor }}</strong></p>
+                          <p>Supervisor: <strong>{{ field.ci.email }}</strong></p>
                           <p>{{ field.requestNextAction }}</p>
                       </div>
                   </div>

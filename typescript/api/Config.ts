@@ -9,6 +9,7 @@ export class Config {
   provisionerUser: string;
   brandingAndPortalUrl: string;
   redboxHeaders: any;
+  servicenowHeaders: any;
   domain: string;
   requestTable: string;
   user: string;
@@ -16,6 +17,8 @@ export class Config {
   defaultGroupId: number;
   types: any;
   workspaceFileName: string;
+  requesteeId: string;
+  testRequestorId: string;
 
   constructor(workspaces) {
     const workspaceConfig = workspaces;
@@ -39,6 +42,13 @@ export class Config {
       'Content-Type': 'application/json',
       'Authorization': workspaceConfig.portal.authorization,
     };
+    this.servicenowHeaders = {
+      'Cache-Control': 'no-cache',
+      'Content-Type': 'application/json',
+      'Authorization': 'Basic ' + Buffer.from(this.user + ':' + this.password).toString('base64')
+    };
+    this.requesteeId = config.requesteeId;
+    this.testRequestorId = config.testRequestorId;
     this.defaultGroupId = config.defaultGroupId;
 
     this.types = config.types;

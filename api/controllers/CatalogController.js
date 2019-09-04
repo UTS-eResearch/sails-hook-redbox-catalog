@@ -38,15 +38,39 @@ var Controllers;
         }
         request(req, res) {
             sails.log.debug('request');
+            this.config.brandingAndPortalUrl = BrandingService.getFullPath(req);
             const userId = req.user.id;
             const rdmp = req.param('rdmp');
+            const request = req.param('request');
             let createTicket = null;
+            const description = `
+      Creating request from Stash
+      
+      Dear eResearch admin: Please verify this workspace request done via Stash in the next data management plan
+      
+      ${this.config.brandingAndPortalUrl}/record/view/${rdmp}
+      
+      Details:
+      
+      ${request.name}
+      
+      ${request.owner} : ${request.ownerEmail}
+      
+      Supervisor: ${request.supervisor}
+      
+      Retention Period: ${request.retention}
+      
+      Project Start: ${request.projectStart}
+      
+      Project End: ${request.projectEnd}
+      `;
             const info = {
-                "description": "Creating",
-                "short_description": "service",
-                "assigned_to": "",
-                "opened_by": ""
+                "short_description": `Stash Service: ${request.type} : ${request.name}`,
+                "description": description,
+                "assigned_to": `${this.config.requesteeId}`,
+                "opened_by": `${this.config.testRequestorId}`
             };
+            sails.log.debug(JSON.stringify(info, null, 2));
             return CatalogService.createServiceRecord(info)
                 .subscribe(response => {
                 sails.log.debug('createTicket');

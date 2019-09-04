@@ -8,6 +8,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const rxjs_1 = require("rxjs");
 const requestPromise = require("request-promise");
 const Config_1 = require("../Config");
 const services = require("../core/CoreService");
@@ -34,19 +35,14 @@ var Services;
             });
         }
         createServiceRecord(body) {
-            return __awaiter(this, void 0, void 0, function* () {
-                try {
-                    const post = requestPromise({
-                        uri: this.config.domain + `/api/now/table/${this.config.requestTable}`,
-                        method: 'POST',
-                        body: body,
-                        json: true
-                    });
-                }
-                catch (e) {
-                    return Promise.reject(new Error(e));
-                }
+            const post = requestPromise({
+                uri: this.config.domain + `/api/now/table/${this.config.requestTable}`,
+                method: 'POST',
+                body: { request: body },
+                json: true,
+                headers: this.config.servicenowHeaders
             });
+            return rxjs_1.from(post);
         }
     }
     Services.CatalogService = CatalogService;
