@@ -18,6 +18,7 @@ export class Config {
   types: any;
   workspaceFileName: string;
   requesteeId: string;
+  requesteeEmail: string;
   testRequestorId: string;
 
   constructor(workspaces) {
@@ -48,6 +49,7 @@ export class Config {
       'Authorization': 'Basic ' + Buffer.from(this.user + ':' + this.password).toString('base64')
     };
     this.requesteeId = config.requesteeId;
+    this.requesteeEmail = config.requesteeEmail;
     this.testRequestorId = config.testRequestorId;
     this.defaultGroupId = config.defaultGroupId;
 

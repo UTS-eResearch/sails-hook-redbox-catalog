@@ -42,6 +42,7 @@ var Controllers;
             const userId = req.user.id;
             const rdmp = req.param('rdmp');
             const request = req.param('request');
+            const openedByEmail = req.param('openedByEmail');
             let createTicket = null;
             const description = `
       Creating request from Stash
@@ -71,7 +72,14 @@ var Controllers;
                 "opened_by": `${this.config.testRequestorId}`
             };
             sails.log.debug(JSON.stringify(info, null, 2));
-            return CatalogService.createServiceRecord(info)
+            return CatalogService.sendGetToTable('sys_user', { email: this.config.requesteeEmail })
+                .flatMap(response => {
+                info.assigned_to = response.email;
+                return CatalogService.getUserId('sys_user', { email: openedByEmail });
+            }).flatMap(response => {
+                info.opened_by = response.email;
+                return CatalogService.sendPostToTable('sc_request', info);
+            })
                 .subscribe(response => {
                 sails.log.debug('createTicket');
                 createTicket = response;

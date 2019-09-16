@@ -17,8 +17,8 @@ export module Services {
 
     protected _exportedMethods: any = [
       'rdmpInfo',
-      'createServiceRecord',
-      'sendEmail'
+      'sendPostToTable',
+      'sendGetToTable'
     ];
 
     constructor() {
@@ -34,11 +34,28 @@ export module Services {
       }
     }
 
-    createServiceRecord(body: any) {
+    sendPostToTable(table: string, body: any) {
+      sails.log.debug(this.config.servicenowHeaders);
       const post = requestPromise({
-        uri: this.config.domain + `/api/now/table/${this.config.requestTable}`,
+        uri: this.config.domain + `/api/now/table/${table}`,
         method: 'POST',
         body: body,
+        json: true,
+        headers: this.config.servicenowHeaders
+      });
+      return from(post);
+    }
+
+    sendGetToTable(table: string, body: any) {
+      const bodyEncoded = {};
+      _.forOwn(body, (key, value) => {
+        bodyEncoded[key] = encodeURIComponent(value);
+      });
+      sails.log.debug(this.config.servicenowHeaders);
+      const post = requestPromise({
+        uri: this.config.domain + `/api/now/table/${table}`,
+        method: 'GET',
+        qs: bodyEncoded,
         json: true,
         headers: this.config.servicenowHeaders
       });

@@ -9491,7 +9491,7 @@ var CatalogService = /** @class */ (function (_super) {
             });
         });
     };
-    CatalogService.prototype.createRequest = function (request, rdmpId) {
+    CatalogService.prototype.createRequest = function (request, rdmpId, email) {
         return __awaiter(this, void 0, void 0, function () {
             var wsUrl, result, e_2;
             return __generator(this, function (_a) {
@@ -9501,7 +9501,7 @@ var CatalogService = /** @class */ (function (_super) {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, this.http.post(wsUrl, { request: request, rdmp: rdmpId }, this.options).toPromise()];
+                        return [4 /*yield*/, this.http.post(wsUrl, { request: request, rdmp: rdmpId, openedByEmail: email }, this.options).toPromise()];
                     case 2:
                         result = _a.sent();
                         return [2 /*return*/, Promise.resolve(this.extractData(result))];
@@ -9686,7 +9686,6 @@ var CatalogDisplayField = /** @class */ (function (_super) {
     }
     CatalogDisplayField.prototype.init = function () {
         this.rdmp = this.fieldMap._rootComp.rdmp;
-        this.setUserEmail();
         this.setRDMPInfo();
     };
     CatalogDisplayField.prototype.registerEvents = function () {
@@ -9700,67 +9699,6 @@ var CatalogDisplayField = /** @class */ (function (_super) {
     CatalogDisplayField.prototype.enableCatalog = function () {
         console.log('enable catalog');
         this.showCatalog = true;
-    };
-    CatalogDisplayField.prototype.validate = function (form) {
-        this.validations = [];
-        // add a better validation thing!
-        if (form['name'] === '') {
-            this.validations.push('name');
-        }
-        if (form['type'] === undefined) {
-            this.validations.push('type');
-        }
-        if (form['owner'] === '') {
-            this.validations.push('owner');
-        }
-        if (form['supervisor'] === '') {
-            this.validations.push('supervisor');
-        }
-        if (this.validations.length > 0) {
-            this.formError = true;
-        }
-        else {
-            // form['rdmpid'] = this.rdmpId;
-            this.requestForm(form);
-        }
-    };
-    CatalogDisplayField.prototype.requestForm = function (request) {
-        return __awaiter(this, void 0, void 0, function () {
-            var createRequest;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0:
-                        this.formError = false;
-                        return [4 /*yield*/, this.catalogService.createRequest(request, this.rdmp)];
-                    case 1:
-                        createRequest = _a.sent();
-                        if (!createRequest.status) {
-                            this.formError = true;
-                            this.errorMessage = createRequest.message;
-                        }
-                        else {
-                            this.requestSent = true;
-                        }
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    CatalogDisplayField.prototype.setUserEmail = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var userInfo, user;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.catalogService.getUserInfo()];
-                    case 1:
-                        userInfo = _a.sent();
-                        user = userInfo['user'];
-                        this.ownerEmail = user['email'];
-                        this.owner = user['name'];
-                        return [2 /*return*/];
-                }
-            });
-        });
     };
     CatalogDisplayField.prototype.setRDMPInfo = function () {
         return __awaiter(this, void 0, void 0, function () {
@@ -10027,7 +9965,7 @@ var RequestBoxField = /** @class */ (function (_super) {
                         request.projectStart = this.projectInfo.projectStart;
                         request.projectEnd = this.projectInfo.projectEnd;
                         this.formError = false;
-                        return [4 /*yield*/, this.catalogService.createRequest(request, this.rdmp)];
+                        return [4 /*yield*/, this.catalogService.createRequest(request, this.rdmp, this.ownerEmail)];
                     case 1:
                         createRequest = _a.sent();
                         if (!createRequest.status) {

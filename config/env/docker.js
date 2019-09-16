@@ -20,6 +20,7 @@ module.exports = {
       user: 'XXXX',
       password: 'XXXX',
       requesteeId: 'XXXX',
+      requesteeEmail: 'XXX@email.com',
       testRequestorId:'XXXX',
     }
   }

@@ -19,8 +19,8 @@ var Services;
             super();
             this._exportedMethods = [
                 'rdmpInfo',
-                'createServiceRecord',
-                'sendEmail'
+                'sendPostToTable',
+                'sendGetToTable'
             ];
             this.config = new Config_1.Config(sails.config.workspaces);
         }
@@ -34,11 +34,27 @@ var Services;
                 }
             });
         }
-        createServiceRecord(body) {
+        sendPostToTable(table, body) {
+            sails.log.debug(this.config.servicenowHeaders);
             const post = requestPromise({
-                uri: this.config.domain + `/api/now/table/${this.config.requestTable}`,
+                uri: this.config.domain + `/api/now/table/${table}`,
                 method: 'POST',
                 body: body,
+                json: true,
+                headers: this.config.servicenowHeaders
+            });
+            return rxjs_1.from(post);
+        }
+        sendGetToTable(table, body) {
+            const bodyEncoded = {};
+            _.forOwn(body, (key, value) => {
+                bodyEncoded[key] = encodeURIComponent(value);
+            });
+            sails.log.debug(this.config.servicenowHeaders);
+            const post = requestPromise({
+                uri: this.config.domain + `/api/now/table/${table}`,
+                method: 'GET',
+                qs: bodyEncoded,
                 json: true,
                 headers: this.config.servicenowHeaders
             });

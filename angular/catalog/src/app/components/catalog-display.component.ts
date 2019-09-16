@@ -91,7 +91,6 @@ export class CatalogDisplayField extends FieldBase<any> {
 
   init() {
     this.rdmp = this.fieldMap._rootComp.rdmp;
-    this.setUserEmail();
     this.setRDMPInfo();
   }
 
@@ -108,51 +107,6 @@ export class CatalogDisplayField extends FieldBase<any> {
   enableCatalog() {
     console.log('enable catalog');
     this.showCatalog = true;
-  }
-
-  validate(form: any) {
-    this.validations = [];
-    // add a better validation thing!
-
-    if (form['name'] === '') {
-      this.validations.push('name');
-    }
-    if (form['type'] === undefined) {
-      this.validations.push('type');
-    }
-    if (form['owner'] === '') {
-      this.validations.push('owner');
-    }
-    if (form['supervisor'] === '') {
-      this.validations.push('supervisor');
-    }
-
-    if (this.validations.length > 0) {
-      this.formError = true;
-    } else {
-      // form['rdmpid'] = this.rdmpId;
-      this.requestForm(form);
-    }
-
-  }
-
-  async requestForm(request) {
-    this.formError = false;
-    // validate!
-    const createRequest = await this.catalogService.createRequest(request, this.rdmp);
-    if (!createRequest.status) {
-      this.formError = true;
-      this.errorMessage = createRequest.message;
-    } else {
-      this.requestSent = true;
-    }
-  }
-
-  async setUserEmail() {
-    const userInfo = await this.catalogService.getUserInfo();
-    const user = userInfo['user'];
-    this.ownerEmail = user['email'];
-    this.owner = user['name'];
   }
 
   async setRDMPInfo() {

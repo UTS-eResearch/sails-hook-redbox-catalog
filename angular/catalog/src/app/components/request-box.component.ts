@@ -169,7 +169,7 @@ export class RequestBoxField extends FieldBase<any> {
 
     this.formError = false;
     // validate!
-    const createRequest = await this.catalogService.createRequest(request, this.rdmp);
+    const createRequest = await this.catalogService.createRequest(request, this.rdmp, this.ownerEmail);
     if (!createRequest.status) {
       this.formError = true;
       this.errorMessage = createRequest.message;
