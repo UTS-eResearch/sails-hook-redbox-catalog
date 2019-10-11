@@ -78,6 +78,7 @@ export class RequestBoxField extends FieldBase<any> {
   formError: boolean = false;
   validations: any = [];
   showRequest: boolean = false;
+  requestFormElements: object = {};
 
   @Output() catalog: EventEmitter<any> = new EventEmitter<any>();
 
@@ -120,6 +121,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.showRequest = true;
     console.log(`generate request for ${JSON.stringify(req.service)}`);
     this.requestType = req.service;
+    this.requestFormElements = req.service.form;
     this.projectInfo = req.project;
     this.ci = req.project.ci;
     this.dm = req.project.dm;
@@ -139,13 +141,14 @@ export class RequestBoxField extends FieldBase<any> {
   validate(form: any) {
     this.validations = [];
 
-    if (form['name'] === '') {
-      this.validations.push('name');
-    }
-
-    if (form['notes'] === '') {
-      this.validations.push('notes');
-    }
+    // Compare objects this.requestFormElements filter in validate true with form
+    _.forOwn(this.requestFormElements, (v, k) => {
+      if (v['validate']) {
+        if (form[k] === '') {
+          this.validations.push(v['label']);
+        }
+      }
+    });
 
     if (this.validations.length > 0) {
       this.formError = true;
@@ -157,6 +160,7 @@ export class RequestBoxField extends FieldBase<any> {
 
   async requestForm(request) {
 
+    this.loading = true;
     // TODO: make this dynamic
     request.owner = this.owner;
     request.type = this.requestType['name'] || 'Request';
@@ -176,6 +180,7 @@ export class RequestBoxField extends FieldBase<any> {
     } else {
       this.requestSent = true;
     }
+    this.loading = false;
   }
 
   async setUserEmail() {
@@ -226,25 +231,27 @@ export class RequestBoxField extends FieldBase<any> {
           <div class="row">
               <div class="col-md-7 col-md-offset-2">
                   <div class="row">
-                      <h4>{{ field.boxTitleLabel }}</h4>
+                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>
                       <form *ngIf="!field.requestSent" #form="ngForm" novalidate autocomplete="off">
-                          <div class="form-group">
+                          <div *ngIf="field.requestFormElements['name']['enable']" class="form-group">
                               <label>{{ field.nameLabel }}</label>
                               <input type="text" class="form-control"
                                      name="name" ngModel required placeholder="{{ field.requestNamePlaceholder }}"
                                      attr.aria-label="{{ field.nameLabel }}">
                           </div>
-                          <div class="form-group">
+                          <div *ngIf="field.requestFormElements['type']" class="form-group">
                               <label>{{ field.typeLabel }}</label>
-                              <input disabled type="text" class="form-control" name="requestType" required
-                                     [(ngModel)]="field.requestType['name']"
-                                     attr.aria-label="{{ field.requestType['name'] }}">
+                              <select [(ngModel)]="field.requestFormElements['type']" class="form-control">
+                                  <option value="" [selected]="true">Select a Value</option>
+                                  <option *ngFor="let t of field.requestFormElements.type.fields"
+                                          [ngValue]="t">{{t.name}}</option>
+                              </select>
                           </div>
                           <div class="form-group">
                               <div class="form-group">
                                   <label>{{ field.ownerLabel }}</label>
                                   <input type="text" class="form-control" [(ngModel)]="field.owner"
-                                         name="owner" ngModel="owner"  required disabled
+                                         name="owner" ngModel="owner" required disabled
                                          attr.aria-label="{{ field.ownerLabel }}">
                               </div>
                           </div>
@@ -311,9 +318,12 @@ export class RequestBoxField extends FieldBase<any> {
                               management plan. If the fields are incorrect, please modify your plan.
                               <button type="button" class="close" data-dismiss="alert">&times;</button>
                           </div>
-                          <button class="btn btn-primary"
+                          <button *ngIf="!field.loading" class="btn btn-primary"
                                   type="submit" (click)="field.validate(form.value)">{{ field.requestLabel }}
                           </button>
+                          <div *ngIf="field.loading">
+                              ... requesting ...
+                          </div>
                           <div class="row"><br/></div>
                       </form>
                   </div>

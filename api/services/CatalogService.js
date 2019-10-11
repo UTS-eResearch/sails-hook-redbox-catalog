@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const rxjs_1 = require("rxjs");
+const qs = require("qs");
 const requestPromise = require("request-promise");
 const Config_1 = require("../Config");
 const services = require("../core/CoreService");
@@ -34,27 +35,25 @@ var Services;
                 }
             });
         }
-        sendPostToTable(table, body) {
+        sendPostToTable(table, query, body) {
             sails.log.debug(this.config.servicenowHeaders);
             const post = requestPromise({
-                uri: this.config.domain + `/api/now/table/${table}`,
+                uri: this.config.domain + `/api/now/table/${table}${args}`,
                 method: 'POST',
                 body: body,
+                qs: query,
                 json: true,
                 headers: this.config.servicenowHeaders
             });
             return rxjs_1.from(post);
         }
         sendGetToTable(table, body) {
-            const bodyEncoded = {};
-            _.forOwn(body, (key, value) => {
-                bodyEncoded[key] = encodeURIComponent(value);
-            });
-            sails.log.debug(this.config.servicenowHeaders);
+            const query = qs.stringify(body);
+            sails.log.debug(query);
             const post = requestPromise({
                 uri: this.config.domain + `/api/now/table/${table}`,
                 method: 'GET',
-                qs: bodyEncoded,
+                qs: body,
                 json: true,
                 headers: this.config.servicenowHeaders
             });

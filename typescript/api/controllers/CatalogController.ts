@@ -62,6 +62,7 @@ export module Controllers {
 
       const userId = req.user.id;
       const rdmp = req.param('rdmp');
+      const catalogId = req.param('catalogId');
       const request = req.param('request');
       const openedByEmail = req.param('openedByEmail');
 
@@ -87,7 +88,6 @@ export module Controllers {
       
       Project End: ${request.projectEnd}
       `;
-      // TODO: find the user opened_by ID with API
       const info = {
         "short_description": `Stash Service: ${request.type} : ${request.name}`,
         "description": description,
@@ -95,14 +95,20 @@ export module Controllers {
         "opened_by": `${this.config.testRequestorId}`
       };
 
-      sails.log.debug(JSON.stringify(info, null, 2));
+      // Find Id of assigned_to
       return CatalogService.sendGetToTable('sys_user', {email: this.config.requesteeEmail})
         .flatMap(response => {
-          info.assigned_to = response.email;
-          return CatalogService.getUserId('sys_user', {email: openedByEmail})
+          sails.log.debug(`sendGetToTable ${this.config.requesteeEmail}`);
+          info.assigned_to = response.sys_id;
+          // Find Id of opened_by
+          return CatalogService.sendGetToTable('sys_user', {email: openedByEmail});
         }).flatMap(response => {
-          info.opened_by = response.email;
-          return CatalogService.sendPostToTable('sc_request', info);
+          sails.log.debug(`sendGetToTable ${openedByEmail}`);
+          sails.log.debug(response);
+          info.opened_by = response.sys_id;
+          const query = {sys_id: 'efe03704f92f64067eeafee0310c7e1'};
+          sails.log.debug(JSON.stringify(info, null, 2));
+          return CatalogService.sendPostToTable('sc_request', query, info);
         })
         .subscribe(response => {
           sails.log.debug('createTicket');
@@ -110,7 +116,8 @@ export module Controllers {
           this.ajaxOk(req, res, null, {status: true, createTicket: createTicket});
         }, error => {
           sails.log.error('createTicket: error');
-          sails.log.error(error);
+          sails.log.error(error.message);
+          sails.log.error(error.message);
           this.ajaxFail(req, res, error.message, {status: false, message: error.message});
         });
 

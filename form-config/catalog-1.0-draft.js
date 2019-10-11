@@ -35,34 +35,20 @@ module.exports = {
         name: 'CatalogDisplay',
         services: [
           {
-            id: 'omeka',
-            name: 'OMEKA',
+            id: 'hpc',
+            name: 'High Performance Computing Cluster',
             displayName: false,
-            logo: 'assets/images/omeka.png',
-            desc: ' OMEKA is a web publishing platform for institutions interested in connecting digital cultural heritage collections with other resources online.',
-            requestButton: 'Create Request',
-            defaultForm: true,
-            form: {}
-          },
-          {
-            id: 'hpcc',
-            name: 'HPCC',
-            displayName: false,
-            logo: 'assets/images/hpc.png',
-            desc: 'The High Performance Computing Cluster can be accessed by UTS researchers via the eResearch HPCC (High Performance Computing Cluster).',
+            logo: 'assets/images/uts_hpcs.png',
+            desc: 'UTS eResearch manages two High Performance Computing Clusters that can be accessed by UTS researchers.',
             requestButton: 'Create Request',
             defaultForm: false,
-            form: {}
-          },
-          {
-            id: 'ihpc',
-            name: 'iHPC',
-            displayName: false,
-            logo: 'assets/images/ihpc.png',
-            desc: 'The iHPC is an interactive high performance computing facility for all researchers within UTS',
-            requestButton: 'Create Request',
-            defaultForm: false,
-            form: {}
+            help: '',
+            form: {
+              name: {enable: false},
+              type: {label: 'Select Type', fields: [{name: 'HPC'}, {name: 'iHPC'}], validate: true},
+              notes: {field: 'notes', label: 'Please explain why you are requesting this service', validate: true}
+            },
+            catalogId: ''
           },
           {
             id: 'aws_1',
@@ -72,7 +58,12 @@ module.exports = {
             desc: 'Amazon Elastic Compute Cloud (Amazon EC2) is a web service that provides secure, resizable compute capacity in the cloud',
             requestButton: 'Create Request',
             defaultForm: false,
-            form: {}
+            help: '',
+            form: {
+              name: {enable: false},
+              notes: {field: 'notes', label: 'Please explain why you are requesting this service', validate: true}
+            },
+            catalogId: ''
           },
           {
             id: 'storage',
@@ -82,37 +73,13 @@ module.exports = {
             desc: 'eResearch Store offers granular access control down to User account level. eResearch fileshares are accessible via the UTS secure network',
             requestButton: 'Create Request',
             defaultForm: true,
-            form: {}
-          },
-          {
-            id: 'cloudstor',
-            name: 'CloudStor',
-            displayName: false,
-            logo: 'assets/images/cloudstor.png',
-            desc: 'Cloudstor is a secure storage and file transfer (FileSender) solution to support collaboration.',
-            requestButton: 'Create Request',
-            defaultForm: true,
-            form: {}
-          },
-          {
-            id: 'limesurvey',
-            name: 'LimeSurvey',
-            displayName: false,
-            logo: 'assets/images/limesurvey.png',
-            desc: ' LimeSurvey is a secure Survey platform hosted at UTS. It allows you to develop, publish and collect responses to surveys using a wide range of question types',
-            requestButton: 'Create Request',
-            defaultForm: true,
-            form: {}
-          },
-          {
-            id: 'qualtrics',
-            name: 'qualtrics',
-            displayName: false,
-            logo: 'assets/images/qualtrics.png',
-            desc: 'Qualtrics UTS site Survey platform. Create surveys from market research projects to customer experience, product testing, employee experience and brand tracking projects',
-            requestButton: 'Create Request',
-            defaultForm: true,
-            form: {}
+            help: '',
+            form: {
+              name: {enable: true},
+              type: {label: 'Select Type', fields: [{name: 'Windows Share'}, {name: 'NFS'}], validate: true},
+              notes: {field: 'notes', label: 'Please explain why you are requesting the storage', validate: true}
+            },
+            catalogId: ''
           }
         ]
       },

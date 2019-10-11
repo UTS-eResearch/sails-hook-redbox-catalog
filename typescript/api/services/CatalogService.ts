@@ -1,5 +1,6 @@
 import {Sails, Model} from 'sails';
 import {Observable, from, of, throwError} from 'rxjs';
+import * as qs from "qs";
 
 import * as requestPromise from "request-promise";
 
@@ -34,12 +35,13 @@ export module Services {
       }
     }
 
-    sendPostToTable(table: string, body: any) {
+    sendPostToTable(table: string, query: any, body: any) {
       sails.log.debug(this.config.servicenowHeaders);
       const post = requestPromise({
-        uri: this.config.domain + `/api/now/table/${table}`,
+        uri: this.config.domain + `/api/now/table/${table}${args}`,
         method: 'POST',
         body: body,
+        qs: query,
         json: true,
         headers: this.config.servicenowHeaders
       });
@@ -47,21 +49,17 @@ export module Services {
     }
 
     sendGetToTable(table: string, body: any) {
-      const bodyEncoded = {};
-      _.forOwn(body, (key, value) => {
-        bodyEncoded[key] = encodeURIComponent(value);
-      });
-      sails.log.debug(this.config.servicenowHeaders);
+      const query = qs.stringify(body);
+      sails.log.debug(query);
       const post = requestPromise({
         uri: this.config.domain + `/api/now/table/${table}`,
         method: 'GET',
-        qs: bodyEncoded,
+        qs: body,
         json: true,
         headers: this.config.servicenowHeaders
       });
       return from(post);
     }
-
   }
 }
 module.exports = new Services.CatalogService().exports();
