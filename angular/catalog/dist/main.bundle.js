@@ -9491,7 +9491,7 @@ var CatalogService = /** @class */ (function (_super) {
             });
         });
     };
-    CatalogService.prototype.createRequest = function (request, rdmpId, email) {
+    CatalogService.prototype.createRequest = function (request, rdmpId, email, catalogId) {
         return __awaiter(this, void 0, void 0, function () {
             var wsUrl, result, e_2;
             return __generator(this, function (_a) {
@@ -9501,7 +9501,7 @@ var CatalogService = /** @class */ (function (_super) {
                         _a.label = 1;
                     case 1:
                         _a.trys.push([1, 3, , 4]);
-                        return [4 /*yield*/, this.http.post(wsUrl, { request: request, rdmp: rdmpId, openedByEmail: email }, this.options).toPromise()];
+                        return [4 /*yield*/, this.http.post(wsUrl, { request: request, rdmp: rdmpId, openedByEmail: email, catalogId: catalogId }, this.options).toPromise()];
                     case 2:
                         result = _a.sent();
                         return [2 /*return*/, Promise.resolve(this.extractData(result))];
@@ -9787,7 +9787,8 @@ var CatalogDisplayComponent = /** @class */ (function (_super) {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared_form_field_simple_component__ = __webpack_require__("./redbox-portal/angular/shared/form/field-simple.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared_form_field_base__ = __webpack_require__("./redbox-portal/angular/shared/form/field-base.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__angular_forms__ = __webpack_require__("./node_modules/@angular/forms/esm5/forms.js");
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__catalog_service__ = __webpack_require__("./src/app/catalog.service.ts");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash_es__ = __webpack_require__("./node_modules/lodash-es/lodash.js");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__catalog_service__ = __webpack_require__("./src/app/catalog.service.ts");
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9847,6 +9848,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 
 
 
+
 /**
  * Contributor Model
  *
@@ -9870,11 +9872,14 @@ var RequestBoxField = /** @class */ (function (_super) {
         };
         _this.ci = { name: null, email: null };
         _this.dm = { name: null, email: null };
+        _this.requestTypeSelect = null;
+        _this.catalogId = null;
         _this.formError = false;
         _this.validations = [];
         _this.showRequest = false;
+        _this.requestFormElements = {};
         _this.catalog = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
-        _this.catalogService = _this.getFromInjector(__WEBPACK_IMPORTED_MODULE_4__catalog_service__["a" /* CatalogService */]);
+        _this.catalogService = _this.getFromInjector(__WEBPACK_IMPORTED_MODULE_5__catalog_service__["a" /* CatalogService */]);
         _this.nameLabel = options['nameLabel'] || 'Name';
         _this.typeLabel = options['typeLabel'] || 'Type';
         _this.ownerLabel = options['ownerLabel'] || 'Owner';
@@ -9895,6 +9900,8 @@ var RequestBoxField = /** @class */ (function (_super) {
         _this.requestNextAction = options['requestNextAction'] || 'Request Next Action : approve by ServiceConnect';
         _this.valid = options['valid'] || {};
         _this.storageType = options['types'] || [];
+        _this.requestTypeSelect = null;
+        _this.catalogId = '';
         return _this;
     }
     RequestBoxField.prototype.init = function () {
@@ -9909,9 +9916,11 @@ var RequestBoxField = /** @class */ (function (_super) {
         this.showRequest = true;
         console.log("generate request for " + JSON.stringify(req.service));
         this.requestType = req.service;
+        this.requestFormElements = req.service.form;
         this.projectInfo = req.project;
         this.ci = req.project.ci;
         this.dm = req.project.dm;
+        this.catalogId = req.catalogId;
         console.log(this.dm);
     };
     RequestBoxField.prototype.showCatalog = function () {
@@ -9935,13 +9944,19 @@ var RequestBoxField = /** @class */ (function (_super) {
     };
     // TODO: validate smarter!
     RequestBoxField.prototype.validate = function (form) {
+        var _this = this;
         this.validations = [];
-        if (form['name'] === '') {
-            this.validations.push('name');
-        }
-        if (form['notes'] === '') {
-            this.validations.push('notes');
-        }
+        // Compare objects this.requestFormElements filter in validate true with form
+        __WEBPACK_IMPORTED_MODULE_4_lodash_es__["b" /* forOwn */](this.requestFormElements, function (v, k) {
+            console.log(v);
+            console.log(k);
+            if (v['validate']) {
+                var formValue = form[k];
+                if (formValue === '') {
+                    _this.validations.push(v['desc']);
+                }
+            }
+        });
         if (this.validations.length > 0) {
             this.formError = true;
         }
@@ -9951,21 +9966,25 @@ var RequestBoxField = /** @class */ (function (_super) {
     };
     RequestBoxField.prototype.requestForm = function (request) {
         return __awaiter(this, void 0, void 0, function () {
-            var createRequest;
+            var catalogId, createRequest;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
+                        this.loading = true;
                         // TODO: make this dynamic
+                        if (!request.type) {
+                            request.type = this.requestType['name'];
+                        }
                         request.owner = this.owner;
-                        request.type = this.requestType['name'] || 'Request';
                         request.ownerEmail = this.dm.email;
                         request.supervisor = this.ci.email;
                         request.owner = this.owner;
                         request.retention = this.projectInfo.retention;
                         request.projectStart = this.projectInfo.projectStart;
                         request.projectEnd = this.projectInfo.projectEnd;
+                        catalogId = this.catalogId;
                         this.formError = false;
-                        return [4 /*yield*/, this.catalogService.createRequest(request, this.rdmp, this.ownerEmail)];
+                        return [4 /*yield*/, this.catalogService.createRequest(request, this.rdmp, this.ownerEmail, catalogId)];
                     case 1:
                         createRequest = _a.sent();
                         if (!createRequest.status) {
@@ -9975,6 +9994,7 @@ var RequestBoxField = /** @class */ (function (_super) {
                         else {
                             this.requestSent = true;
                         }
+                        this.loading = false;
                         return [2 /*return*/];
                 }
             });
@@ -10053,7 +10073,7 @@ var RequestBoxComponent = /** @class */ (function (_super) {
     RequestBoxComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'ws-requestbox',
-            template: "\n      <div *ngIf=\"field.showRequest\">\n          <div class=\"row\">\n              <div class=\"col-md-7 col-md-offset-2\">\n                  <div class=\"row\">\n                      <h4>{{ field.boxTitleLabel }}</h4>\n                      <form *ngIf=\"!field.requestSent\" #form=\"ngForm\" novalidate autocomplete=\"off\">\n                          <div class=\"form-group\">\n                              <label>{{ field.nameLabel }}</label>\n                              <input type=\"text\" class=\"form-control\"\n                                     name=\"name\" ngModel required placeholder=\"{{ field.requestNamePlaceholder }}\"\n                                     attr.aria-label=\"{{ field.nameLabel }}\">\n                          </div>\n                          <div class=\"form-group\">\n                              <label>{{ field.typeLabel }}</label>\n                              <input disabled type=\"text\" class=\"form-control\" name=\"requestType\" required\n                                     [(ngModel)]=\"field.requestType['name']\"\n                                     attr.aria-label=\"{{ field.requestType['name'] }}\">\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-group\">\n                                  <label>{{ field.ownerLabel }}</label>\n                                  <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.owner\"\n                                         name=\"owner\" ngModel=\"owner\"  required disabled\n                                         attr.aria-label=\"{{ field.ownerLabel }}\">\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <label>{{ field.dmEmailLabel }}</label>\n                              <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.dm.email\"\n                                     name=\"ownerEmail\" ngModel=\"ownerEmail\" required disabled\n                                     attr.aria-label=\"{{ field.ownerLabel }}\">\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.ciEmailLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.ci.email\"\n                                             name=\"supervisor\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.ciEmailLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.retentionLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.projectInfo.retention\"\n                                             name=\"retention\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.retentionLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.projectStartLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\"\n                                             [(ngModel)]=\"field.projectInfo.projectStart\"\n                                             name=\"projectStart\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.projectStartLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.projectEndLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.projectInfo.projectEnd\"\n                                             name=\"projectEnd\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.projectEndLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <label>{{ field.notesLabel }}</label>\n                              <textarea maxlength=\"30\" rows=\"10\" cols=\"150\"\n                                        class=\"form-control\" ngModel name=\"notes\"></textarea>\n                          </div>\n                          <div class=\"alert alert-danger\" *ngIf=\"field.formError\">\n                              <p *ngIf=\"field.errorMessage\">{{field.errorMessage}}</p>\n                              <ul>\n                                  <li *ngFor=\"let v of field.validations\">{{ field.valid[v] }}</li>\n                              </ul>\n                          </div>\n                          <div class=\"alert alert-warning alert-dismissible show\">\n                              <strong>Warning!</strong> This form is pre-filled with information from your data\n                              management plan. If the fields are incorrect, please modify your plan.\n                              <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>\n                          </div>\n                          <button class=\"btn btn-primary\"\n                                  type=\"submit\" (click)=\"field.validate(form.value)\">{{ field.requestLabel }}\n                          </button>\n                          <div class=\"row\"><br/></div>\n                      </form>\n                  </div>\n                  <div class=\"row\">\n                      <div *ngIf=\"field.requestSent\">\n                          <p>{{ field.requestSuccess }}</p>\n                          <p>Owner: <strong>{{ field.owner }}</strong></p>\n                          <p>Supervisor: <strong>{{ field.ci.email }}</strong></p>\n                          <p>{{ field.requestNextAction }}</p>\n                      </div>\n                  </div>\n\n              </div>\n          </div>\n\n          <div class=\"row\">\n              <a (click)=\"field.showCatalog()\" class=\"btn btn-secondary\">{{ field.backToCatalogLabel }}</a>\n          </div>\n      </div>\n      <div class=\"row\"><br/></div>\n  "
+            template: "\n      <div *ngIf=\"field.showRequest\">\n          <div class=\"row\">\n              <div class=\"col-md-7 col-md-offset-2\">\n                  <div class=\"row\">\n                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>\n                      <form *ngIf=\"!field.requestSent\" #form=\"ngForm\" novalidate autocomplete=\"off\">\n                          <div *ngIf=\"field.requestFormElements['name']['enable']\" class=\"form-group\">\n                              <label>{{ field.nameLabel }}</label>\n                              <input type=\"text\" class=\"form-control\"\n                                     name=\"name\" ngModel required placeholder=\"{{ field.requestNamePlaceholder }}\"\n                                     attr.aria-label=\"{{ field.nameLabel }}\">\n                          </div>\n                          <div *ngIf=\"field.requestFormElements['type']\" class=\"form-group\">\n                              <label>{{ field.requestFormElements.type.label }}</label>\n                              <select name=\"type\"\n                                      ngModel class=\"form-control\"\n                                      >\n                                  <option value=\"null\" disabled=\"true\" [selected]=\"true\">{{ field.requestFormElements['type']['label'] }}</option>\n                                  <option *ngFor=\"let t of field.requestFormElements.type.fields\"\n                                          [ngValue]=\"t\">{{t.name}}</option>\n                              </select>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-group\">\n                                  <label>{{ field.ownerLabel }}</label>\n                                  <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.owner\"\n                                         name=\"owner\" ngModel=\"owner\" required disabled\n                                         attr.aria-label=\"{{ field.ownerLabel }}\">\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <label>{{ field.dmEmailLabel }}</label>\n                              <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.dm.email\"\n                                     name=\"ownerEmail\" ngModel=\"ownerEmail\" required disabled\n                                     attr.aria-label=\"{{ field.ownerLabel }}\">\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.ciEmailLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.ci.email\"\n                                             name=\"supervisor\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.ciEmailLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.retentionLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.projectInfo.retention\"\n                                             name=\"retention\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.retentionLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.projectStartLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\"\n                                             [(ngModel)]=\"field.projectInfo.projectStart\"\n                                             name=\"projectStart\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.projectStartLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.projectEndLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.projectInfo.projectEnd\"\n                                             name=\"projectEnd\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.projectEndLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <label>{{ field.requestFormElements.notes.label }}</label>\n                              <textarea maxlength=\"30\" rows=\"10\" cols=\"150\"\n                                        class=\"form-control\" ngModel name=\"notes\"></textarea>\n                          </div>\n                          <div class=\"alert alert-danger\" *ngIf=\"field.formError\">\n                              <p *ngIf=\"field.errorMessage\">{{field.errorMessage}}</p>\n                              <ul>\n                                  <li *ngFor=\"let v of field.validations\">{{ v }}</li>\n                              </ul>\n                          </div>\n                          <div class=\"alert alert-warning alert-dismissible show\">\n                              <strong>Warning!</strong> This form is pre-filled with information from your data\n                              management plan. If the fields are incorrect, please modify your plan.\n                              <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>\n                          </div>\n                          <button *ngIf=\"!field.loading\" class=\"btn btn-primary\"\n                                  type=\"submit\" (click)=\"field.validate(form.value)\">{{ field.requestLabel }}\n                          </button>\n                          <div *ngIf=\"field.loading\">\n                              ... requesting ...\n                          </div>\n                          <div class=\"row\"><br/></div>\n                      </form>\n                  </div>\n                  <div class=\"row\">\n                      <div *ngIf=\"field.requestSent\">\n                          <p>{{ field.requestSuccess }}</p>\n                          <p>Owner: <strong>{{ field.owner }}</strong></p>\n                          <p>Supervisor: <strong>{{ field.ci.email }}</strong></p>\n                          <p>{{ field.requestNextAction }}</p>\n                      </div>\n                  </div>\n\n              </div>\n          </div>\n\n          <div class=\"row\">\n              <a (click)=\"field.showCatalog()\" class=\"btn btn-secondary\">{{ field.backToCatalogLabel }}</a>\n          </div>\n      </div>\n      <div class=\"row\"><br/></div>\n  "
         })
     ], RequestBoxComponent);
     return RequestBoxComponent;

@@ -71,6 +71,8 @@ export class RequestBoxField extends FieldBase<any> {
   };
   ci: any = {name: null, email: null};
   dm: any = {name: null, email: null};
+  requestTypeSelect: any = null;
+  catalogId: string = null;
 
   catalogService: CatalogService;
 
@@ -105,6 +107,8 @@ export class RequestBoxField extends FieldBase<any> {
     this.requestNextAction = options['requestNextAction'] || 'Request Next Action : approve by ServiceConnect';
     this.valid = options['valid'] || {};
     this.storageType = options['types'] || [];
+    this.requestTypeSelect = null;
+    this.catalogId = ''
   }
 
   init() {
@@ -125,6 +129,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.projectInfo = req.project;
     this.ci = req.project.ci;
     this.dm = req.project.dm;
+    this.catalogId = req.service.catalogId;
     console.log(this.dm);
   }
 
@@ -143,9 +148,12 @@ export class RequestBoxField extends FieldBase<any> {
 
     // Compare objects this.requestFormElements filter in validate true with form
     _.forOwn(this.requestFormElements, (v, k) => {
+      console.log(v);
+      console.log(k);
       if (v['validate']) {
-        if (form[k] === '') {
-          this.validations.push(v['label']);
+        const formValue = form[k];
+        if (formValue === '') {
+          this.validations.push(v['desc']);
         }
       }
     });
@@ -162,8 +170,10 @@ export class RequestBoxField extends FieldBase<any> {
 
     this.loading = true;
     // TODO: make this dynamic
+    if(!request.type){
+      request.type = this.requestType['name'];
+    }
     request.owner = this.owner;
-    request.type = this.requestType['name'] || 'Request';
     request.ownerEmail = this.dm.email;
     request.supervisor = this.ci.email;
     request.owner = this.owner;
@@ -171,9 +181,10 @@ export class RequestBoxField extends FieldBase<any> {
     request.projectStart = this.projectInfo.projectStart;
     request.projectEnd = this.projectInfo.projectEnd;
 
+    const catalogId = this.catalogId;
     this.formError = false;
     // validate!
-    const createRequest = await this.catalogService.createRequest(request, this.rdmp, this.ownerEmail);
+    const createRequest = await this.catalogService.createRequest(request, this.rdmp, this.ownerEmail, catalogId);
     if (!createRequest.status) {
       this.formError = true;
       this.errorMessage = createRequest.message;
@@ -218,8 +229,40 @@ export class RequestBoxField extends FieldBase<any> {
     this.value = [];
     return this.value;
   }
+
 }
 
+/*
+let description = `
+Creating request from Stash
+
+Dear eResearch admin: Please verify this workspace request done via Stash in the next data management plan
+
+${this.config.brandingAndPortalUrl}/record/view/${rdmp}
+
+Details:
+
+${request.name}`;
+
+if(request.type){
+  description += `
+
+  Type: ${request.type}
+
+  `;
+}
+
+description += `${request.owner} : ${request.ownerEmail}
+
+Supervisor: ${request.supervisor}
+
+Retention Period: ${request.retention}
+
+Project Start: ${request.projectStart}
+
+Project End: ${request.projectEnd}
+`;
+*/
 
 /**
  * Component that CreateModal to a workspace app
@@ -240,9 +283,11 @@ export class RequestBoxField extends FieldBase<any> {
                                      attr.aria-label="{{ field.nameLabel }}">
                           </div>
                           <div *ngIf="field.requestFormElements['type']" class="form-group">
-                              <label>{{ field.typeLabel }}</label>
-                              <select [(ngModel)]="field.requestFormElements['type']" class="form-control">
-                                  <option value="" [selected]="true">Select a Value</option>
+                              <label>{{ field.requestFormElements.type.label }}</label>
+                              <select name="type"
+                                      ngModel class="form-control"
+                                      >
+                                  <option value="null" disabled="true" [selected]="true">{{ field.requestFormElements['type']['label'] }}</option>
                                   <option *ngFor="let t of field.requestFormElements.type.fields"
                                           [ngValue]="t">{{t.name}}</option>
                               </select>
@@ -303,14 +348,14 @@ export class RequestBoxField extends FieldBase<any> {
                               </div>
                           </div>
                           <div class="form-group">
-                              <label>{{ field.notesLabel }}</label>
+                              <label>{{ field.requestFormElements.notes.label }}</label>
                               <textarea maxlength="30" rows="10" cols="150"
                                         class="form-control" ngModel name="notes"></textarea>
                           </div>
                           <div class="alert alert-danger" *ngIf="field.formError">
                               <p *ngIf="field.errorMessage">{{field.errorMessage}}</p>
                               <ul>
-                                  <li *ngFor="let v of field.validations">{{ field.valid[v] }}</li>
+                                  <li *ngFor="let v of field.validations">{{ v }}</li>
                               </ul>
                           </div>
                           <div class="alert alert-warning alert-dismissible show">

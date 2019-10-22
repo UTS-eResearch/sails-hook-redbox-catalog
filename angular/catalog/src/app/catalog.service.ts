@@ -47,12 +47,12 @@ export class CatalogService extends BaseService {
     }
   }
 
-  public async createRequest(request: any, rdmpId: string, email: string) {
+  public async createRequest(request: any, rdmpId: string, email: string, catalogId: string) {
     const wsUrl = this.brandingAndPortalUrl + '/ws/catalog/request';
     try {
       const result = await this.http.post(
         wsUrl,
-        {request: request, rdmp: rdmpId, openedByEmail: email},
+        {request: request, rdmp: rdmpId, openedByEmail: email, catalogId: catalogId},
         this.options
       ).toPromise();
       return Promise.resolve(this.extractData(result));
