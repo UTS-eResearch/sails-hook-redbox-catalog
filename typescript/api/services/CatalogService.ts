@@ -19,7 +19,8 @@ export module Services {
     protected _exportedMethods: any = [
       'rdmpInfo',
       'sendPostToTable',
-      'sendGetToTable'
+      'sendGetToTable',
+      'serviceCatalogPost'
     ];
 
     constructor() {
@@ -36,9 +37,9 @@ export module Services {
     }
 
     sendPostToTable(table: string, query: any, body: any) {
-      sails.log.debug(this.config.servicenowHeaders);
+      let q = `/api/now/table/${table}`;
       const post = requestPromise({
-        uri: this.config.domain + `/api/now/table/${table}${args}`,
+        uri: this.config.domain + q,
         method: 'POST',
         body: body,
         qs: query,
@@ -50,10 +51,28 @@ export module Services {
 
     sendGetToTable(table: string, body: any) {
       const query = qs.stringify(body);
-      sails.log.debug(query);
       const post = requestPromise({
         uri: this.config.domain + `/api/now/table/${table}`,
         method: 'GET',
+        qs: body,
+        json: true,
+        headers: this.config.servicenowHeaders
+      });
+      return from(post);
+    }
+
+    serviceCatalogPost(uri:string, catalogId:string, method:string, quantity: number, variables:any){
+      const body = {
+        sysparm_quantity: quantity,
+        variables: variables
+      };
+      const url = `${this.config.domain}${uri}${catalogId}/${method}`;
+      sails.log.debug("==================");
+      sails.log.debug(url);
+      sails.log.debug("==================");
+      const post = requestPromise({
+        uri: url,
+        method: 'POST',
         qs: body,
         json: true,
         headers: this.config.servicenowHeaders

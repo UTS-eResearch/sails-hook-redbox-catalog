@@ -44,11 +44,32 @@ module.exports = {
             defaultForm: false,
             help: '',
             form: {
-              name: {enable: false},
-              type: {label: 'Select Type', fields: [{name: 'HPC'}, {name: 'iHPC'}], validate: true},
-              notes: {field: 'notes', label: 'Please explain why you are requesting this service', validate: true}
+              short_name: {
+                validationMsg: 'Short Name: Please add a short name for your project',
+                title: 'Short Name',
+                type: 'text',
+                enable: false,
+                requestVariable: 'project_name'
+              },
+              cluster_type: {
+                validationMsg: "Cluster Type: Select the type of cluster",
+                title: 'Select a type of cluster',
+                fields: [{name: 'HPC'}, {name: 'iHPC'}],
+                validate: true,
+                type: 'select',
+                requestVariable: 'cluster_type'
+              },
+              notes: {
+                validationMsg: "Notes: Add notes for your request",
+                title: 'Notes',
+                field: 'notes',
+                type: 'textarea',
+                textarea: {rows: 10, cols: 150, maxlength: 30},
+                validate: true,
+                requestVariable: 'notes'
+              }
             },
-            catalogId: ''
+            catalogId: 'deab4dd74ffe170014ded0311310c783'
           },
           {
             id: 'aws_1',
@@ -60,8 +81,20 @@ module.exports = {
             defaultForm: false,
             help: '',
             form: {
-              name: {enable: false},
-              notes: {field: 'notes', label: 'Please explain why you are requesting this service', validate: true}
+              name: {
+                validationMsg: "Name: Add a short name for your aws instance",
+                title: 'Short Name',
+                type: 'text'
+              },
+              notes: {
+                validationMsg: "Cluster Type: Select the type of cluster",
+                desc: "Add notes for your request",
+                title: 'Notes',
+                field: 'notes',
+                type: 'textarea',
+                textarea: {rows: 10, cols: 150, maxlength: 30},
+                validate: true
+              }
             },
             catalogId: ''
           },
@@ -75,11 +108,71 @@ module.exports = {
             defaultForm: true,
             help: '',
             form: {
-              name: {enable: true},
-              type: {label: 'Select Type', fields: [{name: 'Windows Share'}, {name: 'NFS'}], validate: true},
-              notes: {field: 'notes', label: 'Please explain why you are requesting the storage', validate: true}
+              storage_size: {
+                validationMsg: "Storage Size: Add the desired storage size",
+                title: 'Size of Storage',
+                type: 'text',
+                requestVariable: 'storage_size'
+              },
+              share_name: {
+                validationMsg: "Short Name",
+                title: 'Short Name',
+                type: 'text',
+                requestVariable: 'share_name'
+              },
+              share_type: {
+                validationMsg: "Select the type of share",
+                title: 'Select a type of share',
+                fields: [{name: 'SMB Share (Windows/Mac/Linux)'}, {name: 'NFS Share (Mac/Linux)'}],
+                validate: true,
+                type: 'select',
+                requestVariable: 'share_type'
+              },
+              data_manager: {
+                validationMsg: "Data Manager was not added",
+                title: 'Data Manager',
+                type: 'text',
+                prefil: {key: 'dm', val: 'email'},
+                disabled: true,
+                requestVariable: 'data_manager'
+              },
+              data_supervisor: {
+                validationMsg: "Please add email of the supervisor",
+                title: 'FNCI/UTS Supervisor',
+                type: 'text',
+                prefil: {key: 'ci', val: 'email'},
+                disabled: true,
+                requestVariable: 'data_supervisor'
+              },
+              data_colaborators: {
+                validationMsg: "Collaborators: Please add email of the collaborators",
+                title: 'Collaborators',
+                type: 'text',
+                requestVariable: 'data_colaborators'
+              },
+              retention_period: {
+                validationMsg: "Add the retention period",
+                title: 'Retention Period',
+                type: 'text',
+                requestVariable: 'retention_period'
+              },
+              end_of_project: {
+                validationMsg: "Add End of project date",
+                title: 'End of Project',
+                type: 'text',
+                requestVariable: 'end_of_project'
+              },
+              notes: {
+                validationMsg: "Add notes for your request",
+                title: 'Notes',
+                field: 'notes',
+                validate: true,
+                type: 'textarea',
+                textarea: {rows: 10, cols: 150, maxlength: 30},
+                requestVariable: 'notes'
+              }
             },
-            catalogId: ''
+            catalogId: 'bfe2797edb24805079ca773c349619d0'
           }
         ]
       },

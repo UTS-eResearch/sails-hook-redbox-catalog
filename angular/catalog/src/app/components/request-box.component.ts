@@ -1,12 +1,7 @@
 import {
-  Input,
   Output,
   Component,
   OnInit,
-  Inject,
-  Injector,
-  ElementRef,
-  ViewChild,
   EventEmitter,
   AfterViewInit
 } from '@angular/core';
@@ -19,6 +14,15 @@ import {CatalogService} from '../catalog.service';
 
 // STEST-22
 declare var jQuery: any;
+
+import {PipeTransform, Pipe} from '@angular/core';
+
+@Pipe({name: 'keys'})
+export class KeysPipe implements PipeTransform {
+  transform(value): any {
+    return Object.keys(value);
+  }
+}
 
 /**
  * Contributor Model
@@ -85,6 +89,7 @@ export class RequestBoxField extends FieldBase<any> {
   requestGroupForm: FormGroup;
   formArrayItems: {}[];
   formArray: {}[];
+  form: {};
 
   @Output() catalog: EventEmitter<any> = new EventEmitter<any>();
 
@@ -114,11 +119,9 @@ export class RequestBoxField extends FieldBase<any> {
     this.requestTypeSelect = null;
     this.catalogId = '';
     this.formBuilder = new FormBuilder();
-    this.requestGroupForm = this.formBuilder.group({
-      formArray: this.formBuilder.array([])
-    });
     this.formArrayItems = [];
     this.formArray = [];
+    this.form = {};
   }
 
   init() {
@@ -131,6 +134,13 @@ export class RequestBoxField extends FieldBase<any> {
     this.fieldMap['CatalogDisplay'].field['requestBox'].subscribe(this.showRequestForm.bind(this));
   }
 
+  getValue(controlName, attr) {
+    const obj = _.find(this.formArrayItems, (el) => {
+      return el['id'] === controlName;
+    });
+    return obj[attr];
+  }
+
   showRequestForm(req) {
     this.showRequest = true;
     this.requestType = req.service;
@@ -139,13 +149,16 @@ export class RequestBoxField extends FieldBase<any> {
     this.catalogId = req.service.catalogId;
     this.formArray = [];
     this.formArrayItems = [];
+    this.requestGroupForm = new FormGroup({});
     _.forOwn(this.requestFormElements, (el, name) => {
       this.formArrayItems.push({
         id: name,
         title: el['title'],
         type: el['type'],
         fields: el['fields'] || [],
-        textarea: el['textarea'] || {}
+        textarea: el['textarea'] || {},
+        requestVariable: el['requestVariable'],
+        validationMsg: el['validationMsg']
       });
       if (!_.isUndefined(el['prefil'])) {
         try {
@@ -153,16 +166,16 @@ export class RequestBoxField extends FieldBase<any> {
           const prefilVal = el['prefil']['val'];
           const element = this.projectInfo[prefilKey];
           const isDisabled = el['disabled'] || false;
-          this.formArray.push(this.formBuilder.control({value: element[prefilVal], disabled: isDisabled}));
+          this.requestGroupForm.addControl(name,
+            new FormControl({value: element[prefilVal], disabled: isDisabled}, Validators.required));
         } catch (e) {
           console.error('Please fix form config');
           console.error(e);
         }
       } else {
-        this.formArray.push(this.formBuilder.control(''));
+        this.requestGroupForm.addControl(name, new FormControl('', Validators.required));
       }
     });
-    console.log(this.formArray);
   }
 
   showCatalog() {
@@ -175,54 +188,37 @@ export class RequestBoxField extends FieldBase<any> {
   }
 
   // TODO: validate smarter!
-  validate(form) {
-
-    _.forEach(this.formArray, (formElement) => {
-      console.log(formElement.get('name'));
-      console.log(formElement.value);
-    });
-
+  validate() {
     this.validations = [];
-    // Compare objects this.requestFormElements filter in validate true with form
-    _.forOwn(this.requestFormElements, (v, k) => {
-      console.log(v);
-      console.log(k);
 
-      if (v['validate']) {
-        const formValue = form[k];
-        if (formValue === '') {
-          this.validations.push(v['desc']);
-        }
+    _.forEach(this.formArrayItems, (obj) => {
+      const control = this.requestGroupForm.get(obj['id']);
+      if (control.errors) {
+        this.validations.push(obj['validationMsg']);
+      } else {
+        this.form[obj['id']] = {
+          value: control.value,
+          variable: obj.requestVariable
+        };
       }
     });
 
     if (this.validations.length > 0) {
       this.formError = true;
+      this.form = [];
     } else {
-      //this.requestForm(form);
+      this.requestForm(this.form);
     }
 
   }
 
-  async requestForm(request) {
+  async requestForm(form) {
 
     this.loading = true;
-    // TODO: make this dynamic
-    if (!request.type) {
-      request.type = this.requestType['name'];
-    }
-    request.owner = this.owner;
-    request.ownerEmail = this.dm.email;
-    request.supervisor = this.ci.email;
-    request.owner = this.owner;
-    request.retention = this.projectInfo.retention;
-    request.projectStart = this.projectInfo.projectStart;
-    request.projectEnd = this.projectInfo.projectEnd;
-
+    console.log(form);
     const catalogId = this.catalogId;
     this.formError = false;
-    // validate!
-    const createRequest = await this.catalogService.createRequest(request, this.rdmp, this.ownerEmail, catalogId);
+    const createRequest = await this.catalogService.createRequest(form, this.rdmp, this.ownerEmail, catalogId);
     if (!createRequest.status) {
       this.formError = true;
       this.errorMessage = createRequest.message;
@@ -316,36 +312,39 @@ Project End: ${request.projectEnd}
                       <form [formGroup]="field.requestGroupForm"
                             *ngIf="!field.requestSent" id="form"
                             novalidate autocomplete="off">
-                          <div formArrayName="formArray" *ngFor="let arrayItem of field.formArrayItems; let i=index">
-                              <div *ngIf="arrayItem['type'] == 'text'" class="form-group">
-                                  <label>{{arrayItem['title']}}</label>
+                          <div *ngFor="let control of field.requestGroupForm.controls | keys; let i=index">
+                              <div *ngIf="field.getValue(control, 'type') == 'text'" class="form-group">
+                                  <label>{{field.getValue(control, 'title')}}</label>
                                   <input class="form-control" type="text"
-                                         [name]="arrayItem['id']"
-                                         [id]="arrayItem['id']"
-                                         name="{{ arrayItem['id'] }}"
-                                         [formControl]="field.formArray[i]"/>
+                                         [name]="field.getValue(control, 'name')"
+                                         [id]="field.getValue(control, 'id')"
+                                         formControlName="{{ control }}"/>
                               </div>
-                              <div *ngIf="arrayItem['type'] == 'textarea'" class="form-group">
-                                  <label>{{arrayItem['title']}}</label>
+                              <div *ngIf="field.getValue(control, 'type')  == 'textarea'" class="form-group">
+                                  <label>{{field.getValue(control, 'title')}}</label>
                                   <textarea class="form-control"
-                                            [maxlength]="arrayItem['maxlength']" [rows]="arrayItem['rows']"
-                                            [cols]="arrayItem['cols']"
-                                            [name]="arrayItem['id']"
-                                            [id]="arrayItem['id']"
-                                            name="{{ arrayItem['id'] }}"
-                                            [formControl]="field.formArray[i]"></textarea>
+                                            [rows]="field.getValue(control, 'rows')"
+                                            [cols]="field.getValue(control, 'cols')"
+                                            [name]="control"
+                                            [id]="control"
+                                            formControlName="{{ control }}"></textarea>
                               </div>
-                              <div *ngIf="arrayItem['type'] == 'select'" class="form-group">
-                                  <label>{{arrayItem['title']}}</label>
-                                  <select [name]="arrayItem['id']"
-                                          [id]="arrayItem['id']"
-                                          name="{{ arrayItem['id'] }}"
-                                          [formControl]="field.formArray[i]"
+                              <div *ngIf="field.getValue(control, 'type')  == 'select'" class="form-group">
+                                  <label>{{field.getValue(control, 'title')}}</label>
+                                  <select [name]="control"
+                                          [id]="control"
+                                          formControlName="{{ control }}"
                                           class="form-control">
-                                      <option *ngFor="let t of arrayItem['fields']"
+                                      <option *ngFor="let t of field.getValue(control, 'fields')"
                                               [ngValue]="t">{{t.name}}</option>
                                   </select>
                               </div>
+                          </div>
+                          <div class="alert alert-danger" *ngIf="field.formError">
+                              <p *ngIf="field.errorMessage">{{field.errorMessage}}</p>
+                              <ul>
+                                  <li *ngFor="let v of field.validations">{{ v }}</li>
+                              </ul>
                           </div>
                           <div class="alert alert-warning alert-dismissible show">
                               <strong>Warning!</strong> This form is pre-filled with information from your data
@@ -353,13 +352,14 @@ Project End: ${request.projectEnd}
                               <button type="button" class="close" data-dismiss="alert">&times;</button>
                           </div>
                           <button *ngIf="!field.loading" class="btn btn-primary"
-                                  (click)="field.validate(form)"
+                                  (click)="field.validate()"
                                   type="submit" form="ngForm">{{ field.requestLabel }}
                           </button>
                           <div *ngIf="field.loading">
                               ... requesting ...
                           </div>
                           <div class="row"><br/></div>
+
                       </form>
                   </div>
                   <div class="row">

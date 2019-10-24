@@ -6,7 +6,7 @@
     "ng": "ng",
     "start": "ng serve",
     "dev": "sudo chown -R vagrant:vagrant /opt/redbox-portal/.tmp/public/angular && ng build --outputPath=/opt/redbox-portal/.tmp/public/angular/catalog",
-    "dev-local": "ng build --outputPath=./dist",
+    "dev:local": "ng build --outputPath=./dist",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },

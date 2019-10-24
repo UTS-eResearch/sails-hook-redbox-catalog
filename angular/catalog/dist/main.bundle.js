@@ -9216,7 +9216,7 @@ var CatalogFormComponent = /** @class */ (function (_super) {
     CatalogFormComponent.prototype.loadForm = function () {
         var _this = this;
         this.fcs.addComponentClasses({
-            'RequestBoxField': { 'meta': __WEBPACK_IMPORTED_MODULE_7__components_request_box_component__["b" /* RequestBoxField */], 'comp': __WEBPACK_IMPORTED_MODULE_7__components_request_box_component__["a" /* RequestBoxComponent */] },
+            'RequestBoxField': { 'meta': __WEBPACK_IMPORTED_MODULE_7__components_request_box_component__["c" /* RequestBoxField */], 'comp': __WEBPACK_IMPORTED_MODULE_7__components_request_box_component__["b" /* RequestBoxComponent */] },
             'CatalogDisplayField': { 'meta': __WEBPACK_IMPORTED_MODULE_8__components_catalog_display_component__["b" /* CatalogDisplayField */], 'comp': __WEBPACK_IMPORTED_MODULE_8__components_catalog_display_component__["a" /* CatalogDisplayComponent */] }
         });
         this.RecordsService.getForm(this.oid, this.recordType, this.editMode).then(function (obs) {
@@ -9351,7 +9351,7 @@ var CatalogModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__["a" /* BrowserModule */], __WEBPACK_IMPORTED_MODULE_3__angular_http__["c" /* HttpModule */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["i" /* ReactiveFormsModule */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["e" /* FormsModule */], __WEBPACK_IMPORTED_MODULE_4__shared_shared_module__["a" /* SharedModule */]
             ],
             declarations: [
-                __WEBPACK_IMPORTED_MODULE_6__catalog_form_component__["a" /* CatalogFormComponent */], __WEBPACK_IMPORTED_MODULE_5__components_request_box_component__["a" /* RequestBoxComponent */], __WEBPACK_IMPORTED_MODULE_8__components_catalog_display_component__["a" /* CatalogDisplayComponent */]
+                __WEBPACK_IMPORTED_MODULE_6__catalog_form_component__["a" /* CatalogFormComponent */], __WEBPACK_IMPORTED_MODULE_5__components_request_box_component__["b" /* RequestBoxComponent */], __WEBPACK_IMPORTED_MODULE_8__components_catalog_display_component__["a" /* CatalogDisplayComponent */], __WEBPACK_IMPORTED_MODULE_5__components_request_box_component__["a" /* KeysPipe */]
             ],
             exports: [],
             providers: [
@@ -9361,7 +9361,7 @@ var CatalogModule = /** @class */ (function () {
                 __WEBPACK_IMPORTED_MODULE_6__catalog_form_component__["a" /* CatalogFormComponent */]
             ],
             entryComponents: [
-                __WEBPACK_IMPORTED_MODULE_5__components_request_box_component__["a" /* RequestBoxComponent */], __WEBPACK_IMPORTED_MODULE_8__components_catalog_display_component__["a" /* CatalogDisplayComponent */]
+                __WEBPACK_IMPORTED_MODULE_5__components_request_box_component__["b" /* RequestBoxComponent */], __WEBPACK_IMPORTED_MODULE_8__components_catalog_display_component__["a" /* CatalogDisplayComponent */]
             ]
         })
     ], CatalogModule);
@@ -9781,8 +9781,9 @@ var CatalogDisplayComponent = /** @class */ (function (_super) {
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return RequestBoxField; });
-/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return RequestBoxComponent; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return KeysPipe; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return RequestBoxField; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return RequestBoxComponent; });
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__("./node_modules/@angular/core/esm5/core.js");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__shared_form_field_simple_component__ = __webpack_require__("./redbox-portal/angular/shared/form/field-simple.component.ts");
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__shared_form_field_base__ = __webpack_require__("./redbox-portal/angular/shared/form/field-base.ts");
@@ -9849,6 +9850,19 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 
 
 
+
+var KeysPipe = /** @class */ (function () {
+    function KeysPipe() {
+    }
+    KeysPipe.prototype.transform = function (value) {
+        return Object.keys(value);
+    };
+    KeysPipe = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Pipe"])({ name: 'keys' })
+    ], KeysPipe);
+    return KeysPipe;
+}());
+
 /**
  * Contributor Model
  *
@@ -9904,11 +9918,9 @@ var RequestBoxField = /** @class */ (function (_super) {
         _this.requestTypeSelect = null;
         _this.catalogId = '';
         _this.formBuilder = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormBuilder */]();
-        _this.requestGroupForm = _this.formBuilder.group({
-            formArray: _this.formBuilder.array([])
-        });
         _this.formArrayItems = [];
         _this.formArray = [];
+        _this.form = [];
         return _this;
     }
     RequestBoxField.prototype.init = function () {
@@ -9919,31 +9931,39 @@ var RequestBoxField = /** @class */ (function (_super) {
     RequestBoxField.prototype.registerEvents = function () {
         this.fieldMap['CatalogDisplay'].field['requestBox'].subscribe(this.showRequestForm.bind(this));
     };
+    RequestBoxField.prototype.getValue = function (controlName, attr) {
+        var obj = __WEBPACK_IMPORTED_MODULE_4_lodash_es__["a" /* find */](this.formArrayItems, function (el) {
+            return el['id'] === controlName;
+        });
+        return obj[attr];
+    };
     RequestBoxField.prototype.showRequestForm = function (req) {
         var _this = this;
         this.showRequest = true;
-        console.log("generate request for " + JSON.stringify(req.service));
         this.requestType = req.service;
         this.requestFormElements = req.service.form;
         this.projectInfo = req.project;
         this.catalogId = req.service.catalogId;
         this.formArray = [];
         this.formArrayItems = [];
-        __WEBPACK_IMPORTED_MODULE_4_lodash_es__["b" /* forOwn */](this.requestFormElements, function (el, name) {
+        this.requestGroupForm = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["d" /* FormGroup */]({});
+        __WEBPACK_IMPORTED_MODULE_4_lodash_es__["c" /* forOwn */](this.requestFormElements, function (el, name) {
             _this.formArrayItems.push({
                 id: name,
                 title: el['title'],
                 type: el['type'],
                 fields: el['fields'] || [],
-                textarea: el['textarea'] || {}
+                textarea: el['textarea'] || {},
+                requestVariable: el['requestVariable'],
+                validationMsg: el['validationMsg']
             });
-            if (!__WEBPACK_IMPORTED_MODULE_4_lodash_es__["c" /* isUndefined */](el['prefil'])) {
+            if (!__WEBPACK_IMPORTED_MODULE_4_lodash_es__["d" /* isUndefined */](el['prefil'])) {
                 try {
                     var prefilKey = el['prefil']['key'];
                     var prefilVal = el['prefil']['val'];
                     var element = _this.projectInfo[prefilKey];
                     var isDisabled = el['disabled'] || false;
-                    _this.formArray.push(_this.formBuilder.control({ value: element[prefilVal], disabled: isDisabled }));
+                    _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]({ value: element[prefilVal], disabled: isDisabled }));
                 }
                 catch (e) {
                     console.error('Please fix form config');
@@ -9951,7 +9971,7 @@ var RequestBoxField = /** @class */ (function (_super) {
                 }
             }
             else {
-                _this.formArray.push(_this.formBuilder.control(''));
+                _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](''));
             }
         });
     };
@@ -9975,48 +9995,40 @@ var RequestBoxField = /** @class */ (function (_super) {
         });
     };
     // TODO: validate smarter!
-    RequestBoxField.prototype.validate = function (form) {
+    RequestBoxField.prototype.validate = function () {
         var _this = this;
         this.validations = [];
-        // Compare objects this.requestFormElements filter in validate true with form
-        __WEBPACK_IMPORTED_MODULE_4_lodash_es__["b" /* forOwn */](this.requestFormElements, function (v, k) {
-            console.log(v);
-            console.log(k);
-            if (v['validate']) {
-                var formValue = form[k];
-                if (formValue === '') {
-                    _this.validations.push(v['desc']);
-                }
+        __WEBPACK_IMPORTED_MODULE_4_lodash_es__["b" /* forEach */](this.formArrayItems, function (obj) {
+            var control = _this.requestGroupForm.get(obj['id']);
+            if (control.errors) {
+                _this.validations.push(obj['validationMsg']);
+            }
+            else {
+                _this.form.push({
+                    value: control.value,
+                    variable: obj.requestVariable
+                });
             }
         });
         if (this.validations.length > 0) {
             this.formError = true;
+            this.form = [];
         }
         else {
-            this.requestForm(form);
+            this.requestForm(this.form);
         }
     };
-    RequestBoxField.prototype.requestForm = function (request) {
+    RequestBoxField.prototype.requestForm = function (form) {
         return __awaiter(this, void 0, void 0, function () {
             var catalogId, createRequest;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         this.loading = true;
-                        // TODO: make this dynamic
-                        if (!request.type) {
-                            request.type = this.requestType['name'];
-                        }
-                        request.owner = this.owner;
-                        request.ownerEmail = this.dm.email;
-                        request.supervisor = this.ci.email;
-                        request.owner = this.owner;
-                        request.retention = this.projectInfo.retention;
-                        request.projectStart = this.projectInfo.projectStart;
-                        request.projectEnd = this.projectInfo.projectEnd;
+                        console.log(form);
                         catalogId = this.catalogId;
                         this.formError = false;
-                        return [4 /*yield*/, this.catalogService.createRequest(request, this.rdmp, this.ownerEmail, catalogId)];
+                        return [4 /*yield*/, this.catalogService.createRequest(form, this.rdmp, this.ownerEmail, catalogId)];
                     case 1:
                         createRequest = _a.sent();
                         if (!createRequest.status) {
@@ -10136,7 +10148,7 @@ var RequestBoxComponent = /** @class */ (function (_super) {
     RequestBoxComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'ws-requestbox',
-            template: "\n      <div *ngIf=\"field.showRequest\">\n          <div class=\"row\">\n              <div class=\"col-md-7 col-md-offset-2\">\n                  <div class=\"row\">\n                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>\n                      <form *ngIf=\"!field.requestSent\" #form=\"ngForm\" novalidate autocomplete=\"off\">\n                          <div [formGroup]=\"field.requestGroupForm\">\n                              <div formArrayName=\"formArray\"\n                                   *ngFor=\"let arrayItem of field.formArrayItems; let i=index\">\n                                  <div *ngIf=\"arrayItem['type'] == 'text'\" class=\"form-group\">\n                                      <label>{{arrayItem['title']}}</label>\n                                      <input class=\"form-control\" ngModel\n                                             [name]=\"arrayItem['id']\"\n                                             [id]=\"arrayItem['id']\" type=\"text\"\n                                             [formControl]=\"field.formArray[i]\">\n                                  </div>\n                                  <div *ngIf=\"arrayItem['type'] == 'textarea'\" class=\"form-group\">\n                                      <label>{{arrayItem['title']}}</label>\n                                      <textarea class=\"form-control\" ngModel\n                                                [maxlength]=\"arrayItem['maxlength']\" [rows]=\"arrayItem['rows']\"\n                                                [cols]=\"arrayItem['cols']\"\n                                                [name]=\"arrayItem['id']\"\n                                                [id]=\"arrayItem['id']\" type=\"text\"\n                                                [formControl]=\"field.formArray[i]\"/>\n                                  </div>\n                                  <div *ngIf=\"arrayItem['type'] == 'select'\" class=\"form-group\">\n                                      <label>{{arrayItem['title']}}</label>\n                                      <select [name]=\"arrayItem['id']\" ngModel\n                                              class=\"form-control\">\n                                          <option *ngFor=\"let t of arrayItem['fields']\"\n                                                  [ngValue]=\"t\">{{t.name}}</option>\n                                      </select>\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"alert alert-warning alert-dismissible show\">\n                              <strong>Warning!</strong> This form is pre-filled with information from your data\n                              management plan. If the fields are incorrect, please modify your plan.\n                              <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>\n                          </div>\n                          <button *ngIf=\"!field.loading\" class=\"btn btn-primary\"\n                                  type=\"submit\" (click)=\"field.validate(form.value)\">{{ field.requestLabel }}\n                          </button>\n                          <div *ngIf=\"field.loading\">\n                              ... requesting ...\n                          </div>\n                          <div class=\"row\"><br/></div>\n                      </form>\n                  </div>\n                  <div class=\"row\">\n                      <div *ngIf=\"field.requestSent\">\n                          <p>{{ field.requestSuccess }}</p>\n                          <p>Owner: <strong>{{ field.owner }}</strong></p>\n                          <p>Supervisor: <strong>{{ field.ci.email }}</strong></p>\n                          <p>{{ field.requestNextAction }}</p>\n                      </div>\n                  </div>\n\n              </div>\n          </div>\n\n          <div class=\"row\">\n              <a (click)=\"field.showCatalog()\" class=\"btn btn-secondary\">{{ field.backToCatalogLabel }}</a>\n          </div>\n      </div>\n      <div class=\"row\"><br/></div>\n  "
+            template: "\n      <div *ngIf=\"field.showRequest\">\n          <div class=\"row\">\n              <div class=\"col-md-7 col-md-offset-2\">\n                  <div class=\"row\">\n                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>\n                      <form [formGroup]=\"field.requestGroupForm\"\n                            *ngIf=\"!field.requestSent\" id=\"form\"\n                            novalidate autocomplete=\"off\">\n                          <div *ngFor=\"let control of field.requestGroupForm.controls | keys; let i=index\">\n                              <div *ngIf=\"field.getValue(control, 'type') == 'text'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <input class=\"form-control\" type=\"text\"\n                                         [name]=\"field.getValue(control, 'name')\"\n                                         [id]=\"field.getValue(control, 'id')\"\n                                         formControlName=\"{{ control }}\"/>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type')  == 'textarea'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <textarea class=\"form-control\"\n                                            [rows]=\"field.getValue(control, 'rows')\"\n                                            [cols]=\"field.getValue(control, 'cols')\"\n                                            [name]=\"control\"\n                                            [id]=\"control\"\n                                            formControlName=\"{{ control }}\"></textarea>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type')  == 'select'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <select [name]=\"control\"\n                                          [id]=\"control\"\n                                          formControlName=\"{{ control }}\"\n                                          class=\"form-control\">\n                                      <option *ngFor=\"let t of field.getValue(control, 'fields')\"\n                                              [ngValue]=\"t\">{{t.name}}</option>\n                                  </select>\n                              </div>\n                          </div>\n                          <div class=\"alert alert-danger\" *ngIf=\"field.formError\">\n                              <p *ngIf=\"field.errorMessage\">{{field.errorMessage}}</p>\n                              <ul>\n                                  <li *ngFor=\"let v of field.validations\">{{ v }}</li>\n                              </ul>\n                          </div>\n                          <div class=\"alert alert-warning alert-dismissible show\">\n                              <strong>Warning!</strong> This form is pre-filled with information from your data\n                              management plan. If the fields are incorrect, please modify your plan.\n                              <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>\n                          </div>\n                          <button *ngIf=\"!field.loading\" class=\"btn btn-primary\"\n                                  (click)=\"field.validate()\"\n                                  type=\"submit\" form=\"ngForm\">{{ field.requestLabel }}\n                          </button>\n                          <div *ngIf=\"field.loading\">\n                              ... requesting ...\n                          </div>\n                          <div class=\"row\"><br/></div>\n\n                      </form>\n                  </div>\n                  <div class=\"row\">\n                      <div *ngIf=\"field.requestSent\">\n                          <p>{{ field.requestSuccess }}</p>\n                          <p>Owner: <strong>{{ field.owner }}</strong></p>\n                          <p>Supervisor: <strong>{{ field.ci.email }}</strong></p>\n                          <p>{{ field.requestNextAction }}</p>\n                      </div>\n                  </div>\n\n              </div>\n          </div>\n\n          <div class=\"row\">\n              <a (click)=\"field.showCatalog()\" class=\"btn btn-secondary\">{{ field.backToCatalogLabel }}</a>\n          </div>\n      </div>\n      <div class=\"row\"><br/></div>\n  "
         })
     ], RequestBoxComponent);
     return RequestBoxComponent;

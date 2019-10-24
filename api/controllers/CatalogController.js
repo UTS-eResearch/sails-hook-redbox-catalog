@@ -45,30 +45,8 @@ var Controllers;
             const request = req.param('request');
             const openedByEmail = req.param('openedByEmail');
             let createTicket = null;
-            const description = `
-      Creating request from Stash
-      
-      Dear eResearch admin: Please verify this workspace request done via Stash in the next data management plan
-      
-      ${this.config.brandingAndPortalUrl}/record/view/${rdmp}
-      
-      Details:
-      
-      ${request.name}
-      
-      ${request.owner} : ${request.ownerEmail}
-      
-      Supervisor: ${request.supervisor}
-      
-      Retention Period: ${request.retention}
-      
-      Project Start: ${request.projectStart}
-      
-      Project End: ${request.projectEnd}
-      `;
             const info = {
-                "short_description": `Stash Service: ${request.type} : ${request.name}`,
-                "description": description,
+                "short_description": `Stash Service: ${request.type}`,
                 "assigned_to": `${this.config.requesteeId}`,
                 "opened_by": `${this.config.testRequestorId}`
             };
@@ -81,9 +59,9 @@ var Controllers;
                 sails.log.debug(`sendGetToTable ${openedByEmail}`);
                 sails.log.debug(response);
                 info.opened_by = response.sys_id;
-                const query = { sys_id: 'efe03704f92f64067eeafee0310c7e1' };
+                const query = { sys_id: catalogId };
                 sails.log.debug(JSON.stringify(info, null, 2));
-                return CatalogService.sendPostToTable('sc_request', query, info);
+                return CatalogService.serviceCatalogPost('/api/sn_sc/servicecatalog/items/', catalogId, 'add_to_cart', 1, request);
             })
                 .subscribe(response => {
                 sails.log.debug('createTicket');

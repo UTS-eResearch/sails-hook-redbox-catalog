@@ -21,7 +21,8 @@ var Services;
             this._exportedMethods = [
                 'rdmpInfo',
                 'sendPostToTable',
-                'sendGetToTable'
+                'sendGetToTable',
+                'serviceCatalogPost'
             ];
             this.config = new Config_1.Config(sails.config.workspaces);
         }
@@ -36,9 +37,9 @@ var Services;
             });
         }
         sendPostToTable(table, query, body) {
-            sails.log.debug(this.config.servicenowHeaders);
+            let q = `/api/now/table/${table}`;
             const post = requestPromise({
-                uri: this.config.domain + `/api/now/table/${table}${args}`,
+                uri: this.config.domain + q,
                 method: 'POST',
                 body: body,
                 qs: query,
@@ -49,10 +50,27 @@ var Services;
         }
         sendGetToTable(table, body) {
             const query = qs.stringify(body);
-            sails.log.debug(query);
             const post = requestPromise({
                 uri: this.config.domain + `/api/now/table/${table}`,
                 method: 'GET',
+                qs: body,
+                json: true,
+                headers: this.config.servicenowHeaders
+            });
+            return rxjs_1.from(post);
+        }
+        serviceCatalogPost(uri, catalogId, method, quantity, variables) {
+            const body = {
+                sysparm_quantity: quantity,
+                variables: variables
+            };
+            const url = `${this.config.domain}${uri}${catalogId}/${method}`;
+            sails.log.debug("==================");
+            sails.log.debug(url);
+            sails.log.debug("==================");
+            const post = requestPromise({
+                uri: url,
+                method: 'POST',
                 qs: body,
                 json: true,
                 headers: this.config.servicenowHeaders
