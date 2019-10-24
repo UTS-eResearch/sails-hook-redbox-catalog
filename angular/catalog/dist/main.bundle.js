@@ -1185,7 +1185,7 @@ var DmpFieldComponent = /** @class */ (function () {
     ], DmpFieldComponent.prototype, "field", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1__angular_forms__["c" /* FormGroup */])
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_1__angular_forms__["d" /* FormGroup */])
     ], DmpFieldComponent.prototype, "form", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
@@ -1933,9 +1933,9 @@ var FieldBase = /** @class */ (function () {
             this.value = valueElem;
         }
         if (this.required) {
-            this.validators = __WEBPACK_IMPORTED_MODULE_1__angular_forms__["i" /* Validators */].required;
+            this.validators = __WEBPACK_IMPORTED_MODULE_1__angular_forms__["j" /* Validators */].required;
         }
-        this.formModel = new __WEBPACK_IMPORTED_MODULE_1__angular_forms__["b" /* FormControl */](this.value || '', this.validators);
+        this.formModel = new __WEBPACK_IMPORTED_MODULE_1__angular_forms__["c" /* FormControl */](this.value || '', this.validators);
         return this.formModel;
     };
     /**
@@ -1962,7 +1962,7 @@ var FieldBase = /** @class */ (function () {
             else {
                 var fg = {};
                 fg[this.name] = control;
-                group[this.groupName] = new __WEBPACK_IMPORTED_MODULE_1__angular_forms__["c" /* FormGroup */](fg);
+                group[this.groupName] = new __WEBPACK_IMPORTED_MODULE_1__angular_forms__["d" /* FormGroup */](fg);
             }
             retval = group[this.groupName];
         }
@@ -2174,11 +2174,11 @@ var FieldBase = /** @class */ (function () {
     FieldBase.prototype.setRequiredAndClearValueOnFalse = function (flag) {
         this.required = flag;
         if (flag) {
-            this.validators = __WEBPACK_IMPORTED_MODULE_1__angular_forms__["i" /* Validators */].required;
+            this.validators = __WEBPACK_IMPORTED_MODULE_1__angular_forms__["j" /* Validators */].required;
             this.formModel.setValidators(this.validators);
         }
         else {
-            if (__WEBPACK_IMPORTED_MODULE_4_lodash__["isFunction"](this.validators) && __WEBPACK_IMPORTED_MODULE_4_lodash__["isEqual"](this.validators, __WEBPACK_IMPORTED_MODULE_1__angular_forms__["i" /* Validators */].required)) {
+            if (__WEBPACK_IMPORTED_MODULE_4_lodash__["isFunction"](this.validators) && __WEBPACK_IMPORTED_MODULE_4_lodash__["isEqual"](this.validators, __WEBPACK_IMPORTED_MODULE_1__angular_forms__["j" /* Validators */].required)) {
                 this.validators = null;
             }
             this.formModel.clearValidators();
@@ -2189,15 +2189,15 @@ var FieldBase = /** @class */ (function () {
     FieldBase.prototype.setRequired = function (flag) {
         this.required = flag;
         if (flag) {
-            this.validators = __WEBPACK_IMPORTED_MODULE_1__angular_forms__["i" /* Validators */].required;
+            this.validators = __WEBPACK_IMPORTED_MODULE_1__angular_forms__["j" /* Validators */].required;
         }
         else {
-            if (__WEBPACK_IMPORTED_MODULE_4_lodash__["isFunction"](this.validators) && __WEBPACK_IMPORTED_MODULE_4_lodash__["isEqual"](this.validators, __WEBPACK_IMPORTED_MODULE_1__angular_forms__["i" /* Validators */].required)) {
+            if (__WEBPACK_IMPORTED_MODULE_4_lodash__["isFunction"](this.validators) && __WEBPACK_IMPORTED_MODULE_4_lodash__["isEqual"](this.validators, __WEBPACK_IMPORTED_MODULE_1__angular_forms__["j" /* Validators */].required)) {
                 this.validators = null;
             }
             else {
                 __WEBPACK_IMPORTED_MODULE_4_lodash__["remove"](this.validators, function (v) {
-                    return __WEBPACK_IMPORTED_MODULE_4_lodash__["isEqual"](v, __WEBPACK_IMPORTED_MODULE_1__angular_forms__["i" /* Validators */].required);
+                    return __WEBPACK_IMPORTED_MODULE_4_lodash__["isEqual"](v, __WEBPACK_IMPORTED_MODULE_1__angular_forms__["j" /* Validators */].required);
                 });
             }
         }
@@ -2365,8 +2365,8 @@ var ContributorField = /** @class */ (function (_super) {
         _this.username = options['username'] || '';
         _this.previousEmail = _this.value ? _this.value.email : '';
         _this.validators = {
-            text_full_name: [__WEBPACK_IMPORTED_MODULE_3__angular_forms__["i" /* Validators */].required],
-            email: [__WEBPACK_IMPORTED_MODULE_3__angular_forms__["i" /* Validators */].required, __WEBPACK_IMPORTED_MODULE_3__angular_forms__["i" /* Validators */].email]
+            text_full_name: [__WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required],
+            email: [__WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required, __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].email]
         };
         if (!_this.freeText) {
             _this.vocabField = new __WEBPACK_IMPORTED_MODULE_5__field_vocab_component__["a" /* VocabField */](_this.options, _this.injector);
@@ -2375,8 +2375,8 @@ var ContributorField = /** @class */ (function (_super) {
         if (_this.splitNames) {
             _this.groupFieldNames.push('family_name');
             _this.groupFieldNames.push('given_name');
-            _this.validators['family_name'] = [__WEBPACK_IMPORTED_MODULE_3__angular_forms__["i" /* Validators */].required];
-            _this.validators['given_name'] = [__WEBPACK_IMPORTED_MODULE_3__angular_forms__["i" /* Validators */].required];
+            _this.validators['family_name'] = [__WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required];
+            _this.validators['given_name'] = [__WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required];
         }
         // Resolves: #605
         // now that we've set the default validators... we read the config to override
@@ -2385,7 +2385,7 @@ var ContributorField = /** @class */ (function (_super) {
                 // expects to be an array of Validator method names
                 if (__WEBPACK_IMPORTED_MODULE_4_lodash__["isArray"](vConfig)) {
                     _this.validators[fName] = __WEBPACK_IMPORTED_MODULE_4_lodash__["map"](vConfig, function (vConfigEntry) {
-                        return __WEBPACK_IMPORTED_MODULE_4_lodash__["get"](__WEBPACK_IMPORTED_MODULE_3__angular_forms__["i" /* Validators */], vConfigEntry);
+                        return __WEBPACK_IMPORTED_MODULE_4_lodash__["get"](__WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */], vConfigEntry);
                     });
                 }
                 else if (vConfig == null) {
@@ -2416,23 +2416,23 @@ var ContributorField = /** @class */ (function (_super) {
         if (!this.freeText) {
             // this.vocabField.setEmptyValue();
             this.formModel = this.vocabField.createFormModel(this.value, true);
-            this.formModel.addControl('username', new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value.username));
-            this.formModel.addControl('role', new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value.role));
-            this.formModel.addControl('orcid', new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value.orcid));
+            this.formModel.addControl('username', new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value.username));
+            this.formModel.addControl('role', new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value.role));
+            this.formModel.addControl('orcid', new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value.orcid));
             if (this.value) {
                 this.setValue(this.value);
             }
         }
         else {
-            this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormGroup */]({ text_full_name: new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value.text_full_name || null),
-                email: new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value.email || null),
-                role: new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value.role || null),
-                username: new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value.username || ''),
-                orcid: new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value.orcid || '')
+            this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["d" /* FormGroup */]({ text_full_name: new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value.text_full_name || null),
+                email: new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value.email || null),
+                role: new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value.role || null),
+                username: new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value.username || ''),
+                orcid: new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value.orcid || '')
             });
             if (this.splitNames) {
-                this.formModel.addControl('family_name', new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value.family_name));
-                this.formModel.addControl('given_name', new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value.given_name));
+                this.formModel.addControl('family_name', new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value.family_name));
+                this.formModel.addControl('given_name', new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value.given_name));
             }
         }
         if (this.required) {
@@ -3138,14 +3138,14 @@ var FieldControlService = /** @class */ (function () {
         this.classes = __WEBPACK_IMPORTED_MODULE_2_lodash__["merge"](this.classes, componentClasses);
     };
     FieldControlService.prototype.getEmptyFormGroup = function () {
-        return new __WEBPACK_IMPORTED_MODULE_1__angular_forms__["c" /* FormGroup */]({});
+        return new __WEBPACK_IMPORTED_MODULE_1__angular_forms__["d" /* FormGroup */]({});
     };
     FieldControlService.prototype.toFormGroup = function (fields, fieldMap) {
         if (fieldMap === void 0) { fieldMap = null; }
         var group = {};
         this.populateFormGroup(fields, group, fieldMap);
         this.setupEventHandlers(fieldMap);
-        return new __WEBPACK_IMPORTED_MODULE_1__angular_forms__["c" /* FormGroup */](group);
+        return new __WEBPACK_IMPORTED_MODULE_1__angular_forms__["d" /* FormGroup */](group);
     };
     FieldControlService.prototype.setupEventHandlers = function (fieldMap) {
         __WEBPACK_IMPORTED_MODULE_2_lodash__["forOwn"](fieldMap, function (fMap) {
@@ -3956,7 +3956,7 @@ var MapField = /** @class */ (function (_super) {
         if (valueElem) {
             this.layerGeoJSON = valueElem;
         }
-        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.layerGeoJSON || {});
+        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.layerGeoJSON || {});
         return this.formModel;
     };
     MapField.prototype.setValue = function (value) {
@@ -4167,7 +4167,7 @@ var PDFListField = /** @class */ (function (_super) {
         if (valueElem) {
             this.value = valueElem;
         }
-        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value || []);
+        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value || []);
         if (this.value) {
             this.setValue(this.value);
         }
@@ -4669,7 +4669,7 @@ var RelatedObjectDataField = /** @class */ (function (_super) {
         if (valueElem) {
             this.value = valueElem;
         }
-        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value || []);
+        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value || []);
         if (this.value) {
             this.setValue(this.value);
         }
@@ -4828,7 +4828,7 @@ var RelatedObjectSelectorField = /** @class */ (function (_super) {
         if (valueElem) {
             this.value = valueElem;
         }
-        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value || []);
+        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value || []);
         if (this.value) {
             this.setValue(this.value);
             if (this.fieldMap) {
@@ -4996,7 +4996,7 @@ var RepeatableContainer = /** @class */ (function (_super) {
         this.fieldMap = fieldMap;
         fieldMap[this.name] = { field: this };
         if (!this.value || this.value.length == 0) {
-            this.formModel = this.required ? new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormArray */](this.getInitArrayEntry(), __WEBPACK_IMPORTED_MODULE_3__angular_forms__["i" /* Validators */].required) : new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormArray */](this.getInitArrayEntry());
+            this.formModel = this.required ? new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormArray */](this.getInitArrayEntry(), __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required) : new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormArray */](this.getInitArrayEntry());
         }
         else {
             var fieldCtr_1 = 0;
@@ -5016,7 +5016,7 @@ var RepeatableContainer = /** @class */ (function (_super) {
                 elems_1.push(fieldClone.createFormModel());
                 return fieldClone;
             });
-            this.formModel = this.required ? new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormArray */](elems_1, __WEBPACK_IMPORTED_MODULE_3__angular_forms__["i" /* Validators */].required) : new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormArray */](elems_1);
+            this.formModel = this.required ? new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormArray */](elems_1, __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required) : new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormArray */](elems_1);
             __WEBPACK_IMPORTED_MODULE_4_lodash__["each"](this.fields, function (f) {
                 f.setupEventHandlers();
             });
@@ -5477,7 +5477,7 @@ var SimpleComponent = /** @class */ (function () {
     ], SimpleComponent.prototype, "field", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_2__angular_forms__["c" /* FormGroup */])
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_2__angular_forms__["d" /* FormGroup */])
     ], SimpleComponent.prototype, "form", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
@@ -5566,7 +5566,7 @@ var SelectionFieldComponent = /** @class */ (function (_super) {
     SelectionFieldComponent.prototype.onChange = function (opt, event) {
         var formcontrol = this.getFormControl();
         if (event.target.checked) {
-            formcontrol.push(new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["b" /* FormControl */](opt.value));
+            formcontrol.push(new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["c" /* FormControl */](opt.value));
         }
         else {
             var idx_1 = null;
@@ -6123,7 +6123,7 @@ var SelectionField = /** @class */ (function (_super) {
                     return val == opt.value;
                 });
                 if (hasValue) {
-                    fgDef_1.push(new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["b" /* FormControl */](opt.value));
+                    fgDef_1.push(new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["c" /* FormControl */](opt.value));
                 }
             });
             // const fg = new FormArray(fgDef);
@@ -6178,7 +6178,7 @@ var Container = /** @class */ (function (_super) {
     Container.prototype.getGroup = function (group, fieldMap) {
         this.fieldMap = fieldMap;
         __WEBPACK_IMPORTED_MODULE_3_lodash__["set"](fieldMap, this.getFullFieldName() + ".field", this);
-        group[this.name] = this.required ? new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["c" /* FormGroup */]({}, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["i" /* Validators */].required) : new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["c" /* FormGroup */]({});
+        group[this.name] = this.required ? new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["d" /* FormGroup */]({}, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["j" /* Validators */].required) : new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["d" /* FormGroup */]({});
         __WEBPACK_IMPORTED_MODULE_3_lodash__["each"](this.fields, function (field) {
             field.getGroup(group, fieldMap);
         });
@@ -6196,7 +6196,7 @@ var Container = /** @class */ (function (_super) {
             field.value = fldVal;
             grp[field.name] = field.createFormModel(fldVal);
         });
-        this.formModel = this.required ? new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["c" /* FormGroup */](grp, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["i" /* Validators */].required) : new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["c" /* FormGroup */](grp);
+        this.formModel = this.required ? new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["d" /* FormGroup */](grp, __WEBPACK_IMPORTED_MODULE_2__angular_forms__["j" /* Validators */].required) : new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["d" /* FormGroup */](grp);
         return this.formModel;
     };
     Container.prototype.setValue = function (value, emitEvent) {
@@ -6784,13 +6784,13 @@ var VocabField = /** @class */ (function (_super) {
             var flds_1 = {};
             __WEBPACK_IMPORTED_MODULE_4_lodash__["forEach"](this.fieldNames, function (fld) {
                 __WEBPACK_IMPORTED_MODULE_4_lodash__["forOwn"](fld, function (srcFld, targetFld) {
-                    flds_1[targetFld] = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](_this.value[targetFld] || '');
+                    flds_1[targetFld] = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](_this.value[targetFld] || '');
                 });
             });
-            this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormGroup */](flds_1);
+            this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["d" /* FormGroup */](flds_1);
         }
         else {
-            this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value || '');
+            this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value || '');
         }
         if (this.value) {
             if (!__WEBPACK_IMPORTED_MODULE_4_lodash__["isString"](this.value)) {
@@ -6806,7 +6806,7 @@ var VocabField = /** @class */ (function (_super) {
             }
         }
         if (this.required) {
-            this.formModel.setValidators([__WEBPACK_IMPORTED_MODULE_3__angular_forms__["i" /* Validators */].required]);
+            this.formModel.setValidators([__WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required]);
         }
         return this.formModel;
     };
@@ -8039,7 +8039,7 @@ var WorkspaceFieldComponent = /** @class */ (function () {
     ], WorkspaceFieldComponent.prototype, "field", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
-        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_2__angular_forms__["c" /* FormGroup */])
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_2__angular_forms__["d" /* FormGroup */])
     ], WorkspaceFieldComponent.prototype, "form", void 0);
     __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
@@ -8131,7 +8131,7 @@ var WorkspaceSelectorField = /** @class */ (function (_super) {
                     return val == opt.value;
                 });
                 if (hasValue) {
-                    fgDef_1.push(new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["b" /* FormControl */](opt.value));
+                    fgDef_1.push(new __WEBPACK_IMPORTED_MODULE_2__angular_forms__["c" /* FormControl */](opt.value));
                 }
             });
             // const fg = new FormArray(fgDef);
@@ -8531,7 +8531,7 @@ var SharedModule = /** @class */ (function () {
     }
     SharedModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
-            imports: [__WEBPACK_IMPORTED_MODULE_3__angular_platform_browser__["a" /* BrowserModule */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["d" /* FormsModule */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["h" /* ReactiveFormsModule */], __WEBPACK_IMPORTED_MODULE_23_ng2_datetime_ng2_datetime__["a" /* NKDatetimeModule */], __WEBPACK_IMPORTED_MODULE_24_ng2_completer__["b" /* Ng2CompleterModule */], __WEBPACK_IMPORTED_MODULE_25_ngx_i18next__["TranslateI18NextModule"], __WEBPACK_IMPORTED_MODULE_26__asymmetrik_ngx_leaflet__["c" /* LeafletModule */].forRoot(), __WEBPACK_IMPORTED_MODULE_27__asymmetrik_ngx_leaflet_draw__["a" /* LeafletDrawModule */].forRoot(), __WEBPACK_IMPORTED_MODULE_1_angular2_markdown__["a" /* MarkdownModule */].forRoot(), __WEBPACK_IMPORTED_MODULE_41_angular_tree_component__["b" /* TreeModule */], __WEBPACK_IMPORTED_MODULE_45_mobx_angular__["a" /* MobxAngularModule */]],
+            imports: [__WEBPACK_IMPORTED_MODULE_3__angular_platform_browser__["a" /* BrowserModule */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["e" /* FormsModule */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["i" /* ReactiveFormsModule */], __WEBPACK_IMPORTED_MODULE_23_ng2_datetime_ng2_datetime__["a" /* NKDatetimeModule */], __WEBPACK_IMPORTED_MODULE_24_ng2_completer__["b" /* Ng2CompleterModule */], __WEBPACK_IMPORTED_MODULE_25_ngx_i18next__["TranslateI18NextModule"], __WEBPACK_IMPORTED_MODULE_26__asymmetrik_ngx_leaflet__["c" /* LeafletModule */].forRoot(), __WEBPACK_IMPORTED_MODULE_27__asymmetrik_ngx_leaflet_draw__["a" /* LeafletDrawModule */].forRoot(), __WEBPACK_IMPORTED_MODULE_1_angular2_markdown__["a" /* MarkdownModule */].forRoot(), __WEBPACK_IMPORTED_MODULE_41_angular_tree_component__["b" /* TreeModule */], __WEBPACK_IMPORTED_MODULE_45_mobx_angular__["a" /* MobxAngularModule */]],
             exports: [__WEBPACK_IMPORTED_MODULE_23_ng2_datetime_ng2_datetime__["a" /* NKDatetimeModule */], __WEBPACK_IMPORTED_MODULE_24_ng2_completer__["b" /* Ng2CompleterModule */], __WEBPACK_IMPORTED_MODULE_25_ngx_i18next__["TranslateI18NextModule"], __WEBPACK_IMPORTED_MODULE_28__form_dmp_field_component__["a" /* DmpFieldComponent */], __WEBPACK_IMPORTED_MODULE_6__form_field_textfield_component__["g" /* TextFieldComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["e" /* DropdownFieldComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["o" /* TabOrAccordionContainerComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["b" /* ButtonBarContainerComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["p" /* TextBlockComponent */], __WEBPACK_IMPORTED_MODULE_6__form_field_textfield_component__["b" /* MarkdownTextAreaComponent */], __WEBPACK_IMPORTED_MODULE_6__form_field_textfield_component__["e" /* TextAreaComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["d" /* DateTimeComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["a" /* AnchorOrButtonComponent */], __WEBPACK_IMPORTED_MODULE_9__form_field_vocab_component__["b" /* VocabFieldComponent */], __WEBPACK_IMPORTED_MODULE_10__form_field_repeatable_component__["g" /* RepeatableVocabComponent */], __WEBPACK_IMPORTED_MODULE_11__form_field_contributor_component__["a" /* ContributorComponent */], __WEBPACK_IMPORTED_MODULE_10__form_field_repeatable_component__["e" /* RepeatableContributorComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["g" /* HtmlRawComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["f" /* HiddenValueComponent */], __WEBPACK_IMPORTED_MODULE_19__form_workflow_button_component__["b" /* WorkflowStepButtonComponent */], __WEBPACK_IMPORTED_MODULE_20__form_action_button_component__["b" /* ActionButtonComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["h" /* LinkValueComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["k" /* SelectionFieldComponent */], __WEBPACK_IMPORTED_MODULE_6__form_field_textfield_component__["c" /* RepeatableTextfieldComponent */], __WEBPACK_IMPORTED_MODULE_32__StringTemplatePipe__["a" /* StringTemplatePipe */], __WEBPACK_IMPORTED_MODULE_36__form_field_group_component__["a" /* GenericGroupComponent */], __WEBPACK_IMPORTED_MODULE_36__form_field_group_component__["b" /* RepeatableGroupComponent */], __WEBPACK_IMPORTED_MODULE_18__form_field_map_component__["a" /* MapComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["i" /* ParameterRetrieverComponent */], __WEBPACK_IMPORTED_MODULE_8__form_record_meta_component__["a" /* RecordMetadataRetrieverComponent */], __WEBPACK_IMPORTED_MODULE_14__form_field_relatedobjectselector_component__["a" /* RelatedObjectSelectorComponent */], __WEBPACK_IMPORTED_MODULE_15__form_field_datalocation_component__["a" /* DataLocationComponent */], __WEBPACK_IMPORTED_MODULE_16__form_field_publishdatalocationselector_component__["a" /* PublishDataLocationSelectorComponent */], __WEBPACK_IMPORTED_MODULE_37__form_workspace_selector_component__["b" /* WorkspaceSelectorFieldComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["n" /* TabNavButtonComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["m" /* SpacerComponent */], __WEBPACK_IMPORTED_MODULE_39__form_workspace_field_component__["a" /* WorkspaceFieldComponent */], __WEBPACK_IMPORTED_MODULE_37__form_workspace_selector_component__["a" /* WorkspaceSelectorComponent */], __WEBPACK_IMPORTED_MODULE_17__form_field_andsvocab_component__["a" /* ANDSVocabComponent */], __WEBPACK_IMPORTED_MODULE_12__form_field_pdflist_component__["a" /* PDFListComponent */], __WEBPACK_IMPORTED_MODULE_41_angular_tree_component__["b" /* TreeModule */], __WEBPACK_IMPORTED_MODULE_42__form_field_asynch_component__["a" /* AsynchComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["q" /* ToggleComponent */], __WEBPACK_IMPORTED_MODULE_43__form_tree_node_checkbox_component__["a" /* TreeNodeCheckboxComponent */], __WEBPACK_IMPORTED_MODULE_44__form_field_publish_data_location_refresh_component__["a" /* PublishDataLocationRefreshComponent */]],
             declarations: [__WEBPACK_IMPORTED_MODULE_28__form_dmp_field_component__["a" /* DmpFieldComponent */], __WEBPACK_IMPORTED_MODULE_6__form_field_textfield_component__["g" /* TextFieldComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["e" /* DropdownFieldComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["o" /* TabOrAccordionContainerComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["b" /* ButtonBarContainerComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["p" /* TextBlockComponent */], __WEBPACK_IMPORTED_MODULE_6__form_field_textfield_component__["b" /* MarkdownTextAreaComponent */], __WEBPACK_IMPORTED_MODULE_6__form_field_textfield_component__["e" /* TextAreaComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["d" /* DateTimeComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["a" /* AnchorOrButtonComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["j" /* SaveButtonComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["c" /* CancelButtonComponent */], __WEBPACK_IMPORTED_MODULE_9__form_field_vocab_component__["b" /* VocabFieldComponent */], __WEBPACK_IMPORTED_MODULE_10__form_field_repeatable_component__["g" /* RepeatableVocabComponent */], __WEBPACK_IMPORTED_MODULE_11__form_field_contributor_component__["a" /* ContributorComponent */], __WEBPACK_IMPORTED_MODULE_10__form_field_repeatable_component__["e" /* RepeatableContributorComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["g" /* HtmlRawComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["f" /* HiddenValueComponent */], __WEBPACK_IMPORTED_MODULE_19__form_workflow_button_component__["b" /* WorkflowStepButtonComponent */], __WEBPACK_IMPORTED_MODULE_20__form_action_button_component__["b" /* ActionButtonComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["h" /* LinkValueComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["k" /* SelectionFieldComponent */], __WEBPACK_IMPORTED_MODULE_6__form_field_textfield_component__["c" /* RepeatableTextfieldComponent */], __WEBPACK_IMPORTED_MODULE_13__form_field_relatedobjectdata_component__["a" /* RelatedObjectDataComponent */], __WEBPACK_IMPORTED_MODULE_32__StringTemplatePipe__["a" /* StringTemplatePipe */], __WEBPACK_IMPORTED_MODULE_36__form_field_group_component__["a" /* GenericGroupComponent */], __WEBPACK_IMPORTED_MODULE_36__form_field_group_component__["b" /* RepeatableGroupComponent */], __WEBPACK_IMPORTED_MODULE_18__form_field_map_component__["a" /* MapComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["i" /* ParameterRetrieverComponent */], __WEBPACK_IMPORTED_MODULE_8__form_record_meta_component__["a" /* RecordMetadataRetrieverComponent */], __WEBPACK_IMPORTED_MODULE_14__form_field_relatedobjectselector_component__["a" /* RelatedObjectSelectorComponent */], __WEBPACK_IMPORTED_MODULE_15__form_field_datalocation_component__["a" /* DataLocationComponent */], __WEBPACK_IMPORTED_MODULE_16__form_field_publishdatalocationselector_component__["a" /* PublishDataLocationSelectorComponent */], __WEBPACK_IMPORTED_MODULE_37__form_workspace_selector_component__["b" /* WorkspaceSelectorFieldComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["n" /* TabNavButtonComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["m" /* SpacerComponent */], __WEBPACK_IMPORTED_MODULE_39__form_workspace_field_component__["a" /* WorkspaceFieldComponent */], __WEBPACK_IMPORTED_MODULE_37__form_workspace_selector_component__["a" /* WorkspaceSelectorComponent */], __WEBPACK_IMPORTED_MODULE_17__form_field_andsvocab_component__["a" /* ANDSVocabComponent */], __WEBPACK_IMPORTED_MODULE_12__form_field_pdflist_component__["a" /* PDFListComponent */], __WEBPACK_IMPORTED_MODULE_42__form_field_asynch_component__["a" /* AsynchComponent */], __WEBPACK_IMPORTED_MODULE_7__form_field_simple_component__["q" /* ToggleComponent */], __WEBPACK_IMPORTED_MODULE_43__form_tree_node_checkbox_component__["a" /* TreeNodeCheckboxComponent */], __WEBPACK_IMPORTED_MODULE_44__form_field_publish_data_location_refresh_component__["a" /* PublishDataLocationRefreshComponent */]],
             providers: [__WEBPACK_IMPORTED_MODULE_5__form_field_control_service__["a" /* FieldControlService */], __WEBPACK_IMPORTED_MODULE_4__form_records_service__["a" /* RecordsService */], __WEBPACK_IMPORTED_MODULE_9__form_field_vocab_component__["c" /* VocabFieldLookupService */], __WEBPACK_IMPORTED_MODULE_21__config_service__["a" /* ConfigService */], __WEBPACK_IMPORTED_MODULE_22__translation_service__["a" /* TranslationService */], __WEBPACK_IMPORTED_MODULE_29__user_service_simple__["a" /* UserSimpleService */], __WEBPACK_IMPORTED_MODULE_30__dashboard_service__["a" /* DashboardService */], __WEBPACK_IMPORTED_MODULE_33__roles_service__["a" /* RolesService */], __WEBPACK_IMPORTED_MODULE_35__email_service__["a" /* EmailNotificationService */], __WEBPACK_IMPORTED_MODULE_34__util_service__["a" /* UtilityService */], __WEBPACK_IMPORTED_MODULE_38__workspace_service__["a" /* WorkspaceTypeService */], __WEBPACK_IMPORTED_MODULE_40__form_field_control_meta_service__["a" /* FieldControlMetaService */], __WEBPACK_IMPORTED_MODULE_31__ands_service__["a" /* ANDSService */]],
@@ -9348,7 +9348,7 @@ var CatalogModule = /** @class */ (function () {
     CatalogModule = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["NgModule"])({
             imports: [
-                __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__["a" /* BrowserModule */], __WEBPACK_IMPORTED_MODULE_3__angular_http__["c" /* HttpModule */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["h" /* ReactiveFormsModule */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["d" /* FormsModule */], __WEBPACK_IMPORTED_MODULE_4__shared_shared_module__["a" /* SharedModule */]
+                __WEBPACK_IMPORTED_MODULE_1__angular_platform_browser__["a" /* BrowserModule */], __WEBPACK_IMPORTED_MODULE_3__angular_http__["c" /* HttpModule */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["i" /* ReactiveFormsModule */], __WEBPACK_IMPORTED_MODULE_2__angular_forms__["e" /* FormsModule */], __WEBPACK_IMPORTED_MODULE_4__shared_shared_module__["a" /* SharedModule */]
             ],
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_6__catalog_form_component__["a" /* CatalogFormComponent */], __WEBPACK_IMPORTED_MODULE_5__components_request_box_component__["a" /* RequestBoxComponent */], __WEBPACK_IMPORTED_MODULE_8__components_catalog_display_component__["a" /* CatalogDisplayComponent */]
@@ -9728,7 +9728,7 @@ var CatalogDisplayField = /** @class */ (function (_super) {
         if (valueElem) {
             this.value = valueElem;
         }
-        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value || []);
+        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value || []);
         if (this.value) {
             this.setValue(this.value);
         }
@@ -9857,8 +9857,9 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
  */
 var RequestBoxField = /** @class */ (function (_super) {
     __extends(RequestBoxField, _super);
-    function RequestBoxField(options, injector) {
+    function RequestBoxField(options, injector, formBuilder) {
         var _this = _super.call(this, options, injector) || this;
+        _this.formBuilder = formBuilder;
         _this.errorMessage = false;
         _this.requestSent = false;
         _this.projectInfo = {
@@ -9902,6 +9903,12 @@ var RequestBoxField = /** @class */ (function (_super) {
         _this.storageType = options['types'] || [];
         _this.requestTypeSelect = null;
         _this.catalogId = '';
+        _this.formBuilder = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormBuilder */]();
+        _this.requestGroupForm = _this.formBuilder.group({
+            formArray: _this.formBuilder.array([])
+        });
+        _this.formArrayItems = [];
+        _this.formArray = [];
         return _this;
     }
     RequestBoxField.prototype.init = function () {
@@ -9913,15 +9920,40 @@ var RequestBoxField = /** @class */ (function (_super) {
         this.fieldMap['CatalogDisplay'].field['requestBox'].subscribe(this.showRequestForm.bind(this));
     };
     RequestBoxField.prototype.showRequestForm = function (req) {
+        var _this = this;
         this.showRequest = true;
         console.log("generate request for " + JSON.stringify(req.service));
         this.requestType = req.service;
         this.requestFormElements = req.service.form;
         this.projectInfo = req.project;
-        this.ci = req.project.ci;
-        this.dm = req.project.dm;
-        this.catalogId = req.catalogId;
-        console.log(this.dm);
+        this.catalogId = req.service.catalogId;
+        this.formArray = [];
+        this.formArrayItems = [];
+        __WEBPACK_IMPORTED_MODULE_4_lodash_es__["b" /* forOwn */](this.requestFormElements, function (el, name) {
+            _this.formArrayItems.push({
+                id: name,
+                title: el['title'],
+                type: el['type'],
+                fields: el['fields'] || [],
+                textarea: el['textarea'] || {}
+            });
+            if (!__WEBPACK_IMPORTED_MODULE_4_lodash_es__["c" /* isUndefined */](el['prefil'])) {
+                try {
+                    var prefilKey = el['prefil']['key'];
+                    var prefilVal = el['prefil']['val'];
+                    var element = _this.projectInfo[prefilKey];
+                    var isDisabled = el['disabled'] || false;
+                    _this.formArray.push(_this.formBuilder.control({ value: element[prefilVal], disabled: isDisabled }));
+                }
+                catch (e) {
+                    console.error('Please fix form config');
+                    console.error(e);
+                }
+            }
+            else {
+                _this.formArray.push(_this.formBuilder.control(''));
+            }
+        });
     };
     RequestBoxField.prototype.showCatalog = function () {
         this.showRequest = false;
@@ -10035,7 +10067,7 @@ var RequestBoxField = /** @class */ (function (_super) {
         if (valueElem) {
             this.value = valueElem;
         }
-        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormControl */](this.value || []);
+        this.formModel = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](this.value || []);
         if (this.value) {
             this.setValue(this.value);
         }
@@ -10056,6 +10088,37 @@ var RequestBoxField = /** @class */ (function (_super) {
     return RequestBoxField;
 }(__WEBPACK_IMPORTED_MODULE_2__shared_form_field_base__["a" /* FieldBase */]));
 
+/*
+let description = `
+Creating request from Stash
+
+Dear eResearch admin: Please verify this workspace request done via Stash in the next data management plan
+
+${this.config.brandingAndPortalUrl}/record/view/${rdmp}
+
+Details:
+
+${request.name}`;
+
+if(request.type){
+  description += `
+
+  Type: ${request.type}
+
+  `;
+}
+
+description += `${request.owner} : ${request.ownerEmail}
+
+Supervisor: ${request.supervisor}
+
+Retention Period: ${request.retention}
+
+Project Start: ${request.projectStart}
+
+Project End: ${request.projectEnd}
+`;
+*/
 /**
  * Component that CreateModal to a workspace app
  */
@@ -10073,7 +10136,7 @@ var RequestBoxComponent = /** @class */ (function (_super) {
     RequestBoxComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'ws-requestbox',
-            template: "\n      <div *ngIf=\"field.showRequest\">\n          <div class=\"row\">\n              <div class=\"col-md-7 col-md-offset-2\">\n                  <div class=\"row\">\n                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>\n                      <form *ngIf=\"!field.requestSent\" #form=\"ngForm\" novalidate autocomplete=\"off\">\n                          <div *ngIf=\"field.requestFormElements['name']['enable']\" class=\"form-group\">\n                              <label>{{ field.nameLabel }}</label>\n                              <input type=\"text\" class=\"form-control\"\n                                     name=\"name\" ngModel required placeholder=\"{{ field.requestNamePlaceholder }}\"\n                                     attr.aria-label=\"{{ field.nameLabel }}\">\n                          </div>\n                          <div *ngIf=\"field.requestFormElements['type']\" class=\"form-group\">\n                              <label>{{ field.requestFormElements.type.label }}</label>\n                              <select name=\"type\"\n                                      ngModel class=\"form-control\"\n                                      >\n                                  <option value=\"null\" disabled=\"true\" [selected]=\"true\">{{ field.requestFormElements['type']['label'] }}</option>\n                                  <option *ngFor=\"let t of field.requestFormElements.type.fields\"\n                                          [ngValue]=\"t\">{{t.name}}</option>\n                              </select>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-group\">\n                                  <label>{{ field.ownerLabel }}</label>\n                                  <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.owner\"\n                                         name=\"owner\" ngModel=\"owner\" required disabled\n                                         attr.aria-label=\"{{ field.ownerLabel }}\">\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <label>{{ field.dmEmailLabel }}</label>\n                              <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.dm.email\"\n                                     name=\"ownerEmail\" ngModel=\"ownerEmail\" required disabled\n                                     attr.aria-label=\"{{ field.ownerLabel }}\">\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.ciEmailLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.ci.email\"\n                                             name=\"supervisor\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.ciEmailLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.retentionLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.projectInfo.retention\"\n                                             name=\"retention\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.retentionLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.projectStartLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\"\n                                             [(ngModel)]=\"field.projectInfo.projectStart\"\n                                             name=\"projectStart\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.projectStartLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <div class=\"form-inline\">\n                                  <div class=\"form-group\">\n                                      <label>{{ field.projectEndLabel }}</label>\n                                      <input type=\"text\" class=\"form-control\" [(ngModel)]=\"field.projectInfo.projectEnd\"\n                                             name=\"projectEnd\" ngModel required disabled\n                                             size=\"35\" attr.aria-label=\"{{ field.projectEndLabel }}\">\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"form-group\">\n                              <label>{{ field.requestFormElements.notes.label }}</label>\n                              <textarea maxlength=\"30\" rows=\"10\" cols=\"150\"\n                                        class=\"form-control\" ngModel name=\"notes\"></textarea>\n                          </div>\n                          <div class=\"alert alert-danger\" *ngIf=\"field.formError\">\n                              <p *ngIf=\"field.errorMessage\">{{field.errorMessage}}</p>\n                              <ul>\n                                  <li *ngFor=\"let v of field.validations\">{{ v }}</li>\n                              </ul>\n                          </div>\n                          <div class=\"alert alert-warning alert-dismissible show\">\n                              <strong>Warning!</strong> This form is pre-filled with information from your data\n                              management plan. If the fields are incorrect, please modify your plan.\n                              <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>\n                          </div>\n                          <button *ngIf=\"!field.loading\" class=\"btn btn-primary\"\n                                  type=\"submit\" (click)=\"field.validate(form.value)\">{{ field.requestLabel }}\n                          </button>\n                          <div *ngIf=\"field.loading\">\n                              ... requesting ...\n                          </div>\n                          <div class=\"row\"><br/></div>\n                      </form>\n                  </div>\n                  <div class=\"row\">\n                      <div *ngIf=\"field.requestSent\">\n                          <p>{{ field.requestSuccess }}</p>\n                          <p>Owner: <strong>{{ field.owner }}</strong></p>\n                          <p>Supervisor: <strong>{{ field.ci.email }}</strong></p>\n                          <p>{{ field.requestNextAction }}</p>\n                      </div>\n                  </div>\n\n              </div>\n          </div>\n\n          <div class=\"row\">\n              <a (click)=\"field.showCatalog()\" class=\"btn btn-secondary\">{{ field.backToCatalogLabel }}</a>\n          </div>\n      </div>\n      <div class=\"row\"><br/></div>\n  "
+            template: "\n      <div *ngIf=\"field.showRequest\">\n          <div class=\"row\">\n              <div class=\"col-md-7 col-md-offset-2\">\n                  <div class=\"row\">\n                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>\n                      <form *ngIf=\"!field.requestSent\" #form=\"ngForm\" novalidate autocomplete=\"off\">\n                          <div [formGroup]=\"field.requestGroupForm\">\n                              <div formArrayName=\"formArray\"\n                                   *ngFor=\"let arrayItem of field.formArrayItems; let i=index\">\n                                  <div *ngIf=\"arrayItem['type'] == 'text'\" class=\"form-group\">\n                                      <label>{{arrayItem['title']}}</label>\n                                      <input class=\"form-control\" ngModel\n                                             [name]=\"arrayItem['id']\"\n                                             [id]=\"arrayItem['id']\" type=\"text\"\n                                             [formControl]=\"field.formArray[i]\">\n                                  </div>\n                                  <div *ngIf=\"arrayItem['type'] == 'textarea'\" class=\"form-group\">\n                                      <label>{{arrayItem['title']}}</label>\n                                      <textarea class=\"form-control\" ngModel\n                                                [maxlength]=\"arrayItem['maxlength']\" [rows]=\"arrayItem['rows']\"\n                                                [cols]=\"arrayItem['cols']\"\n                                                [name]=\"arrayItem['id']\"\n                                                [id]=\"arrayItem['id']\" type=\"text\"\n                                                [formControl]=\"field.formArray[i]\"/>\n                                  </div>\n                                  <div *ngIf=\"arrayItem['type'] == 'select'\" class=\"form-group\">\n                                      <label>{{arrayItem['title']}}</label>\n                                      <select [name]=\"arrayItem['id']\" ngModel\n                                              class=\"form-control\">\n                                          <option *ngFor=\"let t of arrayItem['fields']\"\n                                                  [ngValue]=\"t\">{{t.name}}</option>\n                                      </select>\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"alert alert-warning alert-dismissible show\">\n                              <strong>Warning!</strong> This form is pre-filled with information from your data\n                              management plan. If the fields are incorrect, please modify your plan.\n                              <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>\n                          </div>\n                          <button *ngIf=\"!field.loading\" class=\"btn btn-primary\"\n                                  type=\"submit\" (click)=\"field.validate(form.value)\">{{ field.requestLabel }}\n                          </button>\n                          <div *ngIf=\"field.loading\">\n                              ... requesting ...\n                          </div>\n                          <div class=\"row\"><br/></div>\n                      </form>\n                  </div>\n                  <div class=\"row\">\n                      <div *ngIf=\"field.requestSent\">\n                          <p>{{ field.requestSuccess }}</p>\n                          <p>Owner: <strong>{{ field.owner }}</strong></p>\n                          <p>Supervisor: <strong>{{ field.ci.email }}</strong></p>\n                          <p>{{ field.requestNextAction }}</p>\n                      </div>\n                  </div>\n\n              </div>\n          </div>\n\n          <div class=\"row\">\n              <a (click)=\"field.showCatalog()\" class=\"btn btn-secondary\">{{ field.backToCatalogLabel }}</a>\n          </div>\n      </div>\n      <div class=\"row\"><br/></div>\n  "
         })
     ], RequestBoxComponent);
     return RequestBoxComponent;
