@@ -9920,7 +9920,7 @@ var RequestBoxField = /** @class */ (function (_super) {
         _this.formBuilder = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["b" /* FormBuilder */]();
         _this.formArrayItems = [];
         _this.formArray = [];
-        _this.form = [];
+        _this.form = {};
         return _this;
     }
     RequestBoxField.prototype.init = function () {
@@ -9960,10 +9960,10 @@ var RequestBoxField = /** @class */ (function (_super) {
             if (!__WEBPACK_IMPORTED_MODULE_4_lodash_es__["d" /* isUndefined */](el['prefil'])) {
                 try {
                     var prefilKey = el['prefil']['key'];
-                    var prefilVal = el['prefil']['val'];
+                    var prefilVal = el['prefil']['val'] || el['prefil'];
                     var element = _this.projectInfo[prefilKey];
                     var isDisabled = el['disabled'] || false;
-                    _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]({ value: element[prefilVal], disabled: isDisabled }));
+                    _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]({ value: element[prefilVal], disabled: isDisabled }, __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required));
                 }
                 catch (e) {
                     console.error('Please fix form config');
@@ -9971,7 +9971,7 @@ var RequestBoxField = /** @class */ (function (_super) {
                 }
             }
             else {
-                _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](''));
+                _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]('', __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required));
             }
         });
     };
@@ -10004,10 +10004,10 @@ var RequestBoxField = /** @class */ (function (_super) {
                 _this.validations.push(obj['validationMsg']);
             }
             else {
-                _this.form.push({
+                _this.form[obj['id']] = {
                     value: control.value,
                     variable: obj.requestVariable
-                });
+                };
             }
         });
         if (this.validations.length > 0) {

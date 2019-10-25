@@ -85,14 +85,15 @@ export module Controllers {
           sails.log.debug(`sendGetToTable ${openedByEmail}`);
           sails.log.debug(response);
           info.opened_by = response.sys_id;
-          const query = {sys_id: catalogId};
-          sails.log.debug(JSON.stringify(info, null, 2));
+          const variables = this.requestToVariables(request);
+          variables['rdmp'] = rdmp;
+          sails.log.debug(JSON.stringify(variables, null, 2));
           return CatalogService.serviceCatalogPost(
             '/api/sn_sc/servicecatalog/items/',
             catalogId,
-            'add_to_cart',
-            1,
-            request
+            'order_now',
+            '1',
+            variables
           );
         })
         .subscribe(response => {
@@ -106,6 +107,16 @@ export module Controllers {
           this.ajaxFail(req, res, error.message, {status: false, message: error.message});
         });
 
+    }
+
+    requestToVariables(request) {
+      const variables = {};
+      _.forOwn(request, (val) => {
+        const v = val['variable'];
+        const vv = val['value'];
+        variables[v] = vv['name'] || vv;
+      });
+      return variables;
     }
 
   }

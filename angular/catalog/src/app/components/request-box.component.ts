@@ -163,7 +163,7 @@ export class RequestBoxField extends FieldBase<any> {
       if (!_.isUndefined(el['prefil'])) {
         try {
           const prefilKey = el['prefil']['key'];
-          const prefilVal = el['prefil']['val'];
+          const prefilVal = el['prefil']['val'] || el['prefil'];
           const element = this.projectInfo[prefilKey];
           const isDisabled = el['disabled'] || false;
           this.requestGroupForm.addControl(name,

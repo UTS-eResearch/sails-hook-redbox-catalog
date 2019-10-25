@@ -154,6 +154,7 @@ module.exports = {
                 validationMsg: "Add the retention period",
                 title: 'Retention Period',
                 type: 'text',
+                prefil: {key: 'retention'},
                 requestVariable: 'retention_period'
               },
               end_of_project: {

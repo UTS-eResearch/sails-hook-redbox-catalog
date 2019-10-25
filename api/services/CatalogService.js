@@ -68,10 +68,12 @@ var Services;
             sails.log.debug("==================");
             sails.log.debug(url);
             sails.log.debug("==================");
+            sails.log.debug(body);
+            sails.log.debug("==================");
             const post = requestPromise({
                 uri: url,
                 method: 'POST',
-                qs: body,
+                body: body,
                 json: true,
                 headers: this.config.servicenowHeaders
             });
