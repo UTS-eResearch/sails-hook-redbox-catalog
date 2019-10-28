@@ -128,6 +128,14 @@ module.exports = {
                 type: 'select',
                 requestVariable: 'share_type'
               },
+              access_offsite: {
+                validationMsg: 'Select if you need access off site',
+                title: 'Access share off site?',
+                fields: [{name: 'yes'}, {name: 'no'}],
+                validate: true,
+                type: 'checkbox',
+                requestVariable: 'access_offsite'
+              },
               data_manager: {
                 validationMsg: "Data Manager was not added",
                 title: 'Data Manager',

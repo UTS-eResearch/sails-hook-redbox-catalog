@@ -266,38 +266,6 @@ export class RequestBoxField extends FieldBase<any> {
 
 }
 
-/*
-let description = `
-Creating request from Stash
-
-Dear eResearch admin: Please verify this workspace request done via Stash in the next data management plan
-
-${this.config.brandingAndPortalUrl}/record/view/${rdmp}
-
-Details:
-
-${request.name}`;
-
-if(request.type){
-  description += `
-
-  Type: ${request.type}
-
-  `;
-}
-
-description += `${request.owner} : ${request.ownerEmail}
-
-Supervisor: ${request.supervisor}
-
-Retention Period: ${request.retention}
-
-Project Start: ${request.projectStart}
-
-Project End: ${request.projectEnd}
-`;
-*/
-
 /**
  * Component that CreateModal to a workspace app
  */
@@ -338,6 +306,16 @@ Project End: ${request.projectEnd}
                                       <option *ngFor="let t of field.getValue(control, 'fields')"
                                               [ngValue]="t">{{t.name}}</option>
                                   </select>
+                              </div>
+                              <div *ngIf="field.getValue(control, 'type') == 'checkbox'" class="form-group">
+                                  <label>{{field.getValue(control, 'title')}}</label>
+                                  <div *ngFor="let radios of field.getValue(control, 'fields')" class="radio">
+                                      <label>
+                                          <input type="radio" [value]="radios['name']"
+                                                 formControlName="{{ control }}">
+                                          {{ radios['name'] }}
+                                      </label>
+                                  </div>
                               </div>
                           </div>
                           <div class="alert alert-danger" *ngIf="field.formError">
