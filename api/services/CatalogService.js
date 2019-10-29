@@ -9,7 +9,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const rxjs_1 = require("rxjs");
-const qs = require("qs");
 const requestPromise = require("request-promise");
 const Config_1 = require("../Config");
 const services = require("../core/CoreService");
@@ -49,7 +48,7 @@ var Services;
             return rxjs_1.from(post);
         }
         sendGetToTable(table, body) {
-            const query = qs.stringify(body);
+            sails.log.debug(body);
             const post = requestPromise({
                 uri: this.config.domain + `/api/now/table/${table}`,
                 method: 'GET',
@@ -59,17 +58,15 @@ var Services;
             });
             return rxjs_1.from(post);
         }
-        serviceCatalogPost(uri, catalogId, method, quantity, variables) {
+        serviceCatalogPost(uri, catalogId, method, quantity, variables, assigned_to, opened_by, requested_by) {
             const body = {
                 sysparm_quantity: quantity,
-                variables: variables
+                variables: variables,
+                opened_by: opened_by,
+                assigned_to: assigned_to,
+                requested_by: requested_by
             };
             const url = `${this.config.domain}${uri}${catalogId}/${method}`;
-            sails.log.debug("==================");
-            sails.log.debug(url);
-            sails.log.debug("==================");
-            sails.log.debug(body);
-            sails.log.debug("==================");
             const post = requestPromise({
                 uri: url,
                 method: 'POST',

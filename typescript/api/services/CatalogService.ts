@@ -50,7 +50,7 @@ export module Services {
     }
 
     sendGetToTable(table: string, body: any) {
-      const query = qs.stringify(body);
+      sails.log.debug(body);
       const post = requestPromise({
         uri: this.config.domain + `/api/now/table/${table}`,
         method: 'GET',
@@ -61,17 +61,15 @@ export module Services {
       return from(post);
     }
 
-    serviceCatalogPost(uri:string, catalogId:string, method:string, quantity: number, variables:any){
+    serviceCatalogPost(uri: string, catalogId: string, method: string, quantity: string, variables: any, assigned_to: string, opened_by: string, requested_by: string) {
       const body = {
         sysparm_quantity: quantity,
-        variables: variables
+        variables: variables,
+        opened_by: opened_by,
+        assigned_to: assigned_to,
+        requested_by: requested_by
       };
       const url = `${this.config.domain}${uri}${catalogId}/${method}`;
-      sails.log.debug("==================");
-      sails.log.debug(url);
-      sails.log.debug("==================");
-      sails.log.debug(body);
-      sails.log.debug("==================");
       const post = requestPromise({
         uri: url,
         method: 'POST',

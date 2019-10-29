@@ -9670,11 +9670,7 @@ var CatalogDisplayField = /** @class */ (function (_super) {
         _this.showCatalog = true;
         _this.requestBox = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
         _this.catalogService = _this.getFromInjector(__WEBPACK_IMPORTED_MODULE_5__catalog_service__["a" /* CatalogService */]);
-        _this.nameLabel = options['nameLabel'] || 'Name';
-        _this.typeLabel = options['typeLabel'] || 'Type';
-        _this.ownerLabel = options['ownerLabel'] || 'Owner';
-        _this.emailLabel = options['emailLabel'] || 'Email';
-        _this.supervisorLabel = options['supervisorLabel'] || 'Supervisor';
+        _this.catalogHelp = options['catalogHelp'] || 'For help email:<>';
         _this.boxTitleLabel = options['boxTitleLabel'] || 'Title';
         _this.requestLabel = options['requestLabel'] || 'Request';
         _this.requestError = options['requestError'] || 'Request Error';
@@ -9716,7 +9712,8 @@ var CatalogDisplayField = /** @class */ (function (_super) {
                             dm: recordMeta['contributor_data_manager'],
                             retention: recordMeta['redbox:retentionPeriod_dc:date'],
                             projectStart: recordMeta['dc:coverage_vivo:DateTimeInterval_vivo:start'],
-                            projectEnd: recordMeta['dc:coverage_vivo:DateTimeInterval_vivo:end']
+                            projectEnd: recordMeta['dc:coverage_vivo:DateTimeInterval_vivo:end'],
+                            projectHdr: recordMeta['project-hdr'],
                         };
                         return [2 /*return*/];
                 }
@@ -9767,7 +9764,7 @@ var CatalogDisplayComponent = /** @class */ (function (_super) {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'ws-catalogdisplay',
             styles: ['.service { box-shadow: 1px 2px 4px grey;  padding: 12px;  margin: 5px; height: 340px;}'],
-            template: "\n      <div class=\"row\">\n          <br/>\n      </div>\n      <div class=\"row\">\n          <div class=\"alert alert-info\">\n              <h4><strong>Data Plan:</strong></h4>\n              <h4>{{ field.projectInfo['title'] || ''}}</h4>\n          </div>\n      </div>\n      <div class=\"row\">\n          <br/>\n      </div>\n      <div *ngIf=\"field.showCatalog\">\n          <div class=\"row\">\n              <h4>Select a service for your data management plan</h4>\n              <div class=\"col-lg-4 col-md-5 col-sm-6 col-xs-12\" *ngFor=\"let s of field.services\">\n                  <div class=\"card service\" style=\"width: 30rem;\">\n                      <img class=\"card-img-top\" src=\"/angular/catalog/{{ s.logo }}\" alt=\"{{ s.name }}\">\n                      <div class=\"card-body\">\n                          <h5 class=\"card-title\" style=\"margin-top: 1px\"><span *ngIf=\"s.displayName\">{{ s.name }}</span>\n                          </h5>\n                          <p class=\"card-text\">{{ s.desc }}</p>\n                          <a (click)=\"field.createRequest(s.id)\" class=\"btn btn-primary\">{{ s.requestButton }}</a>\n                      </div>\n                  </div>\n                  <br/>\n              </div>\n          </div>\n          <div class=\"row\">\n              <p>\n                  If your service is not listed; please email eresearch-it@uts.edu.au\n              </p>\n          </div>\n          <div class=\"row\">\n              <br/>\n          </div>\n      </div>\n  "
+            template: "\n      <div class=\"row\">\n          <br/>\n      </div>\n      <div class=\"row\">\n          <div class=\"alert alert-info\">\n              <h4><strong>Data Plan:</strong></h4>\n              <h4>{{ field.projectInfo['title'] || ''}}</h4>\n          </div>\n      </div>\n      <div class=\"row\">\n          <br/>\n      </div>\n      <div *ngIf=\"field.showCatalog\">\n          <div class=\"row\">\n              <h4>Select a service for your data management plan</h4>\n              <div class=\"col-lg-4 col-md-5 col-sm-6 col-xs-12\" *ngFor=\"let s of field.services\">\n                  <div class=\"card service\" style=\"width: 30rem;\">\n                      <img class=\"card-img-top\" src=\"/angular/catalog/{{ s.logo }}\" alt=\"{{ s.name }}\">\n                      <div class=\"card-body\">\n                          <h5 class=\"card-title\" style=\"margin-top: 1px\"><span *ngIf=\"s.displayName\">{{ s.name }}</span>\n                          </h5>\n                          <p class=\"card-text\">{{ s.desc }}</p>\n                          <a (click)=\"field.createRequest(s.id)\" class=\"btn btn-primary\">{{ s.requestButton }}</a>\n                      </div>\n                  </div>\n                  <br/>\n              </div>\n          </div>\n          <div class=\"row\">\n              <p>{{ field.catalogHelp }}</p>\n          </div>\n          <div class=\"row\">\n              <br/>\n          </div>\n      </div>\n  "
         })
     ], CatalogDisplayComponent);
     return CatalogDisplayComponent;
@@ -9895,24 +9892,17 @@ var RequestBoxField = /** @class */ (function (_super) {
         _this.requestFormElements = {};
         _this.catalog = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
         _this.catalogService = _this.getFromInjector(__WEBPACK_IMPORTED_MODULE_5__catalog_service__["a" /* CatalogService */]);
-        _this.nameLabel = options['nameLabel'] || 'Name';
-        _this.typeLabel = options['typeLabel'] || 'Type';
-        _this.ownerLabel = options['ownerLabel'] || 'Owner';
         _this.emailLabel = options['emailLabel'] || 'Email';
-        _this.supervisorLabel = options['supervisorLabel'] || 'Supervisor';
         _this.backToCatalogLabel = options['backToCatalogLabel'] || 'Back to Catalog';
         _this.boxTitleLabel = options['boxTitleLabel'] || 'Title';
-        _this.requestLabel = options['requestLabel'] || 'Request';
-        _this.notesLabel = options['notesLabel'] || 'Add notes to your request';
-        _this.requestNamePlaceholder = options['requestNamePlaceholder'] || 'please name your request';
-        _this.dmEmailLabel = options['dmEmailLabel'] || 'Data Manager';
-        _this.ciEmailLabel = options['ciEmailLabel'] || 'Supervisor/FNCI';
-        _this.retentionLabel = options['retentionLabel'] || 'Retention';
-        _this.projectStartLabel = options['projectStartLabel'] || 'Start of Project';
-        _this.projectEndLabel = options['projectEndLabel'] || 'End of Project';
+        _this.requestLabel = options['requestLabel'] || 'Submit Request';
         _this.requestError = options['requestError'] || 'Request Error';
         _this.requestSuccess = options['requestSuccess'] || 'Request Success';
         _this.requestNextAction = options['requestNextAction'] || 'Request Next Action : approve by ServiceConnect';
+        _this.requestingMessage = options['requestingMessage'] || '... Requesting ...';
+        _this.warning = options['warning'] || 'Warning';
+        _this.warningRequest = options['warningRequest'] || 'Pre-filled form';
+        _this.errorRequest = options['errorRequest'] || 'There were some errors while submiting your request';
         _this.valid = options['valid'] || {};
         _this.storageType = options['types'] || [];
         _this.requestTypeSelect = null;
@@ -9925,8 +9915,6 @@ var RequestBoxField = /** @class */ (function (_super) {
     }
     RequestBoxField.prototype.init = function () {
         this.rdmp = this.fieldMap._rootComp.rdmp;
-        this.setUserEmail();
-        this.setSupervisor();
     };
     RequestBoxField.prototype.registerEvents = function () {
         this.fieldMap['CatalogDisplay'].field['requestBox'].subscribe(this.showRequestForm.bind(this));
@@ -9957,13 +9945,18 @@ var RequestBoxField = /** @class */ (function (_super) {
                 requestVariable: el['requestVariable'],
                 validationMsg: el['validationMsg']
             });
+            var validators = null;
+            if (el['validate']) {
+                validators = __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required;
+            }
             if (!__WEBPACK_IMPORTED_MODULE_4_lodash_es__["d" /* isUndefined */](el['prefil'])) {
                 try {
                     var prefilKey = el['prefil']['key'];
                     var prefilVal = el['prefil']['val'] || el['prefil'];
                     var element = _this.projectInfo[prefilKey];
+                    var value = element[prefilVal] || element;
                     var isDisabled = el['disabled'] || false;
-                    _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]({ value: element[prefilVal], disabled: isDisabled }, __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required));
+                    _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]({ value: value, disabled: isDisabled }, validators));
                 }
                 catch (e) {
                     console.error('Please fix form config');
@@ -9971,12 +9964,14 @@ var RequestBoxField = /** @class */ (function (_super) {
                 }
             }
             else {
-                _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]('', __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required));
+                _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]('', validators));
             }
         });
     };
     RequestBoxField.prototype.showCatalog = function () {
         this.showRequest = false;
+        this.validations = [];
+        this.formError = null;
         this.catalog.emit();
     };
     RequestBoxField.prototype.setStorageTypes = function () {
@@ -10044,36 +10039,6 @@ var RequestBoxField = /** @class */ (function (_super) {
             });
         });
     };
-    RequestBoxField.prototype.setUserEmail = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var userInfo, user;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.catalogService.getUserInfo()];
-                    case 1:
-                        userInfo = _a.sent();
-                        user = userInfo['user'];
-                        this.ownerEmail = user['email'];
-                        this.owner = user['name'];
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
-    RequestBoxField.prototype.setSupervisor = function () {
-        return __awaiter(this, void 0, void 0, function () {
-            var userInfo;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
-                    case 0: return [4 /*yield*/, this.catalogService.getUserInfo()];
-                    case 1:
-                        userInfo = _a.sent();
-                        this.supervisorEmail = 'email';
-                        return [2 /*return*/];
-                }
-            });
-        });
-    };
     RequestBoxField.prototype.createFormModel = function (valueElem) {
         if (valueElem === void 0) { valueElem = undefined; }
         if (valueElem) {
@@ -10117,7 +10082,7 @@ var RequestBoxComponent = /** @class */ (function (_super) {
     RequestBoxComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'ws-requestbox',
-            template: "\n      <div *ngIf=\"field.showRequest\">\n          <div class=\"row\">\n              <div class=\"col-md-7 col-md-offset-2\">\n                  <div class=\"row\">\n                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>\n                      <form [formGroup]=\"field.requestGroupForm\"\n                            *ngIf=\"!field.requestSent\" id=\"form\"\n                            novalidate autocomplete=\"off\">\n                          <div *ngFor=\"let control of field.requestGroupForm.controls | keys; let i=index\">\n                              <div *ngIf=\"field.getValue(control, 'type') == 'text'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <input class=\"form-control\" type=\"text\"\n                                         [name]=\"field.getValue(control, 'name')\"\n                                         [id]=\"field.getValue(control, 'id')\"\n                                         formControlName=\"{{ control }}\"/>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type')  == 'textarea'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <textarea class=\"form-control\"\n                                            [rows]=\"field.getValue(control, 'rows')\"\n                                            [cols]=\"field.getValue(control, 'cols')\"\n                                            [name]=\"control\"\n                                            [id]=\"control\"\n                                            formControlName=\"{{ control }}\"></textarea>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type')  == 'select'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <select [name]=\"control\"\n                                          [id]=\"control\"\n                                          formControlName=\"{{ control }}\"\n                                          class=\"form-control\">\n                                      <option *ngFor=\"let t of field.getValue(control, 'fields')\"\n                                              [ngValue]=\"t\">{{t.name}}</option>\n                                  </select>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type') == 'checkbox'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <div *ngFor=\"let radios of field.getValue(control, 'fields')\" class=\"radio\">\n                                      <label>\n                                          <input type=\"radio\" [value]=\"radios['name']\"\n                                                 formControlName=\"{{ control }}\">\n                                          {{ radios['name'] }}\n                                      </label>\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"alert alert-danger\" *ngIf=\"field.formError\">\n                              <p *ngIf=\"field.errorMessage\">{{field.errorMessage}}</p>\n                              <ul>\n                                  <li *ngFor=\"let v of field.validations\">{{ v }}</li>\n                              </ul>\n                          </div>\n                          <div class=\"alert alert-warning alert-dismissible show\">\n                              <strong>Warning!</strong> This form is pre-filled with information from your data\n                              management plan. If the fields are incorrect, please modify your plan.\n                              <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>\n                          </div>\n                          <button *ngIf=\"!field.loading\" class=\"btn btn-primary\"\n                                  (click)=\"field.validate()\"\n                                  type=\"submit\" form=\"ngForm\">{{ field.requestLabel }}\n                          </button>\n                          <div *ngIf=\"field.loading\">\n                              ... requesting ...\n                          </div>\n                          <div class=\"row\"><br/></div>\n\n                      </form>\n                  </div>\n                  <div class=\"row\">\n                      <div *ngIf=\"field.requestSent\">\n                          <p>{{ field.requestSuccess }}</p>\n                          <p>Owner: <strong>{{ field.owner }}</strong></p>\n                          <p>Supervisor: <strong>{{ field.ci.email }}</strong></p>\n                          <p>{{ field.requestNextAction }}</p>\n                      </div>\n                  </div>\n\n              </div>\n          </div>\n\n          <div class=\"row\">\n              <a (click)=\"field.showCatalog()\" class=\"btn btn-secondary\">{{ field.backToCatalogLabel }}</a>\n          </div>\n      </div>\n      <div class=\"row\"><br/></div>\n  "
+            template: "\n      <div class=\"row\">\n          <div class=\"col-md-8 col-md-offset-2\">\n              <div *ngIf=\"field.showRequest\">\n                  <div class=\"row\">\n                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>\n                      <form [formGroup]=\"field.requestGroupForm\"\n                            *ngIf=\"!field.requestSent\" id=\"form\"\n                            novalidate autocomplete=\"off\">\n                          <div *ngFor=\"let control of field.requestGroupForm.controls | keys; let i=index\">\n                              <div *ngIf=\"field.getValue(control, 'type') == 'text'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <input class=\"form-control\" type=\"text\"\n                                         [name]=\"field.getValue(control, 'name')\"\n                                         [id]=\"field.getValue(control, 'id')\"\n                                         formControlName=\"{{ control }}\"/>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type')  == 'textarea'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <textarea class=\"form-control\"\n                                            [rows]=\"field.getValue(control, 'rows')\"\n                                            [cols]=\"field.getValue(control, 'cols')\"\n                                            [name]=\"control\"\n                                            [id]=\"control\"\n                                            formControlName=\"{{ control }}\"></textarea>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type')  == 'select'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <select [name]=\"control\"\n                                          [id]=\"control\"\n                                          formControlName=\"{{ control }}\"\n                                          class=\"form-control\">\n                                      <option *ngFor=\"let t of field.getValue(control, 'fields')\"\n                                              [ngValue]=\"t\">{{t.name}}</option>\n                                  </select>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type') == 'radio'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <div *ngFor=\"let radios of field.getValue(control, 'fields')\" class=\"radio\">\n                                      <label>\n                                          <input type=\"radio\" [value]=\"radios['name']\"\n                                                 formControlName=\"{{ control }}\">\n                                          {{ radios['name'] }}\n                                      </label>\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"alert alert-danger\" *ngIf=\"field.formError\">\n                              <h4>{{ field.errorRequest }}</h4>\n                              <p *ngIf=\"field.errorMessage\">{{field.errorMessage}}</p>\n                              <ul>\n                                  <li *ngFor=\"let v of field.validations\">{{ v }}</li>\n                              </ul>\n                          </div>\n                          <div class=\"alert alert-warning alert-dismissible show\">\n                              <strong>{{ field.warning }}</strong> {{ field.warningRequest }}\n                              <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>\n                          </div>\n                          <button *ngIf=\"!field.loading\" class=\"btn btn-primary\"\n                                  (click)=\"field.validate()\"\n                                  type=\"submit\" form=\"ngForm\">{{ field.requestLabel }}\n                          </button>\n                          <div *ngIf=\"field.loading\">\n                              {{ field.requestingMessage }}\n                          </div>\n                          <div class=\"row\"><br/></div>\n                      </form>\n                  </div>\n                  <div class=\"row\">\n                      <div *ngIf=\"field.requestSent\">\n                          <p>{{ field.requestSuccess }}</p>\n                          <p>Owner: <strong>{{ field.owner }}</strong></p>\n                          <p>Supervisor: <strong>{{ field.ci.email }}</strong></p>\n                          <p>{{ field.requestNextAction }}</p>\n                      </div>\n                  </div>\n                  <div class=\"row\">\n                      <br/>\n                      <a (click)=\"field.showCatalog()\" class=\"btn btn-secondary\">{{ field.backToCatalogLabel }}</a>\n                      <br/>\n                  </div>\n                  <div class=\"row\">\n                      <br/><br/>\n                  </div>\n              </div>\n          </div>\n      </div>\n  "
         })
     ], RequestBoxComponent);
     return RequestBoxComponent;

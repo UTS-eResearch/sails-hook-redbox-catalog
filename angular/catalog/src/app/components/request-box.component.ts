@@ -36,23 +36,15 @@ export class RequestBoxField extends FieldBase<any> {
   isLoaded: boolean;
 
   boxTitleLabel: string;
-  nameLabel: string;
-  typeLabel: string;
-  ownerLabel: string;
-  supervisorLabel: string;
   backToCatalogLabel: string;
-  requestLabel: string;
-  notesLabel: string;
   errorMessage: boolean = false;
+  requestLabel: string;
   requestError: string;
   requestSuccess: string;
+  errorRequest: string;
   requestNextAction: string;
-  requestNamePlaceholder: string;
-  dmEmailLabel: string;
-  ciEmailLabel: string;
-  retentionLabel: string;
-  projectStartLabel: string;
-  projectEndLabel: string;
+  warning: string;
+  warningRequest: string;
 
   owner: string;
   ownerEmail: string;
@@ -62,6 +54,7 @@ export class RequestBoxField extends FieldBase<any> {
   storageType: object[];
   requestType: string;
   requestName: string;
+  requestingMessage: string;
   rdmp: string;
   supervisorEmail: string;
   projectInfo: any = {
@@ -96,24 +89,17 @@ export class RequestBoxField extends FieldBase<any> {
   constructor(options: any, injector: any, private formBuilder: FormBuilder) {
     super(options, injector);
     this.catalogService = this.getFromInjector(CatalogService);
-    this.nameLabel = options['nameLabel'] || 'Name';
-    this.typeLabel = options['typeLabel'] || 'Type';
-    this.ownerLabel = options['ownerLabel'] || 'Owner';
     this.emailLabel = options['emailLabel'] || 'Email';
-    this.supervisorLabel = options['supervisorLabel'] || 'Supervisor';
     this.backToCatalogLabel = options['backToCatalogLabel'] || 'Back to Catalog';
     this.boxTitleLabel = options['boxTitleLabel'] || 'Title';
-    this.requestLabel = options['requestLabel'] || 'Request';
-    this.notesLabel = options['notesLabel'] || 'Add notes to your request';
-    this.requestNamePlaceholder = options['requestNamePlaceholder'] || 'please name your request';
-    this.dmEmailLabel = options['dmEmailLabel'] || 'Data Manager';
-    this.ciEmailLabel = options['ciEmailLabel'] || 'Supervisor/FNCI';
-    this.retentionLabel = options['retentionLabel'] || 'Retention';
-    this.projectStartLabel = options['projectStartLabel'] || 'Start of Project';
-    this.projectEndLabel = options['projectEndLabel'] || 'End of Project';
+    this.requestLabel = options['requestLabel'] || 'Submit Request';
     this.requestError = options['requestError'] || 'Request Error';
     this.requestSuccess = options['requestSuccess'] || 'Request Success';
     this.requestNextAction = options['requestNextAction'] || 'Request Next Action : approve by ServiceConnect';
+    this.requestingMessage = options['requestingMessage'] || '... Requesting ...';
+    this.warning = options['warning'] || 'Warning';
+    this.warningRequest = options['warningRequest'] || 'Pre-filled form';
+    this.errorRequest = options['errorRequest'] || 'There were some errors while submiting your request';
     this.valid = options['valid'] || {};
     this.storageType = options['types'] || [];
     this.requestTypeSelect = null;
@@ -126,8 +112,6 @@ export class RequestBoxField extends FieldBase<any> {
 
   init() {
     this.rdmp = this.fieldMap._rootComp.rdmp;
-    this.setUserEmail();
-    this.setSupervisor();
   }
 
   registerEvents() {
@@ -160,26 +144,33 @@ export class RequestBoxField extends FieldBase<any> {
         requestVariable: el['requestVariable'],
         validationMsg: el['validationMsg']
       });
+      let validators = null;
+      if (el['validate']) {
+        validators = Validators.required;
+      }
       if (!_.isUndefined(el['prefil'])) {
         try {
           const prefilKey = el['prefil']['key'];
           const prefilVal = el['prefil']['val'] || el['prefil'];
           const element = this.projectInfo[prefilKey];
+          const value = element[prefilVal] || element;
           const isDisabled = el['disabled'] || false;
           this.requestGroupForm.addControl(name,
-            new FormControl({value: element[prefilVal], disabled: isDisabled}, Validators.required));
+            new FormControl({value: value, disabled: isDisabled}, validators));
         } catch (e) {
           console.error('Please fix form config');
           console.error(e);
         }
       } else {
-        this.requestGroupForm.addControl(name, new FormControl('', Validators.required));
+        this.requestGroupForm.addControl(name, new FormControl('', validators));
       }
     });
   }
 
   showCatalog() {
     this.showRequest = false;
+    this.validations = [];
+    this.formError = null;
     this.catalog.emit();
   }
 
@@ -228,18 +219,6 @@ export class RequestBoxField extends FieldBase<any> {
     this.loading = false;
   }
 
-  async setUserEmail() {
-    const userInfo = await this.catalogService.getUserInfo();
-    const user = userInfo['user'];
-    this.ownerEmail = user['email'];
-    this.owner = user['name'];
-  }
-
-  async setSupervisor() {
-    const userInfo = await this.catalogService.getUserInfo();
-    this.supervisorEmail = 'email';
-  }
-
   createFormModel(valueElem: any = undefined): any {
     if (valueElem) {
       this.value = valueElem;
@@ -272,9 +251,9 @@ export class RequestBoxField extends FieldBase<any> {
 @Component({
   selector: 'ws-requestbox',
   template: `
-      <div *ngIf="field.showRequest">
-          <div class="row">
-              <div class="col-md-7 col-md-offset-2">
+      <div class="row">
+          <div class="col-md-8 col-md-offset-2">
+              <div *ngIf="field.showRequest">
                   <div class="row">
                       <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>
                       <form [formGroup]="field.requestGroupForm"
@@ -307,7 +286,7 @@ export class RequestBoxField extends FieldBase<any> {
                                               [ngValue]="t">{{t.name}}</option>
                                   </select>
                               </div>
-                              <div *ngIf="field.getValue(control, 'type') == 'checkbox'" class="form-group">
+                              <div *ngIf="field.getValue(control, 'type') == 'radio'" class="form-group">
                                   <label>{{field.getValue(control, 'title')}}</label>
                                   <div *ngFor="let radios of field.getValue(control, 'fields')" class="radio">
                                       <label>
@@ -319,14 +298,14 @@ export class RequestBoxField extends FieldBase<any> {
                               </div>
                           </div>
                           <div class="alert alert-danger" *ngIf="field.formError">
+                              <h4>{{ field.errorRequest }}</h4>
                               <p *ngIf="field.errorMessage">{{field.errorMessage}}</p>
                               <ul>
                                   <li *ngFor="let v of field.validations">{{ v }}</li>
                               </ul>
                           </div>
                           <div class="alert alert-warning alert-dismissible show">
-                              <strong>Warning!</strong> This form is pre-filled with information from your data
-                              management plan. If the fields are incorrect, please modify your plan.
+                              <strong>{{ field.warning }}</strong> {{ field.warningRequest }}
                               <button type="button" class="close" data-dismiss="alert">&times;</button>
                           </div>
                           <button *ngIf="!field.loading" class="btn btn-primary"
@@ -334,10 +313,9 @@ export class RequestBoxField extends FieldBase<any> {
                                   type="submit" form="ngForm">{{ field.requestLabel }}
                           </button>
                           <div *ngIf="field.loading">
-                              ... requesting ...
+                              {{ field.requestingMessage }}
                           </div>
                           <div class="row"><br/></div>
-
                       </form>
                   </div>
                   <div class="row">
@@ -348,15 +326,17 @@ export class RequestBoxField extends FieldBase<any> {
                           <p>{{ field.requestNextAction }}</p>
                       </div>
                   </div>
-
+                  <div class="row">
+                      <br/>
+                      <a (click)="field.showCatalog()" class="btn btn-secondary">{{ field.backToCatalogLabel }}</a>
+                      <br/>
+                  </div>
+                  <div class="row">
+                      <br/><br/>
+                  </div>
               </div>
           </div>
-
-          <div class="row">
-              <a (click)="field.showCatalog()" class="btn btn-secondary">{{ field.backToCatalogLabel }}</a>
-          </div>
       </div>
-      <div class="row"><br/></div>
   `
 })
 export class RequestBoxComponent extends SimpleComponent implements OnInit, AfterViewInit {

@@ -27,8 +27,8 @@ class Config {
             'Content-Type': 'application/json',
             'Authorization': 'Basic ' + Buffer.from(this.user + ':' + this.password).toString('base64')
         };
-        this.requesteeId = config.requesteeId;
-        this.requesteeEmail = config.requesteeEmail;
+        this.openedById = config.openedById;
+        this.assignedToEmail = config.assignedToEmail;
         this.testRequestorId = config.testRequestorId;
         this.defaultGroupId = config.defaultGroupId;
         this.types = config.types;

@@ -32,19 +32,17 @@ export class CatalogDisplayField extends FieldBase<any> {
   isLoaded: boolean;
 
   boxTitleLabel: string;
-  nameLabel: string;
-  typeLabel: string;
-  ownerLabel: string;
-  supervisorLabel: string;
+
+
   requestLabel: string;
   errorMessage: boolean = false;
   requestError: string;
   requestSuccess: string;
   requestNextAction: string;
+  catalogHelp: string;
 
   owner: string;
   ownerEmail: string;
-  emailLabel: string;
   supervisor: string;
   dataManager: object;
   ci: object;
@@ -75,11 +73,7 @@ export class CatalogDisplayField extends FieldBase<any> {
   constructor(options: any, injector: any) {
     super(options, injector);
     this.catalogService = this.getFromInjector(CatalogService);
-    this.nameLabel = options['nameLabel'] || 'Name';
-    this.typeLabel = options['typeLabel'] || 'Type';
-    this.ownerLabel = options['ownerLabel'] || 'Owner';
-    this.emailLabel = options['emailLabel'] || 'Email';
-    this.supervisorLabel = options['supervisorLabel'] || 'Supervisor';
+    this.catalogHelp = options['catalogHelp'] || 'For help email:<>';
     this.boxTitleLabel = options['boxTitleLabel'] || 'Title';
     this.requestLabel = options['requestLabel'] || 'Request';
     this.requestError = options['requestError'] || 'Request Error';
@@ -119,7 +113,8 @@ export class CatalogDisplayField extends FieldBase<any> {
       dm: recordMeta['contributor_data_manager'],
       retention: recordMeta['redbox:retentionPeriod_dc:date'],
       projectStart: recordMeta['dc:coverage_vivo:DateTimeInterval_vivo:start'],
-      projectEnd: recordMeta['dc:coverage_vivo:DateTimeInterval_vivo:end']
+      projectEnd: recordMeta['dc:coverage_vivo:DateTimeInterval_vivo:end'],
+      projectHdr: recordMeta['project-hdr'],
     };
   }
 
@@ -185,9 +180,7 @@ export class CatalogDisplayField extends FieldBase<any> {
               </div>
           </div>
           <div class="row">
-              <p>
-                  If your service is not listed; please email eresearch-it@uts.edu.au
-              </p>
+              <p>{{ field.catalogHelp }}</p>
           </div>
           <div class="row">
               <br/>

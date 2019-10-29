@@ -1,5 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+const rxjs_1 = require("rxjs");
 require("rxjs/add/operator/map");
 const controller = require("../core/CoreController");
 const Config_1 = require("../Config");
@@ -43,26 +44,42 @@ var Controllers;
             const rdmp = req.param('rdmp');
             const catalogId = req.param('catalogId');
             const request = req.param('request');
-            const openedByEmail = req.param('openedByEmail');
+            const requestedByEmail = (req.param('openedByEmail') || '').toLowerCase();
             let createTicket = null;
             const info = {
                 "short_description": `Stash Service: ${request.type}`,
-                "assigned_to": `${this.config.requesteeId}`,
-                "opened_by": `${this.config.testRequestorId}`
+                "assigned_to": this.config.assignedToEmail,
+                "opened_by": this.config.openedById,
+                "requested_by": '',
             };
-            return CatalogService.sendGetToTable('sys_user', { email: this.config.requesteeEmail })
+            return CatalogService.sendGetToTable('sys_user', { email: info.assigned_to })
                 .flatMap(response => {
-                sails.log.debug(`sendGetToTable ${this.config.requesteeEmail}`);
-                info.assigned_to = response.sys_id;
-                return CatalogService.sendGetToTable('sys_user', { email: openedByEmail });
+                if (response && response['result']) {
+                    const result = _.first(response['result']);
+                    sails.log.debug(`assigned_to ${info.assigned_to}`);
+                    sails.log.debug(result['sys_id']);
+                    info.assigned_to = result['sys_id'];
+                }
+                else {
+                    sails.log.error(response);
+                    throw rxjs_1.throwError('cannot find info.assigned_to Id');
+                }
+                return CatalogService.sendGetToTable('sys_user', { email: requestedByEmail });
             }).flatMap(response => {
-                sails.log.debug(`sendGetToTable ${openedByEmail}`);
-                sails.log.debug(response);
-                info.opened_by = response.sys_id;
                 const variables = this.requestToVariables(request);
                 variables['rdmp'] = rdmp;
-                sails.log.debug(JSON.stringify(variables, null, 2));
-                return CatalogService.serviceCatalogPost('/api/sn_sc/servicecatalog/items/', catalogId, 'order_now', '1', variables);
+                if (response && response['result']) {
+                    const result = _.first(response['result']);
+                    sails.log.debug(`requestedByEmail ${requestedByEmail}`);
+                    sails.log.debug(result['sys_id']);
+                    info.requested_by = result['sys_id'];
+                    sails.log.debug(JSON.stringify(variables, null, 2));
+                }
+                else {
+                    sails.log.error(response);
+                    throw rxjs_1.throwError('cannot find requested_by Id');
+                }
+                return CatalogService.serviceCatalogPost('/api/sn_sc/servicecatalog/items/', catalogId, 'order_now', '1', variables, info.assigned_to, info.opened_by, info.requested_by);
             })
                 .subscribe(response => {
                 sails.log.debug('createTicket');
