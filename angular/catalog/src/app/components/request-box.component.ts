@@ -82,6 +82,7 @@ export class RequestBoxField extends FieldBase<any> {
   requestGroupForm: FormGroup;
   formArrayItems: {}[];
   formArray: {}[];
+  formCheckBoxArray: any;
   form: {};
 
   @Output() catalog: EventEmitter<any> = new EventEmitter<any>();
@@ -107,6 +108,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.formBuilder = new FormBuilder();
     this.formArrayItems = [];
     this.formArray = [];
+    this.formCheckBoxArray = [];
     this.form = {};
   }
 
@@ -148,7 +150,12 @@ export class RequestBoxField extends FieldBase<any> {
       if (el['validate']) {
         validators = Validators.required;
       }
-      if (!_.isUndefined(el['prefil'])) {
+      if (el['type'] === 'checkbox') {
+        this.formCheckBoxArray = _.map(el['fields'], () => {
+          return new FormControl(false);
+        });
+        this.requestGroupForm.addControl(name, new FormArray(this.formCheckBoxArray));
+      } else if (!_.isUndefined(el['prefil'])) {
         try {
           const prefilKey = el['prefil']['key'];
           const prefilVal = el['prefil']['val'] || el['prefil'];
@@ -156,7 +163,8 @@ export class RequestBoxField extends FieldBase<any> {
           const value = element[prefilVal] || element;
           const isDisabled = el['disabled'] || false;
           this.requestGroupForm.addControl(name,
-            new FormControl({value: value, disabled: isDisabled}, validators));
+            new FormControl({value: value, disabled: isDisabled}, validators)
+          );
         } catch (e) {
           console.error('Please fix form config');
           console.error(e);
@@ -296,6 +304,15 @@ export class RequestBoxField extends FieldBase<any> {
                                       </label>
                                   </div>
                               </div>
+                              <div *ngIf="field.getValue(control, 'type') == 'checkbox'" class="form-group">
+                                  <label>{{field.getValue(control, 'title')}}</label>
+                                  <div *ngFor="let check of field.getValue(control, 'fields'); let i = index;">
+                                      <label class="checkbox-inline">
+                                          <input [formControl]="field.formCheckBoxArray[i]" type="checkbox">
+                                          {{ check['name'] }}
+                                      </label>
+                                  </div>
+                              </div>
                           </div>
                           <div class="alert alert-danger" *ngIf="field.formError">
                               <h4>{{ field.errorRequest }}</h4>
@@ -321,8 +338,6 @@ export class RequestBoxField extends FieldBase<any> {
                   <div class="row">
                       <div *ngIf="field.requestSent">
                           <p>{{ field.requestSuccess }}</p>
-                          <p>Owner: <strong>{{ field.owner }}</strong></p>
-                          <p>Supervisor: <strong>{{ field.ci.email }}</strong></p>
                           <p>{{ field.requestNextAction }}</p>
                       </div>
                   </div>

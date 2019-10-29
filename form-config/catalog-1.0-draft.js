@@ -42,6 +42,7 @@ module.exports = {
             logo: 'assets/images/uts_hpcs.png',
             desc: 'UTS eResearch manages two High Performance Computing Clusters that can be accessed by UTS researchers.',
             requestButton: 'Create Request',
+            requestingMessage: '... Creating request, please wait ...',
             defaultForm: false,
             help: '',
             form: {
@@ -131,8 +132,6 @@ module.exports = {
             displayName: true,
             logo: 'assets/images/storage.jpg',
             desc: 'eResearch Store offers granular access control down to User account level. eResearch fileshares are accessible via the UTS secure network',
-            requestButton: 'Create Request',
-            requestingMessage: '... Creating request, please wait ...',
             defaultForm: true,
             help: '',
             form: {
@@ -220,7 +219,6 @@ module.exports = {
             displayName: true,
             logo: 'assets/images/catalog.png',
             desc: 'Having trouble completing your RDMP? Just enter "?" in any fields you are unsure',
-            requestButton: 'Create Request',
             defaultForm: true,
             help: '',
             form: {
@@ -237,6 +235,7 @@ module.exports = {
                 title: 'Notes',
                 field: 'notes',
                 type: 'textarea',
+                validate: true,
                 textarea: {rows: 10, cols: 150, maxlength: 30},
                 requestVariable: 'notes'
               },
@@ -269,7 +268,8 @@ module.exports = {
               days_help: {
                 validationMsg: "Add days usually best suit you",
                 title: 'Which days usually best suit you',
-                type: 'text',
+                type: 'checkbox',
+                fields: [{name: 'Mon'}, {name: 'Tues'}, {name: 'Wed'}, {name: 'Thurs'}],
                 requestVariable: 'days_help'
               },
             },
