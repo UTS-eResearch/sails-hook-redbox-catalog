@@ -84,6 +84,8 @@ export class RequestBoxField extends FieldBase<any> {
   formArray: {}[];
   formCheckBoxArray: any;
   form: {};
+  workspaceInfo: {};
+  workspaceType: string;
 
   @Output() catalog: EventEmitter<any> = new EventEmitter<any>();
 
@@ -103,6 +105,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.errorRequest = options['errorRequest'] || 'There were some errors while submiting your request';
     this.valid = options['valid'] || {};
     this.storageType = options['types'] || [];
+    this.workspaceInfo = {};
     this.requestTypeSelect = null;
     this.catalogId = '';
     this.formBuilder = new FormBuilder();
@@ -110,6 +113,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.formArray = [];
     this.formCheckBoxArray = [];
     this.form = {};
+    this.workspaceType = '';
   }
 
   init() {
@@ -131,6 +135,8 @@ export class RequestBoxField extends FieldBase<any> {
     this.showRequest = true;
     this.requestType = req.service;
     this.requestFormElements = req.service.form;
+    this.workspaceInfo = req.service.workspaceInfo;
+    this.workspaceType = req.service.workspaceType;
     this.projectInfo = req.project;
     this.catalogId = req.service.catalogId;
     this.formArray = [];
@@ -214,10 +220,10 @@ export class RequestBoxField extends FieldBase<any> {
   async requestForm(form) {
 
     this.loading = true;
-    console.log(form);
+    const workspaceInfo = this.getWorkspaceInfo(this.workspaceInfo, form);
     const catalogId = this.catalogId;
     this.formError = false;
-    const createRequest = await this.catalogService.createRequest(form, this.rdmp, this.ownerEmail, catalogId);
+    const createRequest = await this.catalogService.createRequest(form, this.rdmp, catalogId, workspaceInfo, this.workspaceType);
     if (!createRequest.status) {
       this.formError = true;
       this.errorMessage = createRequest.message;
@@ -225,6 +231,26 @@ export class RequestBoxField extends FieldBase<any> {
       this.requestSent = true;
     }
     this.loading = false;
+  }
+
+  getWorkspaceInfo(objs, form) {
+    const info = {};
+    _.each(objs, (obj, key) => {
+      const msg = [];
+      if (obj['concat']) {
+        _.each(obj['concat'], c => {
+          if (form[c] && form[c]['value']) {
+            let value = form[c]['value'];
+            value = value['name'] || value;
+            msg.push(value);
+          }
+        });
+      } else {
+        msg.push(obj['name']);
+      }
+      info[key] = msg.join(' ');
+    });
+    return info;
   }
 
   createFormModel(valueElem: any = undefined): any {
@@ -341,7 +367,7 @@ export class RequestBoxField extends FieldBase<any> {
                           <p>{{ field.requestNextAction }}</p>
                       </div>
                   </div>
-                  <div class="row">
+                  <div *ngIf="!field.requestSent" class="row">
                       <br/>
                       <a (click)="field.showCatalog()" class="btn btn-secondary">{{ field.backToCatalogLabel }}</a>
                       <br/>

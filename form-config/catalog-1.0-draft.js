@@ -34,17 +34,22 @@ module.exports = {
       definition: {
         name: 'CatalogDisplay',
         boxTitleLabel: 'Data Management Plan:',
+        requestButton: 'Create Request',
         services: [
           {
             id: 'hpc',
             name: 'High Performance Computing Cluster',
+            workspaceType: 'HPC',
             displayName: true,
             logo: 'assets/images/uts_hpcs.png',
             desc: 'UTS eResearch manages two High Performance Computing Clusters that can be accessed by UTS researchers.',
             requestButton: 'Create Request',
-            requestingMessage: '... Creating request, please wait ...',
             defaultForm: false,
             help: '',
+            workspaceInfo: {
+              workspaceTitle: {concat: ['project_name']},
+              workspaceDescription: {concat: ['storage_size', 'cluster_type']},
+            },
             form: {
               storage_size: {
                 validationMsg: 'Storage Size: Add the desired storage size',
@@ -129,12 +134,17 @@ module.exports = {
           {
             id: 'storage',
             name: 'eResearch Store',
+            workspaceType: 'Isilon Storage',
             displayName: true,
             logo: 'assets/images/storage.jpg',
             desc: 'eResearch Store offers granular access control down to User account level. eResearch fileshares are accessible via the UTS secure network',
             defaultForm: true,
             requestButton: 'Create Request',
             help: '',
+            workspaceInfo: {
+              workspaceTitle: {concat: ['share_name']},
+              workspaceDescription: {concat: ['share_type', 'storage_size']},
+            },
             form: {
               storage_size: {
                 validationMsg: "Storage Size: Add the desired storage size",
@@ -217,12 +227,17 @@ module.exports = {
           {
             id: 'stash_rdmp_help',
             name: 'Stash Research Data Management Consultation',
+            workspaceType: 'Consultation',
             displayName: true,
             logo: 'assets/images/catalog.png',
             desc: 'Having trouble completing your RDMP? Just enter "?" in any fields you are unsure',
             defaultForm: true,
             requestButton: 'Create Request',
             help: '',
+            workspaceInfo: {
+              workspaceTitle: {name: 'request'},
+              workspaceDescription: {name: 'Consultation'}
+            },
             form: {
               reasons_for_consultation: {
                 validationMsg: 'Select reasons for consultation',
@@ -290,6 +305,7 @@ module.exports = {
         requestLabel: 'Submit Request',
         errorRequest: 'There were some errors while submitting your request',
         warning: 'Warning!',
+        requestingMessage: '... Creating request, please wait ...',
         warningRequest: 'This form is pre-filled with information from your data management plan. If the fields are incorrect, please modify your plan.'
       }
     },

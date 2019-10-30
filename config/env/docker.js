@@ -3,7 +3,7 @@
 module.exports = {
   workspaces: {
     portal: {
-      authorization: 'Bearer 4aad88cd-8edb-4b30-9d26-53c5701a47ad'
+      authorization: 'Bearer xxx'
     },
     provisionerUser: 'admin',
     parentRecord: 'rdmp',
@@ -15,13 +15,14 @@ module.exports = {
       appId: 'catalog',
       recordType: 'catalog',
       description: 'eResearch Service',
-      domain: 'https://XXXX.service-now.com',
+      domain: 'https://xxx.service-now.com',
+      taskURL: '/task.do?sys_id=',
       requestTable: 'sc_request',
-      user: 'XXXX',
-      password: 'XXXX',
-      requesteeId: 'XXXX',
-      requesteeEmail: 'XXX@email.com',
-      testRequestorId:'XXXX',
+      user: 'xxx',
+      password: 'xxx',
+      openedById: 'xxx',
+      assignedToEmail: 'xx.xx@xx.edu.au',
+      testRequestorId: null,
     }
   }
 };

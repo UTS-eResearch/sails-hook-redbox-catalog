@@ -9,6 +9,7 @@ class Config {
         this.formName = config.formName;
         this.appName = config.appName;
         this.domain = config.domain;
+        this.taskURL = config.taskURL;
         this.requestTable = config.requestTable;
         this.user = config.user;
         this.password = config.password;
