@@ -156,7 +156,7 @@ export class CatalogDisplayField extends FieldBase<any> {
       </div>
       <div class="row">
           <div class="alert alert-info">
-              <h4><strong>Data Plan:</strong></h4>
+              <h4><strong>{{ field.boxTitleLabel }}</strong></h4>
               <h4>{{ field.projectInfo['title'] || ''}}</h4>
           </div>
       </div>
@@ -178,9 +178,6 @@ export class CatalogDisplayField extends FieldBase<any> {
                   </div>
                   <br/>
               </div>
-          </div>
-          <div class="row">
-              <p>{{ field.catalogHelp }}</p>
           </div>
           <div class="row">
               <br/>

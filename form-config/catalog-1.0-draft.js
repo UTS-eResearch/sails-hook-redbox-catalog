@@ -24,7 +24,7 @@ module.exports = {
       viewOnly: false,
       definition: {
         name: 'title',
-        value: 'UTS eResearch Service Catalogue (prototype)',
+        value: 'UTS eResearch Service Catalogue',
         type: 'h2'
       }
     },
@@ -33,7 +33,7 @@ module.exports = {
       editOnly: true,
       definition: {
         name: 'CatalogDisplay',
-        catalogHelp: 'If your service is not listed; please email eresearch-it@uts.edu.au',
+        boxTitleLabel: 'Data Management Plan:',
         services: [
           {
             id: 'hpc',
@@ -133,6 +133,7 @@ module.exports = {
             logo: 'assets/images/storage.jpg',
             desc: 'eResearch Store offers granular access control down to User account level. eResearch fileshares are accessible via the UTS secure network',
             defaultForm: true,
+            requestButton: 'Create Request',
             help: '',
             form: {
               storage_size: {
@@ -220,6 +221,7 @@ module.exports = {
             logo: 'assets/images/catalog.png',
             desc: 'Having trouble completing your RDMP? Just enter "?" in any fields you are unsure',
             defaultForm: true,
+            requestButton: 'Create Request',
             help: '',
             form: {
               reasons_for_consultation: {
@@ -289,6 +291,17 @@ module.exports = {
         errorRequest: 'There were some errors while submitting your request',
         warning: 'Warning!',
         warningRequest: 'This form is pre-filled with information from your data management plan. If the fields are incorrect, please modify your plan.'
+      }
+    },
+    {
+      class: 'Container',
+      compClass: 'TextBlockComponent',
+      viewOnly: false,
+      definition: {
+        name: 'cataloghelp',
+        value: 'If your service is not listed or you are having issues with this catalogue; please email eresearch-it@uts.edu.au',
+        type: 'p',
+        cssClasses: ''
       }
     },
     {
