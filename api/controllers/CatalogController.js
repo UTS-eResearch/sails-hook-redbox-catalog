@@ -113,7 +113,7 @@ var Controllers;
                     rdmpTitle: rdmpTitle,
                     title: workspaceTitle,
                     location: workspaceLocation,
-                    description: workspaceType + ': ' + workspaceDescription,
+                    description: workspaceType + ' ' + workspaceDescription,
                     type: this.config.recordType
                 };
                 return WorkspaceService.createWorkspaceRecord(this.config, username, record, this.config.recordType, this.config.workflowStage);

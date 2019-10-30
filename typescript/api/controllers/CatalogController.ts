@@ -145,7 +145,7 @@ export module Controllers {
             rdmpTitle: rdmpTitle,
             title: workspaceTitle,
             location: workspaceLocation,
-            description: workspaceType + ': ' + workspaceDescription,
+            description: workspaceType + ' ' + workspaceDescription,
             type: this.config.recordType
           };
           return WorkspaceService.createWorkspaceRecord(

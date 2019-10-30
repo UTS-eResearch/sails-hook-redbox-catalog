@@ -227,7 +227,7 @@ module.exports = {
           {
             id: 'stash_rdmp_help',
             name: 'Stash Research Data Management Consultation',
-            workspaceType: 'Consultation',
+            workspaceType: 'Data Management',
             displayName: true,
             logo: 'assets/images/catalog.png',
             desc: 'Having trouble completing your RDMP? Just enter "?" in any fields you are unsure',
@@ -236,6 +236,7 @@ module.exports = {
             help: '',
             workspaceInfo: {
               workspaceTitle: {name: 'request'},
+              workspaceDescription: {name: 'Consultation'}
             },
             form: {
               reasons_for_consultation: {
