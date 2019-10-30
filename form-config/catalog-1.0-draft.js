@@ -236,7 +236,6 @@ module.exports = {
             help: '',
             workspaceInfo: {
               workspaceTitle: {name: 'request'},
-              workspaceDescription: {name: 'Consultation'}
             },
             form: {
               reasons_for_consultation: {
