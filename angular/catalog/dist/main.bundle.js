@@ -9720,6 +9720,8 @@ var CatalogDisplayField = /** @class */ (function (_super) {
                             projectStart: recordMeta['dc:coverage_vivo:DateTimeInterval_vivo:start'],
                             projectEnd: recordMeta['dc:coverage_vivo:DateTimeInterval_vivo:end'],
                             projectHdr: recordMeta['project-hdr'],
+                            contributors: recordMeta['contributors'],
+                            contributor_supervisors: recordMeta['contributor_supervisors']
                         };
                         return [2 /*return*/];
                 }
@@ -9918,6 +9920,7 @@ var RequestBoxField = /** @class */ (function (_super) {
         _this.formArrayItems = [];
         _this.formArray = [];
         _this.formCheckBoxArray = [];
+        _this.formMultiTextArray = [];
         _this.form = {};
         _this.workspaceType = '';
         return _this;
@@ -9946,7 +9949,7 @@ var RequestBoxField = /** @class */ (function (_super) {
         this.formArray = [];
         this.formArrayItems = [];
         this.requestGroupForm = new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["d" /* FormGroup */]({});
-        __WEBPACK_IMPORTED_MODULE_4_lodash_es__["d" /* forOwn */](this.requestFormElements, function (el, name) {
+        __WEBPACK_IMPORTED_MODULE_4_lodash_es__["e" /* forOwn */](this.requestFormElements, function (el, name) {
             _this.formArrayItems.push({
                 id: name,
                 title: el['title'],
@@ -9961,19 +9964,37 @@ var RequestBoxField = /** @class */ (function (_super) {
                 validators = __WEBPACK_IMPORTED_MODULE_3__angular_forms__["j" /* Validators */].required;
             }
             if (el['type'] === 'checkbox') {
-                _this.formCheckBoxArray = __WEBPACK_IMPORTED_MODULE_4_lodash_es__["f" /* map */](el['fields'], function () {
+                _this.formCheckBoxArray = __WEBPACK_IMPORTED_MODULE_4_lodash_es__["h" /* map */](el['fields'], function () {
                     return new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](false);
                 });
                 _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormArray */](_this.formCheckBoxArray));
             }
-            else if (!__WEBPACK_IMPORTED_MODULE_4_lodash_es__["e" /* isUndefined */](el['prefil'])) {
+            else if (!__WEBPACK_IMPORTED_MODULE_4_lodash_es__["g" /* isUndefined */](el['prefil'])) {
                 try {
-                    var prefilKey = el['prefil']['key'];
-                    var prefilVal = el['prefil']['val'] || el['prefil'];
-                    var element = _this.projectInfo[prefilKey];
-                    var value = element[prefilVal] || element;
-                    var isDisabled = el['disabled'] || false;
-                    _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]({ value: value, disabled: isDisabled }, validators));
+                    if (el['type'] === 'multi-text') {
+                        var values = el['prefil'].map(function (obj) {
+                            var value = __WEBPACK_IMPORTED_MODULE_4_lodash_es__["f" /* get */](_this.projectInfo, obj.key, null);
+                            return value.map(function (o) { return o[obj.val]; });
+                        });
+                        values = __WEBPACK_IMPORTED_MODULE_4_lodash_es__["c" /* flattenDeep */](values);
+                        values = values.filter(function (ele) { return ele !== ''; });
+                        if (values.length === 0) {
+                            // If there is nothing to prefil, start with one.
+                            values.push('');
+                        }
+                        _this.formMultiTextArray = __WEBPACK_IMPORTED_MODULE_4_lodash_es__["h" /* map */](values, function (val) {
+                            return new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */](val);
+                        });
+                        _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["a" /* FormArray */](_this.formMultiTextArray));
+                    }
+                    else {
+                        var prefilKey = el['prefil']['key'];
+                        var prefilVal = el['prefil']['val'] || el['prefil'];
+                        var element = _this.projectInfo[prefilKey];
+                        var value = element[prefilVal] || element;
+                        var isDisabled = el['disabled'] || false;
+                        _this.requestGroupForm.addControl(name, new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]({ value: value, disabled: isDisabled }, validators));
+                    }
                 }
                 catch (e) {
                     console.error('Please fix form config');
@@ -10010,7 +10031,7 @@ var RequestBoxField = /** @class */ (function (_super) {
     RequestBoxField.prototype.validate = function () {
         var _this = this;
         this.validations = [];
-        __WEBPACK_IMPORTED_MODULE_4_lodash_es__["c" /* forEach */](this.formArrayItems, function (obj) {
+        __WEBPACK_IMPORTED_MODULE_4_lodash_es__["d" /* forEach */](this.formArrayItems, function (obj) {
             var control = _this.requestGroupForm.get(obj['id']);
             if (control.errors) {
                 _this.validations.push(obj['validationMsg']);
@@ -10076,6 +10097,14 @@ var RequestBoxField = /** @class */ (function (_super) {
         });
         return info;
     };
+    RequestBoxField.prototype.removeMulti = function (index) {
+        console.log("removeMulti" + index);
+        this.formMultiTextArray.pop();
+    };
+    RequestBoxField.prototype.addMulti = function () {
+        console.log("addMulti");
+        this.formMultiTextArray.push(new __WEBPACK_IMPORTED_MODULE_3__angular_forms__["c" /* FormControl */]());
+    };
     RequestBoxField.prototype.createFormModel = function (valueElem) {
         if (valueElem === void 0) { valueElem = undefined; }
         if (valueElem) {
@@ -10119,7 +10148,7 @@ var RequestBoxComponent = /** @class */ (function (_super) {
     RequestBoxComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'ws-requestbox',
-            template: "\n      <div class=\"row\">\n          <div class=\"col-md-8 col-md-offset-2\">\n              <div *ngIf=\"field.showRequest\">\n                  <div class=\"row\">\n                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>\n                      <form [formGroup]=\"field.requestGroupForm\"\n                            *ngIf=\"!field.requestSent\" id=\"form\"\n                            novalidate autocomplete=\"off\">\n                          <div *ngFor=\"let control of field.requestGroupForm.controls | keys; let i=index\">\n                              <div *ngIf=\"field.getValue(control, 'type') == 'text'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <input class=\"form-control\" type=\"text\"\n                                         [name]=\"field.getValue(control, 'name')\"\n                                         [id]=\"field.getValue(control, 'id')\"\n                                         formControlName=\"{{ control }}\"/>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type')  == 'textarea'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <textarea class=\"form-control\"\n                                            [rows]=\"field.getValue(control, 'rows')\"\n                                            [cols]=\"field.getValue(control, 'cols')\"\n                                            [name]=\"control\"\n                                            [id]=\"control\"\n                                            formControlName=\"{{ control }}\"></textarea>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type')  == 'select'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <select [name]=\"control\"\n                                          [id]=\"control\"\n                                          formControlName=\"{{ control }}\"\n                                          class=\"form-control\">\n                                      <option *ngFor=\"let t of field.getValue(control, 'fields')\"\n                                              [ngValue]=\"t\">{{t.name}}</option>\n                                  </select>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type') == 'radio'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <div *ngFor=\"let radios of field.getValue(control, 'fields')\" class=\"radio\">\n                                      <label>\n                                          <input type=\"radio\" [value]=\"radios['name']\"\n                                                 formControlName=\"{{ control }}\">\n                                          {{ radios['name'] }}\n                                      </label>\n                                  </div>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type') == 'checkbox'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <div *ngFor=\"let check of field.getValue(control, 'fields'); let i = index;\">\n                                      <label class=\"checkbox-inline\">\n                                          <input [formControl]=\"field.formCheckBoxArray[i]\" type=\"checkbox\">\n                                          {{ check['name'] }}\n                                      </label>\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"alert alert-danger\" *ngIf=\"field.formError\">\n                              <h4>{{ field.errorRequest }}</h4>\n                              <p *ngIf=\"field.errorMessage\">{{field.errorMessage}}</p>\n                              <ul>\n                                  <li *ngFor=\"let v of field.validations\">{{ v }}</li>\n                              </ul>\n                          </div>\n                          <div class=\"alert alert-warning alert-dismissible show\">\n                              <strong>{{ field.warning }}</strong> {{ field.warningRequest }}\n                              <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>\n                          </div>\n                          <button *ngIf=\"!field.loading\" class=\"btn btn-primary\"\n                                  (click)=\"field.validate()\"\n                                  type=\"submit\" form=\"ngForm\">{{ field.requestLabel }}\n                          </button>\n                          <div *ngIf=\"field.loading\">\n                              {{ field.requestingMessage }}\n                          </div>\n                          <div class=\"row\"><br/></div>\n                      </form>\n                  </div>\n                  <div class=\"row\">\n                      <div *ngIf=\"field.requestSent\">\n                          <p>{{ field.requestSuccess }}</p>\n                          <p>{{ field.requestNextAction }}</p>\n                      </div>\n                  </div>\n                  <div *ngIf=\"!field.requestSent\" class=\"row\">\n                      <br/>\n                      <a *ngIf=\"!field.loading\" (click)=\"field.showCatalog()\"\n                         class=\"btn btn-secondary\">{{ field.backToCatalogLabel }}</a>\n                      <br/>\n                  </div>\n                  <div class=\"row\">\n                      <br/><br/>\n                  </div>\n              </div>\n          </div>\n      </div>\n  "
+            template: "\n      <div class=\"row\">\n          <div class=\"col-md-8 col-md-offset-2\">\n              <div *ngIf=\"field.showRequest\">\n                  <div class=\"row\">\n                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>\n                      <form [formGroup]=\"field.requestGroupForm\"\n                            *ngIf=\"!field.requestSent\" id=\"form\"\n                            novalidate autocomplete=\"off\">\n                          <div *ngFor=\"let control of field.requestGroupForm.controls | keys; let i=index\">\n                              <div *ngIf=\"field.getValue(control, 'type') == 'text'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <input class=\"form-control\" type=\"text\"\n                                         [name]=\"field.getValue(control, 'name')\"\n                                         [id]=\"field.getValue(control, 'id')\"\n                                         formControlName=\"{{ control }}\"/>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type')  == 'textarea'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <textarea class=\"form-control\"\n                                            [rows]=\"field.getValue(control, 'rows')\"\n                                            [cols]=\"field.getValue(control, 'cols')\"\n                                            [name]=\"control\"\n                                            [id]=\"control\"\n                                            formControlName=\"{{ control }}\"></textarea>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type')  == 'select'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <select [name]=\"control\"\n                                          [id]=\"control\"\n                                          formControlName=\"{{ control }}\"\n                                          class=\"form-control\">\n                                      <option *ngFor=\"let t of field.getValue(control, 'fields')\"\n                                              [ngValue]=\"t\">{{t.name}}</option>\n                                  </select>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type') == 'radio'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <div *ngFor=\"let radios of field.getValue(control, 'fields')\" class=\"radio\">\n                                      <label>\n                                          <input type=\"radio\" [value]=\"radios['name']\"\n                                                 formControlName=\"{{ control }}\">\n                                          {{ radios['name'] }}\n                                      </label>\n                                  </div>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type') == 'checkbox'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <div *ngFor=\"let check of field.getValue(control, 'fields'); let i = index;\">\n                                      <label class=\"checkbox-inline\">\n                                          <input [formControl]=\"field.formCheckBoxArray[i]\" type=\"checkbox\">\n                                          {{ check['name'] }}\n                                      </label>\n                                  </div>\n                              </div>\n                              <div *ngIf=\"field.getValue(control, 'type') == 'multi-text'\" class=\"form-group\">\n                                  <label>{{field.getValue(control, 'title')}}</label>\n                                  <div *ngFor=\"let multi of field.formMultiTextArray; let i = index;\">\n                                      <div class=\"input-group padding-bottom-10\">\n                                          <input class=\"form-control\" [formControl]=\"field.formMultiTextArray[i]\"\n                                                 type=\"text\">\n                                          <span class=\"input-group-btn\">\n                                            <a *ngIf=\"!field.loading\" (click)=\"field.removeMulti(i)\"\n                                               class=\"fa fa-minus-circle btn text-20 pull-right btn-danger\"></a>\n                                        </span>\n                                      </div>\n                                  </div>\n                                  <div>\n                                      <span class=\"col-md-10\">\n                                        <a (click)=\"field.addMulti()\"\n                                           class=\"fa fa-plus-circle btn text-20 pull-right btn-success\"></a>\n                                      </span>\n                                  </div>\n                              </div>\n                          </div>\n                          <div class=\"alert alert-danger\" *ngIf=\"field.formError\">\n                              <h4>{{ field.errorRequest }}</h4>\n                              <p *ngIf=\"field.errorMessage\">{{field.errorMessage}}</p>\n                              <ul>\n                                  <li *ngFor=\"let v of field.validations\">{{ v }}</li>\n                              </ul>\n                          </div>\n                          <div class=\"alert alert-warning alert-dismissible show\">\n                              <strong>{{ field.warning }}</strong> {{ field.warningRequest }}\n                              <button type=\"button\" class=\"close\" data-dismiss=\"alert\">&times;</button>\n                          </div>\n                          <button *ngIf=\"!field.loading\" class=\"btn btn-primary\"\n                                  (click)=\"field.validate()\"\n                                  type=\"submit\" form=\"ngForm\">{{ field.requestLabel }}\n                          </button>\n                          <div *ngIf=\"field.loading\">\n                              {{ field.requestingMessage }}\n                          </div>\n                          <div class=\"row\"><br/></div>\n                      </form>\n                  </div>\n                  <div class=\"row\">\n                      <div *ngIf=\"field.requestSent\">\n                          <p>{{ field.requestSuccess }}</p>\n                          <p>{{ field.requestNextAction }}</p>\n                      </div>\n                  </div>\n                  <div *ngIf=\"!field.requestSent\" class=\"row\">\n                      <br/>\n                      <a *ngIf=\"!field.loading\" (click)=\"field.showCatalog()\"\n                         class=\"btn btn-secondary\">{{ field.backToCatalogLabel }}</a>\n                      <br/>\n                  </div>\n                  <div class=\"row\">\n                      <br/><br/>\n                  </div>\n              </div>\n          </div>\n      </div>\n  "
         })
     ], RequestBoxComponent);
     return RequestBoxComponent;

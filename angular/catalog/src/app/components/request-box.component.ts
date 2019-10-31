@@ -83,6 +83,7 @@ export class RequestBoxField extends FieldBase<any> {
   formArrayItems: {}[];
   formArray: {}[];
   formCheckBoxArray: any;
+  formMultiTextArray: any;
   form: {};
   workspaceInfo: {};
   workspaceType: string;
@@ -112,6 +113,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.formArrayItems = [];
     this.formArray = [];
     this.formCheckBoxArray = [];
+    this.formMultiTextArray = [];
     this.form = {};
     this.workspaceType = '';
   }
@@ -163,14 +165,31 @@ export class RequestBoxField extends FieldBase<any> {
         this.requestGroupForm.addControl(name, new FormArray(this.formCheckBoxArray));
       } else if (!_.isUndefined(el['prefil'])) {
         try {
-          const prefilKey = el['prefil']['key'];
-          const prefilVal = el['prefil']['val'] || el['prefil'];
-          const element = this.projectInfo[prefilKey];
-          const value = element[prefilVal] || element;
-          const isDisabled = el['disabled'] || false;
-          this.requestGroupForm.addControl(name,
-            new FormControl({value: value, disabled: isDisabled}, validators)
-          );
+          if (el['type'] === 'multi-text') {
+            let values = el['prefil'].map((obj) => {
+              const value = _.get(this.projectInfo, obj.key, null);
+              return value.map((o) => o[obj.val]);
+            });
+            values = _.flattenDeep(values);
+            values = values.filter((ele) => ele !== '');
+            if (values.length === 0) {
+              // If there is nothing to prefil, start with one.
+              values.push('');
+            }
+            this.formMultiTextArray = _.map(values, (val) => {
+              return new FormControl(val);
+            });
+            this.requestGroupForm.addControl(name, new FormArray(this.formMultiTextArray));
+          } else {
+            const prefilKey = el['prefil']['key'];
+            const prefilVal = el['prefil']['val'] || el['prefil'];
+            const element = this.projectInfo[prefilKey];
+            const value = element[prefilVal] || element;
+            const isDisabled = el['disabled'] || false;
+            this.requestGroupForm.addControl(name,
+              new FormControl({value: value, disabled: isDisabled}, validators)
+            );
+          }
         } catch (e) {
           console.error('Please fix form config');
           console.error(e);
@@ -251,6 +270,16 @@ export class RequestBoxField extends FieldBase<any> {
       info[key] = msg.join(' ');
     });
     return info;
+  }
+
+  removeMulti(index) {
+    console.log(`removeMulti${index}`);
+    this.formMultiTextArray.pop();
+  }
+
+  addMulti() {
+    console.log(`addMulti`);
+    this.formMultiTextArray.push(new FormControl());
   }
 
   createFormModel(valueElem: any = undefined): any {
@@ -337,6 +366,25 @@ export class RequestBoxField extends FieldBase<any> {
                                           <input [formControl]="field.formCheckBoxArray[i]" type="checkbox">
                                           {{ check['name'] }}
                                       </label>
+                                  </div>
+                              </div>
+                              <div *ngIf="field.getValue(control, 'type') == 'multi-text'" class="form-group">
+                                  <label>{{field.getValue(control, 'title')}}</label>
+                                  <div *ngFor="let multi of field.formMultiTextArray; let i = index;">
+                                      <div class="input-group padding-bottom-10">
+                                          <input class="form-control" [formControl]="field.formMultiTextArray[i]"
+                                                 type="text">
+                                          <span class="input-group-btn">
+                                            <a *ngIf="!field.loading" (click)="field.removeMulti(i)"
+                                               class="fa fa-minus-circle btn text-20 pull-right btn-danger"></a>
+                                        </span>
+                                      </div>
+                                  </div>
+                                  <div>
+                                      <span class="col-md-10">
+                                        <a (click)="field.addMulti()"
+                                           class="fa fa-plus-circle btn text-20 pull-right btn-success"></a>
+                                      </span>
                                   </div>
                               </div>
                           </div>

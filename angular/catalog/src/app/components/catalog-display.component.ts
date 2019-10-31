@@ -115,6 +115,8 @@ export class CatalogDisplayField extends FieldBase<any> {
       projectStart: recordMeta['dc:coverage_vivo:DateTimeInterval_vivo:start'],
       projectEnd: recordMeta['dc:coverage_vivo:DateTimeInterval_vivo:end'],
       projectHdr: recordMeta['project-hdr'],
+      contributors: recordMeta['contributors'],
+      contributor_supervisors: recordMeta['contributor_supervisors']
     };
   }
 

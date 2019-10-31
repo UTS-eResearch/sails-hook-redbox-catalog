@@ -39,7 +39,7 @@ module.exports = {
           {
             id: 'hpc',
             name: 'High Performance Computing Cluster',
-            workspaceType: 'HPC',
+            workspaceType: 'Compute',
             displayName: true,
             logo: 'assets/images/uts_hpcs.png',
             desc: 'UTS eResearch manages two High Performance Computing Clusters that can be accessed by UTS researchers.',
@@ -103,7 +103,11 @@ module.exports = {
               data_collaborators: {
                 validationMsg: "Contributors: Please add email of the collaborators, UTS ONLY",
                 title: 'UTS Contributors',
-                type: 'text',
+                type: 'multi-text',
+                prefil: [
+                  {key: 'contributors', val: 'email'},
+                  {key: 'contributor_supervisors', val: 'email'}
+                ],
                 requestVariable: 'data_collaborators'
               },
               retention_period: {
@@ -196,7 +200,11 @@ module.exports = {
               data_collaborators: {
                 validationMsg: "Collaborators: Please add email of the collaborators",
                 title: 'Collaborators',
-                type: 'text',
+                type: 'multi-text',
+                prefil: [
+                  {key: 'contributors', val: 'email'},
+                  {key: 'contributor_supervisors', val: 'email'}
+                ],
                 requestVariable: 'data_collaborators'
               },
               retention_period: {
@@ -258,10 +266,10 @@ module.exports = {
               },
               type_of_user: {
                 validationMsg: "Select if you are an HDR or a researcher",
-                title: 'HDR or Researcher',
+                title: 'Are you a high degree research student?',
                 validate: true,
-                type: 'radio',
-                fields: [{name: 'HDR'}, {name: 'Researcher'}],
+                type: 'checkbox',
+                fields: [{name: 'HDR'}],
                 requestVariable: 'type_of_user'
               },
               data_manager: {
