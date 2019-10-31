@@ -151,7 +151,7 @@ export class CatalogDisplayField extends FieldBase<any> {
  */
 @Component({
   selector: 'ws-catalogdisplay',
-  styles: ['.service { box-shadow: 1px 2px 4px grey;  padding: 12px;  margin: 5px; height: 340px;}'],
+  styles: ['.service { box-shadow: 1px 2px 4px grey;  padding: 12px;  margin: 20px; height: 340px;}'],
   template: `
       <div class="row">
           <br/>
@@ -168,14 +168,19 @@ export class CatalogDisplayField extends FieldBase<any> {
       <div *ngIf="field.showCatalog">
           <div class="row">
               <h4>Select a service for your data management plan</h4>
-              <div class="col-lg-4 col-md-5 col-sm-6 col-xs-12" *ngFor="let s of field.services">
-                  <div class="card service" style="width: 30rem;">
+              <div class="card-deck">
+                  <div class="card service col-lg-4 col-md-5 col-sm-6 col-xs-12"
+                       *ngFor="let s of field.services" style="display: flex; flex-direction: column;width: 30rem;">
                       <img class="card-img-top" src="/angular/catalog/{{ s.logo }}" alt="{{ s.name }}">
-                      <div class="card-body">
-                          <h5 class="card-title" style="margin-top: 1px"><span *ngIf="s.displayName">{{ s.name }}</span>
+                      <div class="card-body" style="margin-bottom: auto;">
+                          <h5 class="card-title" style="margin-top: 1px">
+                              <span *ngIf="s.displayName">{{ s.name }}</span>
                           </h5>
                           <p class="card-text">{{ s.desc }}</p>
-                          <a (click)="field.createRequest(s.id)" class="btn btn-primary">{{ s.requestButton }}</a>
+                      </div>
+                      <div class="card-footer" style="margin-top: auto;">
+                          <a (click)="field.createRequest(s.id)"
+                             class="pull-right btn btn-primary">{{ s.requestButton }}</a>
                       </div>
                   </div>
                   <br/>

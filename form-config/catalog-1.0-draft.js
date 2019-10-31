@@ -140,7 +140,7 @@ module.exports = {
             name: 'eResearch Store',
             workspaceType: 'Isilon Storage',
             displayName: true,
-            logo: 'assets/images/storage.jpg',
+            logo: 'assets/images/storage.png',
             desc: 'eResearch Store offers granular access control down to User account level. eResearch fileshares are accessible via the UTS secure network',
             defaultForm: true,
             requestButton: 'Create Request',

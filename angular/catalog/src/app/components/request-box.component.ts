@@ -381,10 +381,10 @@ export class RequestBoxField extends FieldBase<any> {
                                       </div>
                                   </div>
                                   <div>
-                                      <span class="col-md-10">
+                                      <div class="padding-bottom-10">
                                         <a (click)="field.addMulti()"
                                            class="fa fa-plus-circle btn text-20 pull-right btn-success"></a>
-                                      </span>
+                                      </div>
                                   </div>
                               </div>
                           </div>
