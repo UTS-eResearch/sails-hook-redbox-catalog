@@ -180,7 +180,7 @@ export class CatalogDisplayField extends FieldBase<any> {
                       </div>
                       <div class="card-footer" style="margin-top: auto;">
                           <a (click)="field.createRequest(s.id)"
-                             class="pull-right btn btn-primary">{{ s.requestButton }}</a>
+                             class="btn btn-block btn-primary">{{ s.requestButton }}</a>
                       </div>
                   </div>
                   <br/>
