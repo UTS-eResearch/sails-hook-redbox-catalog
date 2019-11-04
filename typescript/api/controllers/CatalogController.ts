@@ -80,10 +80,18 @@ export module Controllers {
       let recordMetadata = {};
       let rdmpTitle = '';
       let workspaceLocation = '';
+      let requestorName = '';
 
       sails.log.debug(request);
       if (request['data_manager'] && request['data_manager']['value']) {
         reqInfo.requested_by = request['data_manager']['value'];
+        try {
+          requestorName = reqInfo.requested_by.substr(0, reqInfo.requested_by.indexOf('.'));
+        } catch (e) {
+          sails.log.error('Requested By name Error');
+          sails.log.error(e);
+          requestorName = 'Stash User';
+        }
       }
       if (request['data_supervisor'] && request['data_supervisor']['value']) {
         reqInfo.affected_contact = request['data_supervisor']['value'];
@@ -105,7 +113,8 @@ export module Controllers {
           return CatalogService.sendGetToTable('sys_user', {email: reqInfo.requested_by});
         }).flatMap(response => {
           const variables = this.requestToVariables(request);
-          variables['rdmp'] = rdmp;
+          variables['rdmp'] = `${this.config.brandingAndPortalUrl}/record/view/${rdmp}`;
+          variables['requestor'] = requestorName;
           if (response && response['result']) {
             const result = _.first(response['result']);
             sails.log.debug(`requestedByEmail ${reqInfo.requested_by}`);
