@@ -7,6 +7,7 @@
     "start": "ng serve",
     "dev": "sudo chown -R vagrant:vagrant /opt/redbox-portal/.tmp/public/angular && ng build --outputPath=/opt/redbox-portal/.tmp/public/angular/catalog",
     "dev:local": "ng build --outputPath=./dist",
+    "prod:local": "ng build --prod --build-optimizer --output-hashing=none --extract-css true --outputPath=./dist",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
