@@ -112,7 +112,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.formBuilder = new FormBuilder();
     this.formArrayItems = [];
     this.formArray = [];
-    this.formCheckBoxArray = [];
+    this.formCheckBoxArray = {};
     this.formMultiTextArray = [];
     this.form = {};
     this.workspaceType = '';
@@ -159,10 +159,17 @@ export class RequestBoxField extends FieldBase<any> {
         validators = Validators.required;
       }
       if (el['type'] === 'checkbox') {
-        this.formCheckBoxArray = _.map(el['fields'], () => {
-          return new FormControl(false);
+        let checkboxValue = false;
+        // Only auto tick on one value is supported for now.
+        if (!_.isUndefined(el['prefil'])) {
+          const obj = el['prefil'];
+          checkboxValue = _.get(this.projectInfo, obj.key, false);
+        }
+        this.formCheckBoxArray[name] = _.map(el['fields'], () => {
+          return new FormControl(checkboxValue);
         });
-        this.requestGroupForm.addControl(name, new FormArray(this.formCheckBoxArray));
+
+        this.requestGroupForm.addControl(name, new FormArray(this.formCheckBoxArray[name]));
       } else if (!_.isUndefined(el['prefil'])) {
         try {
           if (el['type'] === 'multi-text') {
@@ -363,7 +370,8 @@ export class RequestBoxField extends FieldBase<any> {
                                   <label>{{field.getValue(control, 'title')}}</label>
                                   <div *ngFor="let check of field.getValue(control, 'fields'); let i = index;">
                                       <label class="checkbox-inline">
-                                          <input [formControl]="field.formCheckBoxArray[i]" type="checkbox">
+                                          <input [formControl]="field.formCheckBoxArray[field.getValue(control, 'id')][i]"
+                                                 type="checkbox">
                                           {{ check['name'] }}
                                       </label>
                                   </div>
@@ -382,8 +390,8 @@ export class RequestBoxField extends FieldBase<any> {
                                   </div>
                                   <div>
                                       <div class="padding-bottom-10">
-                                        <a (click)="field.addMulti()"
-                                           class="fa fa-plus-circle btn text-20 pull-right btn-success"></a>
+                                          <a (click)="field.addMulti()"
+                                             class="fa fa-plus-circle btn text-20 pull-right btn-success"></a>
                                       </div>
                                   </div>
                               </div>

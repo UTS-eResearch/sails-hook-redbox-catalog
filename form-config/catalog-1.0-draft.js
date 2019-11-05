@@ -269,6 +269,7 @@ module.exports = {
                 title: 'Are you a high degree research student?',
                 validate: true,
                 type: 'checkbox',
+                prefil: {key: 'projectHdr', val: ''},
                 fields: [{name: 'HDR'}],
                 requestVariable: 'type_of_user'
               },
