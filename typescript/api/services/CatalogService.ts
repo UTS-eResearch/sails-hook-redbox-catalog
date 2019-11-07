@@ -67,7 +67,7 @@ export module Services {
         variables: variables,
         opened_by: opened_by,
         assigned_to: assigned_to,
-        requested_by: requested_by
+        requested_for: requested_by
       };
       const url = `${this.config.domain}${uri}${catalogId}/${method}`;
       const post = requestPromise({

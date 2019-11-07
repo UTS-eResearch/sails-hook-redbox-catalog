@@ -60,6 +60,7 @@ var Controllers;
             let rdmpTitle = '';
             let workspaceLocation = '';
             let requestorName = '';
+            let emailPermissions = [];
             sails.log.debug(request);
             if (request['data_manager'] && request['data_manager']['value']) {
                 reqInfo.requested_by = request['data_manager']['value'];
@@ -74,6 +75,7 @@ var Controllers;
             }
             if (request['data_supervisor'] && request['data_supervisor']['value']) {
                 reqInfo.affected_contact = request['data_supervisor']['value'];
+                emailPermissions.push(reqInfo.affected_contact);
             }
             return CatalogService.sendGetToTable('sys_user', { email: reqInfo.assigned_to })
                 .flatMap(response => {
@@ -89,6 +91,7 @@ var Controllers;
                 }
                 return CatalogService.sendGetToTable('sys_user', { email: reqInfo.requested_by });
             }).flatMap(response => {
+                sails.log.debug('requestToVariables');
                 const variables = this.requestToVariables(request);
                 variables['rdmp'] = `${this.config.brandingAndPortalUrl}/record/view/${rdmp}`;
                 variables['requestor'] = requestorName;
@@ -126,7 +129,7 @@ var Controllers;
                     description: workspaceType + ' ' + workspaceDescription,
                     type: this.config.recordType
                 };
-                return WorkspaceService.createWorkspaceRecord(this.config, username, record, this.config.recordType, this.config.workflowStage);
+                return WorkspaceService.createWorkspaceRecord(this.config, username, record, this.config.recordType, this.config.workflowStage, emailPermissions);
             })
                 .flatMap(workspace => {
                 if (recordMetadata['workspaces']) {
@@ -154,6 +157,7 @@ var Controllers;
                 const v = val['variable'];
                 const vv = val['value'];
                 variables[v] = vv['name'] || vv;
+                sails.log.debug(variables[v]);
             });
             return variables;
         }

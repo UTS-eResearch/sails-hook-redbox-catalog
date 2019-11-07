@@ -81,6 +81,7 @@ export module Controllers {
       let rdmpTitle = '';
       let workspaceLocation = '';
       let requestorName = '';
+      let emailPermissions = [];
 
       sails.log.debug(request);
       if (request['data_manager'] && request['data_manager']['value']) {
@@ -95,6 +96,7 @@ export module Controllers {
       }
       if (request['data_supervisor'] && request['data_supervisor']['value']) {
         reqInfo.affected_contact = request['data_supervisor']['value'];
+        emailPermissions.push(reqInfo.affected_contact);
       }
 
       // Find Id of assigned_to
@@ -112,6 +114,7 @@ export module Controllers {
           // Find Id of opened_by
           return CatalogService.sendGetToTable('sys_user', {email: reqInfo.requested_by});
         }).flatMap(response => {
+          sails.log.debug('requestToVariables');
           const variables = this.requestToVariables(request);
           variables['rdmp'] = `${this.config.brandingAndPortalUrl}/record/view/${rdmp}`;
           variables['requestor'] = requestorName;
@@ -158,7 +161,7 @@ export module Controllers {
             type: this.config.recordType
           };
           return WorkspaceService.createWorkspaceRecord(
-            this.config, username, record, this.config.recordType, this.config.workflowStage
+            this.config, username, record, this.config.recordType, this.config.workflowStage, emailPermissions
           );
         })
         .flatMap(workspace => {
@@ -189,6 +192,7 @@ export module Controllers {
         const v = val['variable'];
         const vv = val['value'];
         variables[v] = vv['name'] || vv;
+        sails.log.debug(variables[v]);
       });
       return variables;
     }
