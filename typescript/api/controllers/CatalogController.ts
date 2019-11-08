@@ -123,6 +123,7 @@ export module Controllers {
             sails.log.debug(`requestedByEmail ${reqInfo.requested_by}`);
             sails.log.debug(result['sys_id']);
             reqInfo.requested_by = result['sys_id'];
+            variables['user_id'] = reqInfo.requested_by;
             sails.log.debug(JSON.stringify(variables, null, 2));
           } else {
             sails.log.error(response);
