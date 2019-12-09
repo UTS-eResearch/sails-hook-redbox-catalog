@@ -101,7 +101,7 @@ var Controllers;
                     sails.log.debug(result['sys_id']);
                     reqInfo.requested_by = result['sys_id'];
                     variables['user_id'] = reqInfo.requested_by;
-                    variables['requested_for'] = reqInfo.requested_by;
+                    variables['opened_by'] = reqInfo.requested_by;
                     sails.log.debug(JSON.stringify(variables, null, 2));
                 }
                 else {

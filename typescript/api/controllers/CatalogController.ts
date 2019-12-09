@@ -124,7 +124,9 @@ export module Controllers {
             sails.log.debug(result['sys_id']);
             reqInfo.requested_by = result['sys_id'];
             variables['user_id'] = reqInfo.requested_by;
-            variables['requested_for'] = reqInfo.requested_by;
+            variables['opened_by'] = reqInfo.requested_by;
+            // TODO: add affected_contact to query (that is the supervisor)
+            //variables['affected_contact'] = reqInfo.affected_contact;
             sails.log.debug(JSON.stringify(variables, null, 2));
           } else {
             sails.log.error(response);
