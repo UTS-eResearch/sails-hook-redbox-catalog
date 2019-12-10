@@ -45,6 +45,8 @@ export class RequestBoxField extends FieldBase<any> {
   requestNextAction: string;
   warning: string;
   warningRequest: string;
+  requestNumber: string;
+  workspaceLocation: string;
 
   owner: string;
   ownerEmail: string;
@@ -209,6 +211,8 @@ export class RequestBoxField extends FieldBase<any> {
 
   showCatalog() {
     this.showRequest = false;
+    this.requestNumber = '';
+    this.workspaceLocation = '';
     this.validations = [];
     this.formError = null;
     this.catalog.emit();
@@ -254,6 +258,8 @@ export class RequestBoxField extends FieldBase<any> {
       this.formError = true;
       this.errorMessage = createRequest.message;
     } else {
+      this.requestNumber = createRequest.request_number;
+      this.workspaceLocation = createRequest.workspaceLocation;
       this.requestSent = true;
     }
     this.loading = false;
@@ -421,6 +427,9 @@ export class RequestBoxField extends FieldBase<any> {
                       <div *ngIf="field.requestSent">
                           <p>{{ field.requestSuccess }}</p>
                           <p>{{ field.requestNextAction }}</p>
+                          <p *ngIf="field.requestNumber">
+                            <a href="{{ field.workspaceLocation }}" target="_blank" rel="noopener noreferrer">{{ field.requestNumber }}</a>
+                          </p>
                       </div>
                   </div>
                   <div *ngIf="!field.requestSent" class="row">

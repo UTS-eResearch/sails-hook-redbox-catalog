@@ -82,6 +82,7 @@ export module Controllers {
       let workspaceLocation = '';
       let requestorName = '';
       let emailPermissions = [];
+      let request_number = '';
 
       sails.log.debug(request);
       if (request['data_manager'] && request['data_manager']['value']) {
@@ -146,6 +147,8 @@ export module Controllers {
           sails.log.debug(response);
           if (response && response['result']) {
             const result = response['result'];
+            sails.log.debug(result);
+            request_number = result['request_number'];
             // When we get access to workflow this should change to the TASK URL.
             workspaceLocation = `${this.config.domain}${this.config.taskURL}${result['sys_id']}`;
           } else {
@@ -180,7 +183,7 @@ export module Controllers {
         .subscribe(response => {
           sails.log.debug('createTicket,linkWorkspace');
           createTicket = response;
-          this.ajaxOk(req, res, null, {status: true, createTicket: createTicket});
+          this.ajaxOk(req, res, null, {status: true, createTicket: createTicket, request_number: request_number, workspaceLocation: workspaceLocation});
         }, error => {
           sails.log.error('request: error');
           sails.log.error(error.message);

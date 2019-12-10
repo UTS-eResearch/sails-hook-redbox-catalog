@@ -61,6 +61,7 @@ var Controllers;
             let workspaceLocation = '';
             let requestorName = '';
             let emailPermissions = [];
+            let request_number = '';
             sails.log.debug(request);
             if (request['data_manager'] && request['data_manager']['value']) {
                 reqInfo.requested_by = request['data_manager']['value'];
@@ -113,6 +114,8 @@ var Controllers;
                 sails.log.debug(response);
                 if (response && response['result']) {
                     const result = response['result'];
+                    sails.log.debug(result);
+                    request_number = result['request_number'];
                     workspaceLocation = `${this.config.domain}${this.config.taskURL}${result['sys_id']}`;
                 }
                 else {
@@ -145,7 +148,7 @@ var Controllers;
                 .subscribe(response => {
                 sails.log.debug('createTicket,linkWorkspace');
                 createTicket = response;
-                this.ajaxOk(req, res, null, { status: true, createTicket: createTicket });
+                this.ajaxOk(req, res, null, { status: true, createTicket: createTicket, request_number: request_number, workspaceLocation: workspaceLocation });
             }, error => {
                 sails.log.error('request: error');
                 sails.log.error(error.message);

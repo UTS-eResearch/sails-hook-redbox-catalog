@@ -312,6 +312,8 @@ module.exports = {
         boxTitleLabel: 'Request for eResearch Service',
         backToCatalogLabel: 'Show Catalogue',
         requestLabel: 'Submit Request',
+        requestSuccess: 'Success!',
+        requestNextAction: 'There is now a ticket/job in Service Connect.',
         errorRequest: 'There were some errors while submitting your request',
         warning: 'Warning!',
         requestingMessage: '... Creating request, please wait ...',
