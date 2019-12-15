@@ -129,11 +129,12 @@ var Controllers;
                 const record = {
                     rdmpOid: rdmp,
                     rdmpTitle: rdmpTitle,
-                    title: request_number + ' : ' + workspaceTitle,
+                    title: workspaceTitle,
                     location: workspaceLocation,
-                    description: workspaceType + ' ' + workspaceDescription,
+                    description: request_number + ' : ' + workspaceType + ' ' + workspaceDescription,
                     type: this.config.recordType
                 };
+                sails.log.debug(record);
                 return WorkspaceService.createWorkspaceRecord(this.config, username, record, this.config.recordType, this.config.workflowStage, emailPermissions);
             })
                 .flatMap(workspace => {
