@@ -162,7 +162,7 @@ export module Controllers {
           const record = {
             rdmpOid: rdmp,
             rdmpTitle: rdmpTitle,
-            title: workspaceTitle,
+            title: request_number + ' : ' + workspaceTitle,
             location: workspaceLocation,
             description: workspaceType + ' ' + workspaceDescription,
             type: this.config.recordType
