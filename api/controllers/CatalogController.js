@@ -163,6 +163,9 @@ var Controllers;
                 const v = val['variable'];
                 const vv = val['value'];
                 variables[v] = vv['name'] || vv;
+                if (Array.isArray(variables[v]) && variables[v].length === 1) {
+                    variables[v] = _.first(variables[v]);
+                }
                 sails.log.debug(variables[v]);
             });
             return variables;
