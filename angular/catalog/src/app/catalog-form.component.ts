@@ -97,6 +97,9 @@ export class CatalogFormComponent extends LoadableComponent {
   loading: boolean = false;
   loggedIn: any;
   rdmp: string;
+  appType: string;
+  @Output() setType: EventEmitter<any> = new EventEmitter<any>();
+
 
   constructor(
     elm: ElementRef,
@@ -111,7 +114,10 @@ export class CatalogFormComponent extends LoadableComponent {
     this.editMode = elm.nativeElement.getAttribute('editMode') == "true";
     this.recordType = elm.nativeElement.getAttribute('recordType');
     this.rdmp = elm.nativeElement.getAttribute('rdmp');
+    this.appType = elm.nativeElement.getAttribute('appType');
+
     console.log(`RDMP: ${this.rdmp}`);
+    console.log(`TYPE: ${this.appType}`);
 
     //TODO: Find out what is this next line!
     this.fieldMap = {_rootComp: this};

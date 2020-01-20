@@ -9192,11 +9192,14 @@ var CatalogFormComponent = /** @class */ (function (_super) {
          */
         _this.fields = [];
         _this.loading = false;
+        _this.setType = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
         _this.oid = elm.nativeElement.getAttribute('oid');
         _this.editMode = elm.nativeElement.getAttribute('editMode') == "true";
         _this.recordType = elm.nativeElement.getAttribute('recordType');
         _this.rdmp = elm.nativeElement.getAttribute('rdmp');
+        _this.appType = elm.nativeElement.getAttribute('appType');
         console.log("RDMP: " + _this.rdmp);
+        console.log("TYPE: " + _this.appType);
         //TODO: Find out what is this next line!
         _this.fieldMap = { _rootComp: _this };
         //TODO: do I have to wait for storageservice too?
@@ -9280,6 +9283,10 @@ var CatalogFormComponent = /** @class */ (function (_super) {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Input"])(),
         __metadata("design:type", String)
     ], CatalogFormComponent.prototype, "recordType", void 0);
+    __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Output"])(),
+        __metadata("design:type", __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"])
+    ], CatalogFormComponent.prototype, "setType", void 0);
     CatalogFormComponent = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             moduleId: module.i,
@@ -9673,7 +9680,8 @@ var CatalogDisplayField = /** @class */ (function (_super) {
         _this.formError = false;
         _this.validations = [];
         _this.services = [];
-        _this.showCatalog = true;
+        _this.showCatalog = false;
+        _this.appType = undefined;
         _this.requestBox = new __WEBPACK_IMPORTED_MODULE_0__angular_core__["EventEmitter"]();
         _this.catalogService = _this.getFromInjector(__WEBPACK_IMPORTED_MODULE_5__catalog_service__["a" /* CatalogService */]);
         _this.catalogHelp = options['catalogHelp'] || 'For help email:<>';
@@ -9688,6 +9696,7 @@ var CatalogDisplayField = /** @class */ (function (_super) {
     }
     CatalogDisplayField.prototype.init = function () {
         this.rdmp = this.fieldMap._rootComp.rdmp;
+        this.appType = this.fieldMap._rootComp.appType;
         this.setRDMPInfo();
     };
     CatalogDisplayField.prototype.registerEvents = function () {
@@ -9723,6 +9732,12 @@ var CatalogDisplayField = /** @class */ (function (_super) {
                             contributors: recordMeta['contributors'],
                             contributor_supervisors: recordMeta['contributor_supervisors']
                         };
+                        if (this.appType) {
+                            this.createRequest(this.appType);
+                        }
+                        else {
+                            this.showCatalog = true;
+                        }
                         return [2 /*return*/];
                 }
             });
@@ -9772,7 +9787,7 @@ var CatalogDisplayComponent = /** @class */ (function (_super) {
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["Component"])({
             selector: 'ws-catalogdisplay',
             styles: ['.service { box-shadow: 1px 2px 4px grey;  padding: 12px;  margin: 20px; height: 340px;}'],
-            template: "\n      <div class=\"row\">\n          <br/>\n      </div>\n      <div class=\"row\">\n          <div class=\"alert alert-info\">\n              <h4><strong>{{ field.boxTitleLabel }}</strong></h4>\n              <h4>{{ field.projectInfo['title'] || ''}}</h4>\n          </div>\n      </div>\n      <div class=\"row\">\n          <br/>\n      </div>\n      <div *ngIf=\"field.showCatalog\">\n          <div class=\"row\">\n              <h4>Select a service for your data management plan</h4>\n              <div class=\"card-deck\">\n                  <div class=\"card service col-lg-4 col-md-5 col-sm-6 col-xs-12\"\n                       *ngFor=\"let s of field.services\" style=\"display: flex; flex-direction: column;width: 30rem;\">\n                      <img class=\"card-img-top\" src=\"/angular/catalog/{{ s.logo }}\" alt=\"{{ s.name }}\">\n                      <div class=\"card-body\" style=\"margin-bottom: auto;\">\n                          <h5 class=\"card-title\" style=\"margin-top: 1px\">\n                              <span *ngIf=\"s.displayName\">{{ s.name }}</span>\n                          </h5>\n                          <p class=\"card-text\">{{ s.desc }}</p>\n                      </div>\n                      <div class=\"card-footer\" style=\"margin-top: auto;\">\n                          <a (click)=\"field.createRequest(s.id)\"\n                             class=\"btn btn-block btn-primary\">{{ s.requestButton }}</a>\n                      </div>\n                  </div>\n                  <br/>\n              </div>\n          </div>\n          <div class=\"row\">\n              <br/>\n          </div>\n      </div>\n  "
+            template: "\n    <div class=\"row\">\n      <br/>\n    </div>\n    <div class=\"row\">\n      <div class=\"alert alert-info\">\n        <h4><strong>{{ field.boxTitleLabel }}</strong></h4>\n        <h4>{{ field.projectInfo['title'] || ''}}</h4>\n      </div>\n    </div>\n    <div class=\"row\">\n      <br/>\n    </div>\n    <div *ngIf=\"field.showCatalog\">\n      <div class=\"row\">\n        <h4>Select a service for your data management plan</h4>\n        <div class=\"card-deck\">\n          <div class=\"card service col-lg-4 col-md-5 col-sm-6 col-xs-12\"\n               *ngFor=\"let s of field.services\" style=\"display: flex; flex-direction: column;width: 30rem;\">\n            <img class=\"card-img-top\" src=\"/angular/catalog/{{ s.logo }}\" alt=\"{{ s.name }}\">\n            <div class=\"card-body\" style=\"margin-bottom: auto;\">\n              <h5 class=\"card-title\" style=\"margin-top: 1px\">\n                <span *ngIf=\"s.displayName\">{{ s.name }}</span>\n              </h5>\n              <p class=\"card-text\">{{ s.desc }}</p>\n            </div>\n            <div class=\"card-footer\" style=\"margin-top: auto;\">\n              <a (click)=\"field.createRequest(s.id)\"\n                 class=\"btn btn-block btn-primary\">{{ s.requestButton }}</a>\n            </div>\n          </div>\n          <br/>\n        </div>\n      </div>\n      <div class=\"row\">\n        <br/>\n      </div>\n    </div>\n  "
         })
     ], CatalogDisplayComponent);
     return CatalogDisplayComponent;

@@ -66,7 +66,8 @@ export class CatalogDisplayField extends FieldBase<any> {
   validations: any = [];
 
   services: any = [];
-  showCatalog: boolean = true;
+  showCatalog: boolean = false;
+  appType: string = undefined;
 
   @Output() requestBox: EventEmitter<any> = new EventEmitter<any>();
 
@@ -85,6 +86,7 @@ export class CatalogDisplayField extends FieldBase<any> {
 
   init() {
     this.rdmp = this.fieldMap._rootComp.rdmp;
+    this.appType = this.fieldMap._rootComp.appType;
     this.setRDMPInfo();
   }
 
@@ -118,6 +120,11 @@ export class CatalogDisplayField extends FieldBase<any> {
       contributors: recordMeta['contributors'],
       contributor_supervisors: recordMeta['contributor_supervisors']
     };
+    if (this.appType) {
+      this.createRequest(this.appType);
+    }else {
+      this.showCatalog = true;
+    }
   }
 
   createFormModel(valueElem: any = undefined): any {
@@ -153,43 +160,43 @@ export class CatalogDisplayField extends FieldBase<any> {
   selector: 'ws-catalogdisplay',
   styles: ['.service { box-shadow: 1px 2px 4px grey;  padding: 12px;  margin: 20px; height: 340px;}'],
   template: `
+    <div class="row">
+      <br/>
+    </div>
+    <div class="row">
+      <div class="alert alert-info">
+        <h4><strong>{{ field.boxTitleLabel }}</strong></h4>
+        <h4>{{ field.projectInfo['title'] || ''}}</h4>
+      </div>
+    </div>
+    <div class="row">
+      <br/>
+    </div>
+    <div *ngIf="field.showCatalog">
       <div class="row">
+        <h4>Select a service for your data management plan</h4>
+        <div class="card-deck">
+          <div class="card service col-lg-4 col-md-5 col-sm-6 col-xs-12"
+               *ngFor="let s of field.services" style="display: flex; flex-direction: column;width: 30rem;">
+            <img class="card-img-top" src="/angular/catalog/{{ s.logo }}" alt="{{ s.name }}">
+            <div class="card-body" style="margin-bottom: auto;">
+              <h5 class="card-title" style="margin-top: 1px">
+                <span *ngIf="s.displayName">{{ s.name }}</span>
+              </h5>
+              <p class="card-text">{{ s.desc }}</p>
+            </div>
+            <div class="card-footer" style="margin-top: auto;">
+              <a (click)="field.createRequest(s.id)"
+                 class="btn btn-block btn-primary">{{ s.requestButton }}</a>
+            </div>
+          </div>
           <br/>
+        </div>
       </div>
       <div class="row">
-          <div class="alert alert-info">
-              <h4><strong>{{ field.boxTitleLabel }}</strong></h4>
-              <h4>{{ field.projectInfo['title'] || ''}}</h4>
-          </div>
+        <br/>
       </div>
-      <div class="row">
-          <br/>
-      </div>
-      <div *ngIf="field.showCatalog">
-          <div class="row">
-              <h4>Select a service for your data management plan</h4>
-              <div class="card-deck">
-                  <div class="card service col-lg-4 col-md-5 col-sm-6 col-xs-12"
-                       *ngFor="let s of field.services" style="display: flex; flex-direction: column;width: 30rem;">
-                      <img class="card-img-top" src="/angular/catalog/{{ s.logo }}" alt="{{ s.name }}">
-                      <div class="card-body" style="margin-bottom: auto;">
-                          <h5 class="card-title" style="margin-top: 1px">
-                              <span *ngIf="s.displayName">{{ s.name }}</span>
-                          </h5>
-                          <p class="card-text">{{ s.desc }}</p>
-                      </div>
-                      <div class="card-footer" style="margin-top: auto;">
-                          <a (click)="field.createRequest(s.id)"
-                             class="btn btn-block btn-primary">{{ s.requestButton }}</a>
-                      </div>
-                  </div>
-                  <br/>
-              </div>
-          </div>
-          <div class="row">
-              <br/>
-          </div>
-      </div>
+    </div>
   `
 })
 export class CatalogDisplayComponent extends SimpleComponent implements OnInit, AfterViewInit {
