@@ -250,6 +250,7 @@ export class RequestBoxField extends FieldBase<any> {
   async requestForm(form) {
 
     this.loading = true;
+    jQuery('#modalCreatingRequest').modal('show');
     const workspaceInfo = this.getWorkspaceInfo(this.workspaceInfo, form);
     const catalogId = this.catalogId;
     this.formError = false;
@@ -263,6 +264,7 @@ export class RequestBoxField extends FieldBase<any> {
       this.requestSent = true;
     }
     this.loading = false;
+    jQuery('#modalCreatingRequest').modal('hide');
   }
 
   getWorkspaceInfo(objs, form) {
@@ -443,6 +445,17 @@ export class RequestBoxField extends FieldBase<any> {
                   </div>
               </div>
           </div>
+      </div>
+      <div class="modal fade" id="modalCreatingRequest" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body">
+              <img class="center-block" src="/images/loading.svg" alt="{{ field.requestingMessage }}">
+              <br/>
+              <div class="text-center">{{ field.requestingMessage }}</div>
+            </div>
+          </div>
+        </div>
       </div>
   `
 })
