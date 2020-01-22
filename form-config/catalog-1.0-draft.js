@@ -37,50 +37,35 @@ module.exports = {
         requestButton: 'Create Request',
         services: [
           {
-            id: 'hpc',
-            name: 'High Performance Computing Cluster',
-            workspaceType: 'Compute',
+            id: 'ihpc',
+            name: 'Interactive High Performance Cluster',
+            workspaceType: 'iHPC',
             displayName: true,
-            logo: 'assets/images/uts_hpcs.png',
-            desc: 'UTS eResearch manages two High Performance Computing Clusters that can be accessed by UTS researchers.',
+            logo: 'assets/images/uts_ihpc.png',
+            desc: 'The iHPC facility provides an interactive high performance computing resource for all researchers within UTS.',
             requestButton: 'Create Request',
             defaultForm: false,
             help: '',
             workspaceInfo: {
               workspaceTitle: {concat: ['project_name']},
-              workspaceDescription: {concat: ['storage_size', 'cluster_type']},
+              workspaceDescription: {concat: ['storage_size', 'Project Volume']},
             },
             form: {
               storage_size: {
-                validationMsg: 'Storage Size: Add the desired storage size',
-                title: 'Storage Size',
+                validationMsg: 'Project Volume: Add the desired storage size for your project volume',
+                title: 'Project Volume Size',
                 type: 'text',
                 enable: false,
+                validate: true,
                 requestVariable: 'storage_size'
               },
-              justification: {
-                validationMsg: 'Please add a justification? for your request',
-                title: 'Justification',
-                type: 'textarea',
-                enable: false,
-                validate: true,
-                requestVariable: 'justification'
-              },
               project_name: {
-                validationMsg: 'Project Name: Please add a short name for your project',
-                title: 'Project Name (Do you have a short name for your project?)',
+                validationMsg: 'Project Short Name: Please add a short name for your project',
+                title: 'Project Short Name',
                 type: 'text',
                 enable: false,
                 validate: true,
                 requestVariable: 'project_name'
-              },
-              cluster_type: {
-                validationMsg: "Cluster Type: Select the type of cluster",
-                title: 'Select a type of cluster',
-                fields: [{name: 'HPC'}, {name: 'iHPC'}],
-                validate: true,
-                type: 'select',
-                requestVariable: 'cluster_type'
               },
               data_manager: {
                 validationMsg: "Data Manager was not added",
@@ -126,7 +111,7 @@ module.exports = {
               },
               notes: {
                 validationMsg: "Notes: Add notes for your request",
-                title: 'Notes',
+                title: 'Comments/Notes/Software to Use in cluster',
                 field: 'notes',
                 type: 'textarea',
                 textarea: {rows: 10, cols: 150, maxlength: 30},
@@ -134,6 +119,90 @@ module.exports = {
               }
             },
             catalogId: 'f11e70c9dbb0c450af95401d34961912'
+          },
+          {
+            id: 'hpcc',
+            name: 'High Performance Computing Cluster',
+            workspaceType: 'HPCC',
+            displayName: true,
+            logo: 'assets/images/uts_hpcc.png',
+            desc: 'High Performance Computing Cluster (HPCC) that can be accessed by UTS researchers.',
+            requestButton: 'Create Request',
+            defaultForm: false,
+            help: '',
+            workspaceInfo: {
+              workspaceTitle: {concat: ['project_name']},
+              workspaceDescription: {concat: ['storage_size', 'Share']},
+            },
+            form: {
+              storage_size: {
+                validationMsg: 'Project Size: Add the desired storage size for your project',
+                title: 'Storage Size',
+                type: 'text',
+                enable: false,
+                validate: true,
+                requestVariable: 'storage_size'
+              },
+              project_name: {
+                validationMsg: 'Project Short Name: Please add a short name for your project',
+                title: 'Project Short Name',
+                type: 'text',
+                enable: false,
+                validate: true,
+                requestVariable: 'project_name'
+              },
+              data_manager: {
+                validationMsg: "Data Manager was not added",
+                title: 'Data Manager',
+                type: 'text',
+                prefil: {key: 'dm', val: 'email'},
+                disabled: true,
+                validate: true,
+                requestVariable: 'data_manager'
+              },
+              data_supervisor: {
+                validationMsg: "Please add email of the supervisor",
+                title: 'FNCI/UTS Supervisor',
+                type: 'text',
+                prefil: {key: 'ci', val: 'email'},
+                disabled: true,
+                validate: true,
+                requestVariable: 'data_supervisor'
+              },
+              data_collaborators: {
+                validationMsg: "Contributors: Please add email of the collaborators, UTS ONLY",
+                title: 'UTS Contributors',
+                type: 'multi-text',
+                prefil: [
+                  {key: 'contributors', val: 'email'},
+                  {key: 'contributor_supervisors', val: 'email'}
+                ],
+                requestVariable: 'data_collaborators'
+              },
+              retention_period: {
+                validationMsg: "Add the retention period",
+                title: 'Retention Period',
+                type: 'text',
+                prefil: {key: 'retention', val: ''},
+                requestVariable: 'retention_period'
+              },
+              end_of_project: {
+                validationMsg: "Add End of project date",
+                title: 'End of Project',
+                type: 'text',
+                prefil: {key: 'projectEnd', val: ''},
+                requestVariable: 'end_of_project'
+              },
+              notes: {
+                validationMsg: "Software: What software would you use?",
+                title: 'Desired software to use in cluster',
+                field: 'notes',
+                type: 'textarea',
+                textarea: {rows: 10, cols: 150, maxlength: 30},
+                requestVariable: 'notes'
+              }
+            },
+            catalogId: 'f5412478dbee04508ee432e43a961907'
           },
           {
             id: 'storage',
@@ -223,7 +292,7 @@ module.exports = {
               },
               notes: {
                 validationMsg: "Add notes for your request",
-                title: 'Notes',
+                title: 'Notes / Comments',
                 field: 'notes',
                 type: 'textarea',
                 textarea: {rows: 10, cols: 150, maxlength: 30},

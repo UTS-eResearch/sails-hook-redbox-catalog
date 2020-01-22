@@ -280,6 +280,8 @@ export class RequestBoxField extends FieldBase<any> {
             let value = form[c]['value'];
             value = value['name'] || value;
             msg.push(value);
+          } else {
+            msg.push(c);
           }
         });
       } else {
