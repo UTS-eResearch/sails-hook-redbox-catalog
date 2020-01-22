@@ -50,7 +50,6 @@ export module Services {
     }
 
     sendGetToTable(table: string, body: any) {
-      sails.log.debug(body);
       const post = requestPromise({
         uri: this.config.domain + `/api/now/table/${table}`,
         method: 'GET',

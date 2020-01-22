@@ -86,7 +86,6 @@ export class RequestBoxField extends FieldBase<any> {
   formArray: {}[];
   formCheckBoxArray: any;
   formMultiTextArray: any;
-  form: {};
   workspaceInfo: {};
   workspaceType: string;
 
@@ -116,7 +115,6 @@ export class RequestBoxField extends FieldBase<any> {
     this.formArray = [];
     this.formCheckBoxArray = {};
     this.formMultiTextArray = [];
-    this.form = {};
     this.workspaceType = '';
   }
 
@@ -225,13 +223,13 @@ export class RequestBoxField extends FieldBase<any> {
   // TODO: validate smarter!
   validate() {
     this.validations = [];
-
+    const form = {};
     _.forEach(this.formArrayItems, (obj) => {
       const control = this.requestGroupForm.get(obj['id']);
       if (control.errors) {
         this.validations.push(obj['validationMsg']);
       } else {
-        this.form[obj['id']] = {
+        form[obj['id']] = {
           value: control.value,
           variable: obj.requestVariable
         };
@@ -240,31 +238,36 @@ export class RequestBoxField extends FieldBase<any> {
 
     if (this.validations.length > 0) {
       this.formError = true;
-      this.form = [];
     } else {
-      this.requestForm(this.form);
+      this.requestForm(form);
     }
-
   }
 
   async requestForm(form) {
-
-    this.loading = true;
-    jQuery('#modalCreatingRequest').modal('show');
-    const workspaceInfo = this.getWorkspaceInfo(this.workspaceInfo, form);
-    const catalogId = this.catalogId;
-    this.formError = false;
-    const createRequest = await this.catalogService.createRequest(form, this.rdmp, catalogId, workspaceInfo, this.workspaceType);
-    if (!createRequest.status) {
-      this.formError = true;
-      this.errorMessage = createRequest.message;
-    } else {
-      this.requestNumber = createRequest.request_number;
-      this.workspaceLocation = createRequest.workspaceLocation;
-      this.requestSent = true;
+    try {
+      this.loading = true;
+      jQuery('#modalCreatingRequest').modal('show');
+      const workspaceInfo = this.getWorkspaceInfo(this.workspaceInfo, form);
+      const catalogId = this.catalogId;
+      this.formError = false;
+      const createRequest = await this.catalogService.createRequest(form, this.rdmp, catalogId, workspaceInfo, this.workspaceType);
+      if (!createRequest.status) {
+        this.formError = true;
+        this.errorMessage = createRequest.message;
+      } else {
+        this.requestNumber = createRequest.request_number;
+        this.workspaceLocation = createRequest.workspaceLocation;
+        this.requestSent = true;
+      }
+      this.loading = false;
+      jQuery('#modalCreatingRequest').modal('hide');
+    } catch (e) {
+      console.log('form sent:');
+      console.log(form);
+      console.error(e);
+      console.error(e.message);
+      jQuery('#modalCreatingRequest').modal('hide');
     }
-    this.loading = false;
-    jQuery('#modalCreatingRequest').modal('hide');
   }
 
   getWorkspaceInfo(objs, form) {
@@ -329,136 +332,137 @@ export class RequestBoxField extends FieldBase<any> {
 @Component({
   selector: 'ws-requestbox',
   template: `
-      <div class="row">
-          <div class="col-md-8 col-md-offset-2">
-              <div *ngIf="field.showRequest">
-                  <div class="row">
-                      <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>
-                      <form [formGroup]="field.requestGroupForm"
-                            *ngIf="!field.requestSent" id="form"
-                            novalidate autocomplete="off">
-                          <div *ngFor="let control of field.requestGroupForm.controls | keys; let i=index">
-                              <div *ngIf="field.getValue(control, 'type') == 'text'" class="form-group">
-                                  <label>{{field.getValue(control, 'title')}}</label>
-                                  <input class="form-control" type="text"
-                                         [name]="field.getValue(control, 'name')"
-                                         [id]="field.getValue(control, 'id')"
-                                         formControlName="{{ control }}"/>
-                              </div>
-                              <div *ngIf="field.getValue(control, 'type')  == 'textarea'" class="form-group">
-                                  <label>{{field.getValue(control, 'title')}}</label>
-                                  <textarea class="form-control"
-                                            [rows]="field.getValue(control, 'rows')"
-                                            [cols]="field.getValue(control, 'cols')"
-                                            [name]="control"
-                                            [id]="control"
-                                            formControlName="{{ control }}"></textarea>
-                              </div>
-                              <div *ngIf="field.getValue(control, 'type')  == 'select'" class="form-group">
-                                  <label>{{field.getValue(control, 'title')}}</label>
-                                  <select [name]="control"
-                                          [id]="control"
-                                          formControlName="{{ control }}"
-                                          class="form-control">
-                                      <option *ngFor="let t of field.getValue(control, 'fields')"
-                                              [ngValue]="t">{{t.name}}</option>
-                                  </select>
-                              </div>
-                              <div *ngIf="field.getValue(control, 'type') == 'radio'" class="form-group">
-                                  <label>{{field.getValue(control, 'title')}}</label>
-                                  <div *ngFor="let radios of field.getValue(control, 'fields')" class="radio">
-                                      <label>
-                                          <input type="radio" [value]="radios['name']"
-                                                 formControlName="{{ control }}">
-                                          {{ radios['name'] }}
-                                      </label>
-                                  </div>
-                              </div>
-                              <div *ngIf="field.getValue(control, 'type') == 'checkbox'" class="form-group">
-                                  <label>{{field.getValue(control, 'title')}}</label>
-                                  <div *ngFor="let check of field.getValue(control, 'fields'); let i = index;">
-                                      <label class="checkbox-inline">
-                                          <input [formControl]="field.formCheckBoxArray[field.getValue(control, 'id')][i]"
-                                                 type="checkbox">
-                                          {{ check['name'] }}
-                                      </label>
-                                  </div>
-                              </div>
-                              <div *ngIf="field.getValue(control, 'type') == 'multi-text'" class="form-group">
-                                  <label>{{field.getValue(control, 'title')}}</label>
-                                  <div *ngFor="let multi of field.formMultiTextArray; let i = index;">
-                                      <div class="input-group padding-bottom-10">
-                                          <input class="form-control" [formControl]="field.formMultiTextArray[i]"
-                                                 type="text">
-                                          <span class="input-group-btn">
+    <div class="row">
+      <div class="col-md-8 col-md-offset-2">
+        <div *ngIf="field.showRequest">
+          <div class="row">
+            <h4>{{ field.boxTitleLabel }} : {{ field.requestType['name']}}</h4>
+            <form [formGroup]="field.requestGroupForm"
+                  *ngIf="!field.requestSent" id="form"
+                  novalidate autocomplete="off">
+              <div *ngFor="let control of field.requestGroupForm.controls | keys; let i=index">
+                <div *ngIf="field.getValue(control, 'type') == 'text'" class="form-group">
+                  <label>{{field.getValue(control, 'title')}}</label>
+                  <input class="form-control" type="text"
+                         [name]="field.getValue(control, 'name')"
+                         [id]="field.getValue(control, 'id')"
+                         formControlName="{{ control }}"/>
+                </div>
+                <div *ngIf="field.getValue(control, 'type')  == 'textarea'" class="form-group">
+                  <label>{{field.getValue(control, 'title')}}</label>
+                  <textarea class="form-control"
+                            [rows]="field.getValue(control, 'rows')"
+                            [cols]="field.getValue(control, 'cols')"
+                            [name]="control"
+                            [id]="control"
+                            formControlName="{{ control }}"></textarea>
+                </div>
+                <div *ngIf="field.getValue(control, 'type')  == 'select'" class="form-group">
+                  <label>{{field.getValue(control, 'title')}}</label>
+                  <select [name]="control"
+                          [id]="control"
+                          formControlName="{{ control }}"
+                          class="form-control">
+                    <option *ngFor="let t of field.getValue(control, 'fields')"
+                            [ngValue]="t">{{t.name}}</option>
+                  </select>
+                </div>
+                <div *ngIf="field.getValue(control, 'type') == 'radio'" class="form-group">
+                  <label>{{field.getValue(control, 'title')}}</label>
+                  <div *ngFor="let radios of field.getValue(control, 'fields')" class="radio">
+                    <label>
+                      <input type="radio" [value]="radios['name']"
+                             formControlName="{{ control }}">
+                      {{ radios['name'] }}
+                    </label>
+                  </div>
+                </div>
+                <div *ngIf="field.getValue(control, 'type') == 'checkbox'" class="form-group">
+                  <label>{{field.getValue(control, 'title')}}</label>
+                  <div *ngFor="let check of field.getValue(control, 'fields'); let i = index;">
+                    <label class="checkbox-inline">
+                      <input [formControl]="field.formCheckBoxArray[field.getValue(control, 'id')][i]"
+                             type="checkbox">
+                      {{ check['name'] }}
+                    </label>
+                  </div>
+                </div>
+                <div *ngIf="field.getValue(control, 'type') == 'multi-text'" class="form-group">
+                  <label>{{field.getValue(control, 'title')}}</label>
+                  <div *ngFor="let multi of field.formMultiTextArray; let i = index;">
+                    <div class="input-group padding-bottom-10">
+                      <input class="form-control" [formControl]="field.formMultiTextArray[i]"
+                             type="text">
+                      <span class="input-group-btn">
                                             <a *ngIf="!field.loading" (click)="field.removeMulti(i)"
                                                class="fa fa-minus-circle btn text-20 pull-right btn-danger"></a>
                                         </span>
-                                      </div>
-                                  </div>
-                                  <div>
-                                      <div class="padding-bottom-10">
-                                          <a (click)="field.addMulti()"
-                                             class="fa fa-plus-circle btn text-20 pull-right btn-success"></a>
-                                      </div>
-                                  </div>
-                              </div>
-                          </div>
-                          <div class="alert alert-danger" *ngIf="field.formError">
-                              <h4>{{ field.errorRequest }}</h4>
-                              <p *ngIf="field.errorMessage">{{field.errorMessage}}</p>
-                              <ul>
-                                  <li *ngFor="let v of field.validations">{{ v }}</li>
-                              </ul>
-                          </div>
-                          <div class="alert alert-warning alert-dismissible show">
-                              <strong>{{ field.warning }}</strong> {{ field.warningRequest }}
-                              <button type="button" class="close" data-dismiss="alert">&times;</button>
-                          </div>
-                          <button *ngIf="!field.loading" class="btn btn-primary"
-                                  (click)="field.validate()"
-                                  type="submit" form="ngForm">{{ field.requestLabel }}
-                          </button>
-                          <div *ngIf="field.loading">
-                              {{ field.requestingMessage }}
-                          </div>
-                          <div class="row"><br/></div>
-                      </form>
+                    </div>
                   </div>
-                  <div class="row">
-                      <div *ngIf="field.requestSent">
-                          <p>{{ field.requestSuccess }}</p>
-                          <p>{{ field.requestNextAction }}</p>
-                          <p *ngIf="field.requestNumber">
-                            <a href="{{ field.workspaceLocation }}" target="_blank" rel="noopener noreferrer">{{ field.requestNumber }}</a>
-                          </p>
-                      </div>
+                  <div>
+                    <div class="padding-bottom-10">
+                      <a (click)="field.addMulti()"
+                         class="fa fa-plus-circle btn text-20 pull-right btn-success"></a>
+                    </div>
                   </div>
-                  <div *ngIf="!field.requestSent" class="row">
-                      <br/>
-                      <a *ngIf="!field.loading" (click)="field.showCatalog()"
-                         class="btn btn-secondary">{{ field.backToCatalogLabel }}</a>
-                      <br/>
-                  </div>
-                  <div class="row">
-                      <br/><br/>
-                  </div>
+                </div>
               </div>
+              <div class="alert alert-danger" *ngIf="field.formError">
+                <h4>{{ field.errorRequest }}</h4>
+                <p *ngIf="field.errorMessage">{{field.errorMessage}}</p>
+                <ul>
+                  <li *ngFor="let v of field.validations">{{ v }}</li>
+                </ul>
+              </div>
+              <div class="alert alert-warning alert-dismissible show">
+                <strong>{{ field.warning }}</strong> {{ field.warningRequest }}
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+              </div>
+              <button *ngIf="!field.loading" class="btn btn-primary"
+                      (click)="field.validate()"
+                      type="submit" form="ngForm">{{ field.requestLabel }}
+              </button>
+              <div *ngIf="field.loading">
+                {{ field.requestingMessage }}
+              </div>
+              <div class="row"><br/></div>
+            </form>
           </div>
-      </div>
-      <div class="modal fade" id="modalCreatingRequest" tabindex="-1" role="dialog"
-           aria-labelledby="exampleModalCenterTitle" aria-hidden="true"
-           data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-dialog-centered" role="document">
-          <div class="modal-content">
-            <div class="modal-body">
-              <img class="center-block" src="/images/loading.svg" alt="{{ field.requestingMessage }}">
-              <br/>
-              <div class="text-center">{{ field.requestingMessage }}</div>
+          <div class="row">
+            <div *ngIf="field.requestSent">
+              <p>{{ field.requestSuccess }}</p>
+              <p>{{ field.requestNextAction }}</p>
+              <p *ngIf="field.requestNumber">
+                <a href="{{ field.workspaceLocation }}" target="_blank"
+                   rel="noopener noreferrer">{{ field.requestNumber }}</a>
+              </p>
             </div>
+          </div>
+          <div *ngIf="!field.requestSent" class="row">
+            <br/>
+            <a *ngIf="!field.loading" (click)="field.showCatalog()"
+               class="btn btn-secondary">{{ field.backToCatalogLabel }}</a>
+            <br/>
+          </div>
+          <div class="row">
+            <br/><br/>
           </div>
         </div>
       </div>
+    </div>
+    <div class="modal fade" id="modalCreatingRequest" tabindex="-1" role="dialog"
+         aria-labelledby="exampleModalCenterTitle" aria-hidden="true"
+         data-backdrop="static" data-keyboard="false">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img class="center-block" src="/images/loading.svg" alt="{{ field.requestingMessage }}">
+            <br/>
+            <div class="text-center">{{ field.requestingMessage }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
   `
 })
 export class RequestBoxComponent extends SimpleComponent implements OnInit, AfterViewInit {

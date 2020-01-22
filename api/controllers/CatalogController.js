@@ -62,7 +62,9 @@ var Controllers;
             let requestorName = '';
             let emailPermissions = [];
             let request_number = '';
+            sails.log.debug('----------');
             sails.log.debug(request);
+            sails.log.debug('----------');
             if (request['data_manager'] && request['data_manager']['value']) {
                 reqInfo.requested_by = request['data_manager']['value'];
                 try {
@@ -74,88 +76,102 @@ var Controllers;
                     requestorName = 'Stash User';
                 }
             }
+            else {
+                const errorMessage = `No data manager in plan to assign ticket`;
+                this.ajaxFail(req, res, errorMessage, { status: false, message: errorMessage });
+            }
             if (request['data_supervisor'] && request['data_supervisor']['value']) {
                 reqInfo.affected_contact = request['data_supervisor']['value'];
                 emailPermissions.push(reqInfo.affected_contact);
             }
-            return CatalogService.sendGetToTable('sys_user', { email: reqInfo.assigned_to })
-                .flatMap(response => {
-                if (response && response['result']) {
-                    const result = _.first(response['result']);
-                    sails.log.debug(`assigned_to ${reqInfo.assigned_to}`);
-                    sails.log.debug(result['sys_id']);
-                    reqInfo.assigned_to = result['sys_id'];
-                }
-                else {
-                    sails.log.error(response);
-                    throw rxjs_1.throwError('cannot find info.assigned_to Id');
-                }
-                return CatalogService.sendGetToTable('sys_user', { email: reqInfo.requested_by });
-            }).flatMap(response => {
-                sails.log.debug('requestToVariables');
-                const variables = this.requestToVariables(request);
-                variables['rdmp'] = `${this.config.brandingAndPortalUrl}/record/view/${rdmp}`;
-                variables['requestor'] = requestorName;
-                if (response && response['result']) {
-                    const result = _.first(response['result']);
-                    sails.log.debug(`requestedByEmail ${reqInfo.requested_by}`);
-                    sails.log.debug(result['sys_id']);
-                    reqInfo.requested_by = result['sys_id'];
-                    variables['user_id'] = reqInfo.requested_by;
-                    variables['opened_by'] = reqInfo.requested_by;
-                    sails.log.debug(JSON.stringify(variables, null, 2));
-                }
-                else {
-                    sails.log.error(response);
-                    throw rxjs_1.throwError('cannot find requested_by Id');
-                }
-                return CatalogService.serviceCatalogPost('/api/sn_sc/servicecatalog/items/', catalogId, 'order_now', '1', variables, reqInfo.assigned_to, reqInfo.opened_by, reqInfo.requested_by);
-            }).flatMap(response => {
-                sails.log.debug(response);
-                if (response && response['result']) {
-                    const result = response['result'];
-                    sails.log.debug(result);
-                    request_number = result['request_number'];
-                    workspaceLocation = `${this.config.domain}${this.config.taskURL}${result['sys_id']}`;
-                }
-                else {
-                    workspaceLocation = `${this.config.domain}`;
-                }
-                return WorkspaceService.getRecordMeta(this.config, rdmp);
-            }).flatMap(response => {
-                sails.log.debug('recordMetadata');
-                recordMetadata = response;
-                rdmpTitle = recordMetadata['title'];
-                const record = {
-                    rdmpOid: rdmp,
-                    rdmpTitle: rdmpTitle,
-                    title: workspaceTitle,
-                    location: workspaceLocation,
-                    description: request_number + ' : ' + workspaceType + ' ' + workspaceDescription,
-                    type: this.config.recordType
-                };
-                sails.log.debug(record);
-                return WorkspaceService.createWorkspaceRecord(this.config, username, record, this.config.recordType, this.config.workflowStage, emailPermissions);
-            })
-                .flatMap(workspace => {
-                if (recordMetadata['workspaces']) {
-                    const wss = recordMetadata['workspaces'].find(id => workspace.oid === id);
-                    if (!wss) {
-                        recordMetadata['workspaces'].push({ id: workspace.oid });
+            else {
+                const errorMessage = `No supervisor in plan to assign ticket`;
+                this.ajaxFail(req, res, errorMessage, { status: false, message: errorMessage });
+            }
+            if (reqInfo.requested_by && reqInfo.assigned_to) {
+                return CatalogService.sendGetToTable('sys_user', { email: reqInfo.assigned_to })
+                    .flatMap(response => {
+                    if (response && response['result']) {
+                        const result = _.first(response['result']);
+                        reqInfo.assigned_to = result['sys_id'];
+                        sails.log.debug(`assigned_to ${reqInfo.assigned_to}`);
                     }
-                }
-                return WorkspaceService.updateRecordMeta(this.config, recordMetadata, rdmp);
-            })
-                .subscribe(response => {
-                sails.log.debug('createTicket,linkWorkspace');
-                createTicket = response;
-                this.ajaxOk(req, res, null, { status: true, createTicket: createTicket, request_number: request_number, workspaceLocation: workspaceLocation });
-            }, error => {
-                sails.log.error('request: error');
-                sails.log.error(error.message);
-                sails.log.error(error.message);
-                this.ajaxFail(req, res, error.message, { status: false, message: error.message });
-            });
+                    else {
+                        const errorMessage = 'Cannot find user to assign ticket on Service Now';
+                        sails.log.error(errorMessage);
+                        sails.log.error(response);
+                        throw rxjs_1.throwError(errorMessage);
+                    }
+                    return CatalogService.sendGetToTable('sys_user', { email: reqInfo.requested_by });
+                }).flatMap(response => {
+                    sails.log.debug('requestToVariables');
+                    const variables = this.requestToVariables(request);
+                    variables['rdmp'] = `${this.config.brandingAndPortalUrl}/record/view/${rdmp}`;
+                    variables['requestor'] = requestorName;
+                    if (response && response['result']) {
+                        const result = _.first(response['result']);
+                        sails.log.debug(`requestedByEmail ${reqInfo.requested_by}`);
+                        sails.log.debug(result['sys_id']);
+                        reqInfo.requested_by = result['sys_id'];
+                        variables['user_id'] = reqInfo.requested_by;
+                        variables['opened_by'] = reqInfo.requested_by;
+                    }
+                    else {
+                        sails.log.error(response);
+                        throw rxjs_1.throwError('Cannot find requested_by Id on Service Now');
+                    }
+                    return CatalogService.serviceCatalogPost('/api/sn_sc/servicecatalog/items/', catalogId, 'order_now', '1', variables, reqInfo.assigned_to, reqInfo.opened_by, reqInfo.requested_by);
+                }).flatMap(response => {
+                    sails.log.debug('create catalog item');
+                    if (response && response['result']) {
+                        const result = response['result'];
+                        request_number = result['request_number'];
+                        workspaceLocation = `${this.config.domain}${this.config.taskURL}${result['sys_id']}`;
+                    }
+                    else {
+                        workspaceLocation = `${this.config.domain}`;
+                    }
+                    return WorkspaceService.getRecordMeta(this.config, rdmp);
+                }).flatMap(response => {
+                    sails.log.debug('get recordMetadata');
+                    recordMetadata = response;
+                    rdmpTitle = recordMetadata['title'];
+                    const record = {
+                        rdmpOid: rdmp,
+                        rdmpTitle: rdmpTitle,
+                        title: workspaceTitle,
+                        location: workspaceLocation,
+                        description: request_number + ' : ' + workspaceType + ' ' + workspaceDescription,
+                        type: this.config.recordType
+                    };
+                    return WorkspaceService.createWorkspaceRecord(this.config, username, record, this.config.recordType, this.config.workflowStage, emailPermissions);
+                })
+                    .flatMap(workspace => {
+                    sails.log.debug('create WorkspaceRecord');
+                    if (recordMetadata['workspaces']) {
+                        const wss = recordMetadata['workspaces'].find(id => workspace.oid === id);
+                        if (!wss) {
+                            recordMetadata['workspaces'].push({ id: workspace.oid });
+                        }
+                    }
+                    return WorkspaceService.updateRecordMeta(this.config, recordMetadata, rdmp);
+                })
+                    .subscribe(response => {
+                    sails.log.debug('createTicket, linkWorkspace');
+                    createTicket = response;
+                    this.ajaxOk(req, res, null, {
+                        status: true,
+                        createTicket: createTicket,
+                        request_number: request_number,
+                        workspaceLocation: workspaceLocation
+                    });
+                }, error => {
+                    sails.log.error('request: error');
+                    const errorMessage = 'There was an error submitting your request.';
+                    sails.log.error(`${errorMessage} ${error.message}`);
+                    this.ajaxFail(req, res, error.message, { status: false, message: errorMessage });
+                });
+            }
         }
         requestToVariables(request) {
             const variables = {};

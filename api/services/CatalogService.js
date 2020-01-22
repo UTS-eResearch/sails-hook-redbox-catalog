@@ -48,7 +48,6 @@ var Services;
             return rxjs_1.from(post);
         }
         sendGetToTable(table, body) {
-            sails.log.debug(body);
             const post = requestPromise({
                 uri: this.config.domain + `/api/now/table/${table}`,
                 method: 'GET',
