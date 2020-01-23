@@ -47,7 +47,7 @@ export class CatalogService extends BaseService {
     }
   }
 
-  public async createRequest(request: any, rdmpId: string, catalogId: string, workspaceInfo: any, workspaceType: string) {
+  public async createRequest(request: any, rdmpId: string, catalogName: string, workspaceInfo: any, workspaceType: string) {
     const wsUrl = this.brandingAndPortalUrl + '/ws/catalog/request';
     try {
       const result = await this.http.post(
@@ -55,7 +55,7 @@ export class CatalogService extends BaseService {
         {
           request: request,
           rdmp: rdmpId,
-          catalogId: catalogId,
+          catalogName: catalogName,
           workspaceInfo: workspaceInfo,
           workspaceType: workspaceType
         },

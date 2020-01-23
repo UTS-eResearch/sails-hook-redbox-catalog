@@ -71,7 +71,7 @@ export class RequestBoxField extends FieldBase<any> {
   ci: any = {name: null, email: null};
   dm: any = {name: null, email: null};
   requestTypeSelect: any = null;
-  catalogId: string = null;
+  catalogName: string = null;
 
   catalogService: CatalogService;
 
@@ -109,7 +109,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.storageType = options['types'] || [];
     this.workspaceInfo = {};
     this.requestTypeSelect = null;
-    this.catalogId = '';
+    this.catalogName = '';
     this.formBuilder = new FormBuilder();
     this.formArrayItems = [];
     this.formArray = [];
@@ -140,7 +140,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.workspaceInfo = req.service.workspaceInfo;
     this.workspaceType = req.service.workspaceType;
     this.projectInfo = req.project;
-    this.catalogId = req.service.catalogId;
+    this.catalogName = req.service.id;
     this.formArray = [];
     this.formArrayItems = [];
     this.requestGroupForm = new FormGroup({});
@@ -248,9 +248,9 @@ export class RequestBoxField extends FieldBase<any> {
       this.loading = true;
       jQuery('#modalCreatingRequest').modal('show');
       const workspaceInfo = this.getWorkspaceInfo(this.workspaceInfo, form);
-      const catalogId = this.catalogId;
+      const catalogName = this.catalogName;
       this.formError = false;
-      const createRequest = await this.catalogService.createRequest(form, this.rdmp, catalogId, workspaceInfo, this.workspaceType);
+      const createRequest = await this.catalogService.createRequest(form, this.rdmp, catalogName, workspaceInfo, this.workspaceType);
       if (!createRequest.status) {
         this.formError = true;
         this.errorMessage = createRequest.message;

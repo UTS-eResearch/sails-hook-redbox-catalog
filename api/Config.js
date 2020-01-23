@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Config {
     constructor(workspaces) {
+        this.catalogItems = [];
         const workspaceConfig = workspaces;
         const config = workspaceConfig.catalog;
         this.recordType = config.recordType;
@@ -32,6 +33,7 @@ class Config {
         this.assignedToEmail = config.assignedToEmail;
         this.testRequestorId = config.testRequestorId;
         this.defaultGroupId = config.defaultGroupId;
+        this.catalogItems = config.items;
         this.types = config.types;
         this.workspaceFileName = config.workspaceFileName;
     }

@@ -42,7 +42,7 @@ var Controllers;
             this.config.brandingAndPortalUrl = BrandingService.getFullPath(req);
             const userId = req.user.id;
             const rdmp = req.param('rdmp');
-            const catalogId = req.param('catalogId');
+            const catalogName = req.param('catalogName');
             const request = req.param('request');
             const username = req.user.username;
             const workspaceInfo = req.param('workspaceInfo');
@@ -62,9 +62,20 @@ var Controllers;
             let requestorName = '';
             let emailPermissions = [];
             let request_number = '';
+            let catalogId;
             sails.log.debug('----------');
             sails.log.debug(request);
             sails.log.debug('----------');
+            const catalogItem = this.config.catalogItems.find((item) => {
+                return item['name'] === catalogName;
+            });
+            if (catalogItem) {
+                catalogId = catalogItem['id'];
+            }
+            else {
+                const errorMessage = 'No service-now catalog was found, please contact your system administrator';
+                this.ajaxFail(req, res, errorMessage, { status: false, message: errorMessage });
+            }
             if (request['data_manager'] && request['data_manager']['value']) {
                 reqInfo.requested_by = request['data_manager']['value'];
                 try {
@@ -88,7 +99,7 @@ var Controllers;
                 const errorMessage = `No supervisor in plan to assign ticket`;
                 this.ajaxFail(req, res, errorMessage, { status: false, message: errorMessage });
             }
-            if (reqInfo.requested_by && reqInfo.assigned_to) {
+            if (reqInfo.requested_by && reqInfo.assigned_to && catalogId) {
                 return CatalogService.sendGetToTable('sys_user', { email: reqInfo.assigned_to })
                     .flatMap(response => {
                     if (response && response['result']) {

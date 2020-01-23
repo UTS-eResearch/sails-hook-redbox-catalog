@@ -23,6 +23,12 @@ module.exports = {
       openedById: 'xxx',
       assignedToEmail: 'xx.xx@xx.edu.au',
       testRequestorId: null,
+      items: [
+        {name: 'ihpc', id: 'xxx'},
+        {name: 'hpcc', id: 'xxx'},
+        {name: 'storage', id: 'xxx'},
+        {name: 'stash_rdmp_help', id: 'xxx'}
+        ]
     }
   }
 };

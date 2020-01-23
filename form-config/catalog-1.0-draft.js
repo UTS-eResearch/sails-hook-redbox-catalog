@@ -117,8 +117,7 @@ module.exports = {
                 textarea: {rows: 10, cols: 150, maxlength: 30},
                 requestVariable: 'notes'
               }
-            },
-            catalogId: 'f11e70c9dbb0c450af95401d34961912'
+            }
           },
           {
             id: 'hpcc',
@@ -201,8 +200,7 @@ module.exports = {
                 textarea: {rows: 10, cols: 150, maxlength: 30},
                 requestVariable: 'notes'
               }
-            },
-            catalogId: 'f5412478dbee04508ee432e43a961907'
+            }
           },
           {
             id: 'storage',
@@ -298,8 +296,7 @@ module.exports = {
                 textarea: {rows: 10, cols: 150, maxlength: 30},
                 requestVariable: 'notes'
               }
-            },
-            catalogId: 'bfe2797edb24805079ca773c349619d0'
+            }
           },
           {
             id: 'stash_rdmp_help',
@@ -367,8 +364,7 @@ module.exports = {
                 fields: [{name: 'Mon'}, {name: 'Tues'}, {name: 'Wed'}, {name: 'Thurs'}],
                 requestVariable: 'days_help'
               },
-            },
-            catalogId: '4881058ddbb0c450af95401d34961946'
+            }
           }
         ]
       },

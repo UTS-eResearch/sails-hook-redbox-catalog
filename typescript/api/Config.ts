@@ -21,6 +21,7 @@ export class Config {
   openedById: string;
   assignedToEmail: string;
   testRequestorId: string;
+  catalogItems: any = [];
 
   constructor(workspaces) {
     const workspaceConfig = workspaces;
@@ -54,7 +55,7 @@ export class Config {
     this.assignedToEmail = config.assignedToEmail;
     this.testRequestorId = config.testRequestorId;
     this.defaultGroupId = config.defaultGroupId;
-
+    this.catalogItems = config.items;
     this.types = config.types;
     this.workspaceFileName = config.workspaceFileName;
   }
