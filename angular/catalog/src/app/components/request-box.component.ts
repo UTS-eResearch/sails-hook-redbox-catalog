@@ -442,12 +442,6 @@ export class RequestBoxField extends FieldBase<any> {
               </p>
             </div>
           </div>
-          <div *ngIf="!field.requestSent" class="row">
-            <br/>
-            <a *ngIf="!field.loading" (click)="field.showCatalog()"
-               class="btn btn-secondary">{{ field.backToCatalogLabel }}</a>
-            <br/>
-          </div>
           <div class="row">
             <br/><br/>
           </div>
