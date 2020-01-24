@@ -149,6 +149,7 @@ export class RequestBoxField extends FieldBase<any> {
         id: name,
         title: el['title'],
         type: el['type'],
+        typeLabel: el['typeLabel'] || el['type'],
         fields: el['fields'] || [],
         textarea: el['textarea'] || {},
         requestVariable: el['requestVariable'],
@@ -365,6 +366,7 @@ export class RequestBoxField extends FieldBase<any> {
                           [id]="control"
                           formControlName="{{ control }}"
                           class="form-control">
+                    <option [ngValue]="null" [selected]="true">{{ field.getValue(control, 'typeLabel') }}</option>
                     <option *ngFor="let t of field.getValue(control, 'fields')"
                             [ngValue]="t">{{t.name}}</option>
                   </select>

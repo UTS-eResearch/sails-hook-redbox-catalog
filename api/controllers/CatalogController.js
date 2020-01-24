@@ -63,12 +63,16 @@ var Controllers;
             let emailPermissions = [];
             let request_number = '';
             let catalogId;
-            sails.log.debug('----------');
-            sails.log.debug(request);
-            sails.log.debug('----------');
-            const catalogItem = this.config.catalogItems.find((item) => {
-                return item['name'] === catalogName;
-            });
+            let catalogItem;
+            if (this.config.catalogItems) {
+                catalogItem = this.config.catalogItems.find((item) => {
+                    return item['name'] === catalogName;
+                });
+            }
+            else {
+                const errorMessage = 'No service-now catalog items were configured, please contact your system administrator';
+                this.ajaxFail(req, res, errorMessage, { status: false, message: errorMessage });
+            }
             if (catalogItem) {
                 catalogId = catalogItem['id'];
             }
@@ -100,6 +104,8 @@ var Controllers;
                 this.ajaxFail(req, res, errorMessage, { status: false, message: errorMessage });
             }
             if (reqInfo.requested_by && reqInfo.assigned_to && catalogId) {
+                sails.log.debug('----------');
+                sails.log.debug(`Catalog ${catalogName} id: ${catalogId}`);
                 return CatalogService.sendGetToTable('sys_user', { email: reqInfo.assigned_to })
                     .flatMap(response => {
                     if (response && response['result']) {
@@ -131,6 +137,8 @@ var Controllers;
                         sails.log.error(response);
                         throw rxjs_1.throwError('Cannot find requested_by Id on Service Now');
                     }
+                    sails.log.debug(variables);
+                    sails.log.debug('----------');
                     return CatalogService.serviceCatalogPost('/api/sn_sc/servicecatalog/items/', catalogId, 'order_now', '1', variables, reqInfo.assigned_to, reqInfo.opened_by, reqInfo.requested_by);
                 }).flatMap(response => {
                     sails.log.debug('create catalog item');
@@ -178,7 +186,7 @@ var Controllers;
                     });
                 }, error => {
                     sails.log.error('request: error');
-                    const errorMessage = 'There was an error submitting your request.';
+                    const errorMessage = 'There was an error submitting your request. Please contact support team';
                     sails.log.error(`${errorMessage} ${error.message}`);
                     this.ajaxFail(req, res, error.message, { status: false, message: errorMessage });
                 });
@@ -193,7 +201,6 @@ var Controllers;
                 if (Array.isArray(variables[v]) && variables[v].length === 1) {
                     variables[v] = _.first(variables[v]);
                 }
-                sails.log.debug(variables[v]);
             });
             return variables;
         }

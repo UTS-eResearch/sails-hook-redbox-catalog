@@ -236,6 +236,7 @@ module.exports = {
                 fields: [{name: 'SMB Share (Windows/Mac/Linux)'}, {name: 'NFS Share (Mac/Linux)'}],
                 validate: true,
                 type: 'select',
+                typeLabel: 'Select a Type',
                 requestVariable: 'share_type'
               },
               access_offsite: {
