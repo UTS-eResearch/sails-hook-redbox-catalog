@@ -88,6 +88,7 @@ export class RequestBoxField extends FieldBase<any> {
   formMultiTextArray: any;
   workspaceInfo: {};
   workspaceType: string;
+  showBackToCatalog = false;
 
   @Output() catalog: EventEmitter<any> = new EventEmitter<any>();
 
@@ -95,6 +96,7 @@ export class RequestBoxField extends FieldBase<any> {
     super(options, injector);
     this.catalogService = this.getFromInjector(CatalogService);
     this.emailLabel = options['emailLabel'] || 'Email';
+    this.showBackToCatalog = options['showBackToCatalog'];
     this.backToCatalogLabel = options['backToCatalogLabel'] || 'Back to Catalog';
     this.boxTitleLabel = options['boxTitleLabel'] || 'Title';
     this.requestLabel = options['requestLabel'] || 'Submit Request';
@@ -440,6 +442,14 @@ export class RequestBoxField extends FieldBase<any> {
                 <a href="{{ field.workspaceLocation }}" target="_blank"
                    rel="noopener noreferrer">{{ field.requestNumber }}</a>
               </p>
+            </div>
+          </div>
+          <div *ngIf="field.showBackToCatalog">
+            <div *ngIf="!field.requestSent" class="row">
+              <br/>
+              <a *ngIf="!field.loading" (click)="field.showCatalog()"
+                 class="btn btn-secondary">{{ field.backToCatalogLabel }}</a>
+              <br/>
             </div>
           </div>
           <div class="row">

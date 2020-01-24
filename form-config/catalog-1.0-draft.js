@@ -376,6 +376,7 @@ module.exports = {
       definition: {
         name: 'RequestBox',
         boxTitleLabel: 'Request for eResearch Service',
+        showBackToCatalog: false,
         backToCatalogLabel: 'Show Catalogue',
         requestLabel: 'Submit Request',
         requestSuccess: 'Success!',
