@@ -135,7 +135,7 @@ module.exports = {
             },
             form: {
               storage_size: {
-                validationMsg: 'Project Size: Add the desired storage size for your project',
+                validationMsg: 'Storage Size: Add the desired storage size for your project',
                 title: 'Storage Size',
                 type: 'text',
                 enable: false,
