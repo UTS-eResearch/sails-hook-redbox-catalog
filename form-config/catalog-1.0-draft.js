@@ -38,7 +38,7 @@ module.exports = {
         services: [
           {
             id: 'ihpc',
-            name: 'Interactive High Performance Cluster',
+            name: 'Interactive High Performance Cluster Project Volume',
             workspaceType: 'iHPC',
             displayName: true,
             logo: 'assets/images/uts_ihpc.png',
@@ -121,7 +121,7 @@ module.exports = {
           },
           {
             id: 'hpcc',
-            name: 'High Performance Computing Cluster',
+            name: 'High Performance Computing Cluster Storage',
             workspaceType: 'HPCC',
             displayName: true,
             logo: 'assets/images/uts_hpcc.png',
@@ -193,8 +193,8 @@ module.exports = {
                 requestVariable: 'end_of_project'
               },
               notes: {
-                validationMsg: "Software: What software would you use?",
-                title: 'Desired software to use in cluster',
+                validationMsg: "Comments/Notes: missing",
+                title: 'Comments/Notes',
                 field: 'notes',
                 type: 'textarea',
                 textarea: {rows: 10, cols: 150, maxlength: 30},
@@ -382,6 +382,7 @@ module.exports = {
         requestSuccess: 'Success!',
         requestNextAction: 'There is now a ticket/job in Service Connect.',
         errorRequest: 'There were some errors while submitting your request',
+        missingFields: 'There are fields missing in the request:',
         warning: 'Warning!',
         requestingMessage: '... Creating request, please wait ...',
         warningRequest: 'This form is pre-filled with information from your data management plan. If the fields are incorrect, please modify your plan.'

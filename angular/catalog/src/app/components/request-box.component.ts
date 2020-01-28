@@ -42,6 +42,7 @@ export class RequestBoxField extends FieldBase<any> {
   requestError: string;
   requestSuccess: string;
   errorRequest: string;
+  missingFields: string;
   requestNextAction: string;
   warning: string;
   warningRequest: string;
@@ -107,6 +108,7 @@ export class RequestBoxField extends FieldBase<any> {
     this.warning = options['warning'] || 'Warning';
     this.warningRequest = options['warningRequest'] || 'Pre-filled form';
     this.errorRequest = options['errorRequest'] || 'There were some errors while submiting your request';
+    this.missingFields = options['missingFields'] || 'Missing Fields:';
     this.valid = options['valid'] || {};
     this.storageType = options['types'] || [];
     this.workspaceInfo = {};
@@ -416,6 +418,7 @@ export class RequestBoxField extends FieldBase<any> {
               <div class="alert alert-danger" *ngIf="field.formError">
                 <h4>{{ field.errorRequest }}</h4>
                 <p *ngIf="field.errorMessage">{{field.errorMessage}}</p>
+                <p *ngIf="field.validations.length > 0">{{field.missingFields}}</p>
                 <ul>
                   <li *ngFor="let v of field.validations">{{ v }}</li>
                 </ul>
