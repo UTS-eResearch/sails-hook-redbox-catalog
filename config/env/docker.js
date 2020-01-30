@@ -16,7 +16,7 @@ module.exports = {
       recordType: 'catalog',
       description: 'eResearch Service',
       domain: 'https://xxx.service-now.com',
-      taskURL: '/task.do?sys_id=',
+      taskURL: '/serviceconnect/?id=sc_request&is_new_order=true&table=sc_request&sys_id=',
       requestTable: 'sc_request',
       user: 'xxx',
       password: 'xxx',

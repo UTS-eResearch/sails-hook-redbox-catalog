@@ -359,10 +359,10 @@ module.exports = {
                 requestVariable: 'data_supervisor'
               },
               days_help: {
-                validationMsg: "Add days usually best suit you",
-                title: 'Which days usually best suit you',
-                type: 'checkbox',
-                fields: [{name: 'Mon'}, {name: 'Tues'}, {name: 'Wed'}, {name: 'Thurs'}],
+                validationMsg: "Write the days usually best suit you",
+                title: 'Days of the week for consultation',
+                type: 'text',
+                validate: true,
                 requestVariable: 'days_help'
               },
             }

@@ -25,12 +25,15 @@
   "author": "Moises Sacal",
   "license": "GPL-3.0",
   "devDependencies": {
-    "@types/lodash": "4.14.116",
+    "@types/chai": "^4.2.7",
+    "@types/lodash": "^4.14.116",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^10.12.18",
-    "mocha": "^5.1.1",
+    "chai": "^4.2.0",
+    "mocha": "^5.2.0",
     "sails": "^1.0.2",
     "supertest": "^3.0.0",
-    "ts-node": "^6.1.0",
+    "ts-node": "^6.2.0",
     "typescript": "^2.9.2",
     "typings": "^2.1.1"
   },
