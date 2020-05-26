@@ -47,7 +47,7 @@ Configuration and services to your sails app
 
 A docker-compose.yml file is present in support/development and is setup to run the full ReDBox stack and install the hook. To run the stack there is a ReDBox Sails Hook Run Utility in the root of the project
 
-Usage #1
+### Usage #1
 ```
 ReDBox Sails Hook Run Utility
 Usage: ./runForDev.sh [-a|--(no-)angular] [-h|--help]
@@ -57,8 +57,13 @@ Usage: ./runForDev.sh [-a|--(no-)angular] [-h|--help]
 
 Note: The first time the stack runs it may take some time as yarn initialises the hook within ReDBox Portal. All subsequent runs should be faster
 
-Usage #2
+### Usage #2
 
+Using Vagrant : https://github.com/moisbo/vagrant-redbox-dev
+
+And configure sync
+
+config.vm.synced_folder "{source}/sails-hook-redbox-catalog", "/opt/hooks/sails-hook-redbox-catalog", id: "catalog"
 
 ## Example:
 
