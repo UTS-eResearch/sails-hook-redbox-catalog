@@ -1,8 +1,6 @@
 ## A Sails Hook Redbox Catalog
 
-In this example template you will find the barebones requirements for a Hook
-
-This Project is divided between folders
+A sails hook that adds service-now integration into redbox-portal
 
 ## api
 
@@ -33,52 +31,23 @@ Init code before it gets hooked.
 Controller routes exposed to the sails front-end
 
 ```javascript
-'get /your/route' : YourController.method
+  'post /:branding/:portal/ws/catalog/rdmp': CatalogController.rdmpInfo,
+  'post /:branding/:portal/ws/catalog/request': CatalogController.request
 ```
 
 ### configure
 
-Add configuration and services to your sails app
+Configuration and services to your sails app
 
 ```javascript
-sails.services['YourService'] = function() { };
-sails.config = _.merge(sails.config, {object});
+  sails.services['CatalogService'] = CatalogService;
 ```
-
-## test
-
-First run `npm install`
-
-Test your sails hook with mocha by running `npm test` before adding the hook to your redbox-portal. 
-It may cause your application to not lift.    
-
-```sh
-$ npm test
-
-> @uts-eresearch/sails-hook-redbox-template@1.0.0 test /Users/moises/source/code.research/sails-hook-redbox-template
-> NODE_ENV=test node_modules/.bin/mocha
-
-
-
-  Basic tests ::
-    ✓ should have a service
-    ✓ should have a form
-    ✓ should have a route
-    ✓ sails does not crash
-
-
-  4 passing (864ms)
-
-```
-
-For more information on testing your hook go to : https://sailsjs.com/documentation/concepts/testing
-
 
 ## Development in redbox-portal
 
 A docker-compose.yml file is present in support/development and is setup to run the full ReDBox stack and install the hook. To run the stack there is a ReDBox Sails Hook Run Utility in the root of the project
 
-Usage
+Usage #1
 ```
 ReDBox Sails Hook Run Utility
 Usage: ./runForDev.sh [-a|--(no-)angular] [-h|--help]
@@ -87,4 +56,25 @@ Usage: ./runForDev.sh [-a|--(no-)angular] [-h|--help]
 ```
 
 Note: The first time the stack runs it may take some time as yarn initialises the hook within ReDBox Portal. All subsequent runs should be faster
+
+Usage #2
+
+
+## Example:
+
+Service Catalog as stand alone hook:
+
+http://localhost:1500/default/{branding}/catalog/edit?rdmp={redbox_oid}
+
+![](./support/doc/images/service-catalog.png)
+
+Or integrated into rdmp
+
+![](./support/doc/images/service-catalog-in-rdmp.png)
+
+Example: eResearch Storage
+
+![](./support/doc/images/service-catalog-storage.png)
+
+
 
