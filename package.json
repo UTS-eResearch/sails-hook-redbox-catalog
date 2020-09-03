@@ -1,11 +1,11 @@
 {
-  "name": "sails-hook-redbox-catalog",
+  "name": "@researchdatabox/sails-hook-redbox-servicenow-catalog",
   "version": "1.0.0",
   "description": "A Sails Hook Template",
   "main": "index.js",
   "sails": {
     "isHook": true,
-    "hookName": "catalog"
+    "hookName": "sails-hook-redbox-servicenow-catalog"
   },
   "scripts": {
     "test": "NODE_ENV=test node_modules/.bin/mocha",
