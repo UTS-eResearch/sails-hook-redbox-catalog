@@ -1,11 +1,10 @@
 {
   "name": "@researchdatabox/sails-hook-redbox-servicenow-catalog",
-  "version": "1.0.0",
-  "description": "A Sails Hook Template",
+  "version": "0.0.1",
+  "description": "ReDBox Workspace provisioner plugin for creating ServiceNow Catalog items.",
   "main": "index.js",
   "sails": {
-    "isHook": true,
-    "hookName": "sails-hook-redbox-servicenow-catalog"
+    "isHook": true
   },
   "scripts": {
     "test": "NODE_ENV=test node_modules/.bin/mocha",
@@ -22,7 +21,7 @@
     "redbox",
     "provisioner"
   ],
-  "author": "Moises Sacal",
+  "author": "QCIF Engineering",
   "license": "GPL-3.0",
   "devDependencies": {
     "@types/chai": "^4.2.7",
