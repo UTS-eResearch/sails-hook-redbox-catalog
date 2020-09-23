@@ -146,7 +146,7 @@ draftFields.push({
   compClass: 'SaveButtonComponent',
   definition: {
     label: "@servicenow-catalog-submit-request",
-    targetStep: 'provisioning',
+    targetStep: 'servicenow-catalog-provisioning',
     closeOnSave: true,
     redirectLocation: '/@branding/@portal/record/edit/@referrer_rdmp?focusTabId=workspaces'
   },
