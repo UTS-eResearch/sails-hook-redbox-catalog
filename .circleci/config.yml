@@ -28,8 +28,6 @@ workflows:
   publish:
     jobs:
       - build_and_publish:
-          context:
-            - qcif-context
           filters:
             tags:
               only: /^v.*/
