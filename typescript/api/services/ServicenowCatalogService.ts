@@ -79,7 +79,7 @@ export module Services {
         response.code = `${err.code}`;
         response.status = false;
         response.success = false;
-        response.message = JSON.stringify(err);
+        response.message = `ServiceNowCatalog failed to submit to request for workspace OID: ${oid}, check server logs.`;
       }
       if (!_.isNull(snResponse)) {
         if (snResponse.status == 200) {
@@ -89,10 +89,11 @@ export module Services {
           await RecordsService.updateMeta(null, oid, workspaceData).toPromise();
         } else {
           sails.log.error(`ServiceNowCatalog submit request failed for workspace OID: ${oid}, check server logs.`);
+          sails.log.error(JSON.stringify(snResponse));
           response.code = `${snResponse.status}`;
           response.status = false;
           response.success = false;
-          response.message = snResponse.data;
+          response.message = `ServiceNowCatalog failed to submit to request for workspace OID: ${oid}, check server logs.`;
         }
       }
       // all done!
