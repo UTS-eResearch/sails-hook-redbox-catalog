@@ -1,15 +1,16 @@
 // NOTE: the nested object 'catalog'
 module.exports.servicenow = {
   catalog: {
-    url: '',
-    axios: {
-      method: 'post',
-      url: '',
-      auth: {
-        username: '',
-        password: ''
-      }
-    },
+    // TODO: Uncomment the following fields to set the ServiceNow catalog endpoint configuration
+    // Intentionally commented out so we can use Sails environment variables
+    // axios: {
+    //   method: 'post',
+    //   url: '',
+    //   auth: {
+    //     username: '',
+    //     password: ''
+    //   }
+    // },
     body_template: {
       sysparm_quantity: "1",
       // Workaround for known issue: https://hi.service-now.com/kb_view.do?sysparm_article=KB0696054
