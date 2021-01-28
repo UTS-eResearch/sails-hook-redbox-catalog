@@ -2,6 +2,7 @@ module.exports.recordtype = {
   "servicenow-catalog": {
     "packageType": "workspace",
     "packageName": "servicenow-catalog",
+    "searchable": false,
     "searchFilters": [
       {
         name: "text_title",
