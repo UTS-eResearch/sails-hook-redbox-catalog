@@ -39,7 +39,7 @@
   },
   "dependencies": {
     "fs-extra": "^8.1.0",
-    "lodash": "4.17.14",
+    "lodash": "4.17.21",
     "lodash-es": "4.17.14",
     "ncp": "^2.0.0",
     "path": "^0.12.7",
