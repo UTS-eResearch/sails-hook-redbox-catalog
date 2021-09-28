@@ -9,16 +9,16 @@ declare var BrandingService, WorkspaceService, CatalogService;
 /**
  * Package that contains all Controllers.
  */
-import controller = require('../core/CoreController');
-import {Config} from '../Config';
+ import { Controllers as controller} from '@researchdatabox/redbox-core-types';
+ import {Config} from '../Config';
 
 export module Controllers {
 
   /**
-   * Omero related features....
+   * Service Now related features....
    *
    */
-  export class CatalogController extends controller.Controllers.Core.Controller {
+  export class CatalogController extends controller.Core.Controller {
 
     protected _exportedMethods: any = [
       'info',

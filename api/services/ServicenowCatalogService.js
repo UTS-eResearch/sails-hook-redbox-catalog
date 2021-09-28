@@ -1,21 +1,23 @@
 "use strict";
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.Services = void 0;
 const numeral = require("numeral");
 const moment = require("moment");
 const axios_1 = require("axios");
 const util = require('util');
-const services = require("../core/CoreService");
+const redbox_core_types_1 = require("@researchdatabox/redbox-core-types");
 var Services;
 (function (Services) {
-    class ServicenowCatalogService extends services.Services.Core.Service {
+    class ServicenowCatalogService extends redbox_core_types_1.Services.Core.Service {
         constructor() {
             super(...arguments);
             this._exportedMethods = [
@@ -61,7 +63,7 @@ var Services;
                 sails.log.verbose(JSON.stringify(axiosOptions));
                 let snResponse = null;
                 try {
-                    snResponse = yield axios_1.default(axiosOptions);
+                    snResponse = yield (0, axios_1.default)(axiosOptions);
                 }
                 catch (err) {
                     sails.log.error(`ServiceNowCatalog failed to submit to request for workspace OID: ${oid}, error is:`);

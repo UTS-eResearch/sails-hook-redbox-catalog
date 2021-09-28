@@ -5,7 +5,7 @@ import * as numeral from 'numeral';
 import moment = require('moment');
 import axios from 'axios';
 const util = require('util');
-import services = require('../core/CoreService');
+import { Services as services} from '@researchdatabox/redbox-core-types';
 
 declare var sails: Sails;
 declare var WorkspaceService, _;
@@ -21,7 +21,7 @@ export module Services {
   // Build date: 06-05-2020_2026
   // Build tag: glide-newyork-06-26-2019__patch9-05-27-2020
   // MID buildstamp: newyork-06-26-2019__patch9-05-27-2020_06-05-2020_2026
-  export class ServicenowCatalogService extends services.Services.Core.Service {
+  export class ServicenowCatalogService extends services.Core.Service {
 
     protected _exportedMethods: any = [
       'submitRequest',
