@@ -5,11 +5,11 @@ import * as numeral from 'numeral';
 import moment = require('moment');
 import axios from 'axios';
 const util = require('util');
-import { Services as services} from '@researchdatabox/redbox-core-types';
+import { RecordsService, Services as services} from '@researchdatabox/redbox-core-types';
 
 declare var sails: Sails;
 declare var WorkspaceService, _;
-declare var RecordsService, TranslationService, WorkflowStepsService;
+declare var RecordsService: RecordsService, TranslationService, WorkflowStepsService;
 
 export module Services {
 
@@ -61,7 +61,7 @@ export module Services {
       sails.log.verbose(`ServiceNowCatalog body template:`);
       sails.log.verbose(JSON.stringify(body_template));
       // get the RDMP data
-      const rdmpData = await RecordsService.getMeta(workspaceData.metadata.rdmpOid).toPromise();
+      const rdmpData = await RecordsService.getMeta(workspaceData.metadata.rdmpOid);
       const catalogFields = this.getConfig('catalog.fields', options);
       // prepare the request to ServiceNow
       const outgoingDataSource = {workspace: workspaceData, rdmp: rdmpData, oid:oid, moment: moment, numeral:numeral, translationService: TranslationService };
@@ -86,7 +86,7 @@ export module Services {
           const updateSource = snResponse.data;
           // perform any updates to the workspace record ...
           workspaceData = this.runDataRemap(updateSource, workspaceData, this.getConfig('catalog.update_fields', options));
-          await RecordsService.updateMeta(null, oid, workspaceData).toPromise();
+          await RecordsService.updateMeta(null, oid, workspaceData);
         } else {
           sails.log.error(`ServiceNowCatalog submit request failed for workspace OID: ${oid}, check server logs.`);
           sails.log.error(JSON.stringify(snResponse));
