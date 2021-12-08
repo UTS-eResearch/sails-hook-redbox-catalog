@@ -53,7 +53,7 @@ var Services;
                 let body_template = this.getConfig('catalog.body_template', options);
                 sails.log.verbose(`ServiceNowCatalog body template:`);
                 sails.log.verbose(JSON.stringify(body_template));
-                const rdmpData = yield RecordsService.getMeta(workspaceData.metadata.rdmpOid).toPromise();
+                const rdmpData = yield RecordsService.getMeta(workspaceData.metadata.rdmpOid);
                 const catalogFields = this.getConfig('catalog.fields', options);
                 const outgoingDataSource = { workspace: workspaceData, rdmp: rdmpData, oid: oid, moment: moment, numeral: numeral, translationService: TranslationService };
                 body_template = this.runDataRemap(outgoingDataSource, body_template, catalogFields);
@@ -77,7 +77,7 @@ var Services;
                     if (snResponse.status == 200) {
                         const updateSource = snResponse.data;
                         workspaceData = this.runDataRemap(updateSource, workspaceData, this.getConfig('catalog.update_fields', options));
-                        yield RecordsService.updateMeta(null, oid, workspaceData).toPromise();
+                        yield RecordsService.updateMeta(null, oid, workspaceData);
                     }
                     else {
                         sails.log.error(`ServiceNowCatalog submit request failed for workspace OID: ${oid}, check server logs.`);
