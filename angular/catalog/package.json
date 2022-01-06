@@ -42,7 +42,7 @@
     "rxjs": "5.5.12",
     "zone.js": "0.8.26",
     "ts-smart-logger": "0.0.4",
-    "uppy": "0.23.3"
+    "uppy": "2.3.3"
   },
   "devDependencies": {
     "@angular/cli": "1.7.4",
