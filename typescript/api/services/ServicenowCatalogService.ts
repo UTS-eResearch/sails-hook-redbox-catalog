@@ -107,9 +107,10 @@ export module Services {
 
     protected runDataRemap(source: any, target: any, fields: any[]) {
       for (const fieldDef of fields) {
-        const source_field = fieldDef.source_field;
-        const dest_field = fieldDef.dest_field;
-        const dest_template = fieldDef.dest_template;
+        const source_field = _.get(fieldDef,'source_field');
+        const dest_field = _.get(fieldDef,'dest_field');
+        const dest_template = _.get(fieldDef,'dest_template');
+        let parseObject = _.get(fieldDef, 'parseObject', false);
         let src_data = null;
         if (!_.isEmpty(source_field)) {
           src_data = _.get(source, source_field);
@@ -121,7 +122,12 @@ export module Services {
           src_data = template();
         }
         if (!_.isEmpty(dest_field)) {
-          _.set(target, dest_field, src_data);
+          if(parseObject) {
+            let obj = JSON.parse(src_data);
+            _.set(target, dest_field, obj);
+          } else {
+            _.set(target, dest_field, src_data);
+          }
         }
       }
       return target;
